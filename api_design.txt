@@ -1,0 +1,74 @@
+
+
+@method		POST
+@path		api/users
+@desc		registers a user
+@access		public
+@parameters	email, password, username
+@return		jwt token
+@responses	201 - user successfully registered
+		400 - missing fields
+		500 - server error
+
+
+
+@method		GET
+@path		api/auth
+@desc		get logged in user
+@parameters	username
+@access		private
+@return		user object
+@responses	200 - user found
+		400 - missing field / user not found
+		403 - forbidden (no legitimate jwt token)
+		500 - server error
+
+
+
+@method		POST
+@path		api/auth
+@desc		authenticate user and get token (log-in)
+@parameters	username, password
+@access		public
+@return		jwt token
+@responses	200 - authentication successful
+		400 - user not found
+
+
+
+
+@method		PUT
+@path		api/user
+@desc		change password
+@parameters	old password, new password, jwt token
+@access		private
+@return		-
+@responses	200 - successful
+		400 - old password is not correct
+		403 - forbidden (no legitimate jwt token)
+
+
+
+@method		POST
+@path		api/auth
+@desc		log out
+@parameters	jwt token
+@access		private
+@return		-
+@responses	200 - successful
+		403 - forbidden (no legitimate jwt token)
+
+
+@method		DELETE
+@path		api/auth
+@desc		delete a user
+@parameters	jwt token
+@access		private
+@return		-
+@responses	200 - successful
+		403 - forbidden (no legitimate jwt token)
+
+
+
+
+		

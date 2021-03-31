@@ -4,7 +4,7 @@
 @path		api/users
 @desc		registers a user
 @access		public
-@parameters	email, password, username
+@parameters	username, password, firstname, lastname
 @return		jwt token
 @responses	201 - user successfully registered
 		400 - missing fields
@@ -32,7 +32,8 @@
 @access		public
 @return		jwt token
 @responses	200 - authentication successful
-		400 - user not found
+        400 - missing field
+		403 - user not found
 
 
 
@@ -67,3 +68,5 @@
 @return		-
 @responses	200 - successful
 		403 - forbidden (no legitimate jwt token)
+
+

@@ -67,8 +67,3 @@
 @return		-
 @responses	200 - successful
 		403 - forbidden (no legitimate jwt token)
-
-
-
-
-		

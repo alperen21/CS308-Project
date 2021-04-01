@@ -189,7 +189,7 @@ const SignUpScreen = ({navigation}) => {
                    
                 >
                 <LinearGradient
-                    colors={['#08d4c4', '#01ab9d']}
+                    colors={['#666666', '#666666']}
                     style={styles.signIn}
                 >
                     <Text style={[styles.textSign, {
@@ -201,13 +201,13 @@ const SignUpScreen = ({navigation}) => {
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
                     style={[styles.signIn, {
-                        borderColor: '#009387',
+                        borderColor: '#BFA38F',
                         borderWidth: 1,
                         marginTop: 15
                     }]}
                 >
                     <Text style={[styles.textSign, {
-                        color: '#009387'
+                        color: '#BFA38F'
                     }]}>Sign In</Text>
                 </TouchableOpacity>
             </View>
@@ -222,7 +222,7 @@ export default SignUpScreen;
 const styles = StyleSheet.create({
     container: {
       flex: 1, 
-      backgroundColor: '#009387',
+      backgroundColor: '#BFA38F',
     },
     header: {
         flex: 1,

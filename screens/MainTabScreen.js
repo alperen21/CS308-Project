@@ -11,7 +11,7 @@ import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
 import { Entypo } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons';
-
+import { Feather } from '@expo/vector-icons';
 const HomeStack = createStackNavigator();
 const CategoryStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
@@ -29,9 +29,9 @@ const MainTabScreen = () => (
         component={HomeStackScreen}
         options={{
           tabBarLabel: 'Products',
-          tabBarColor: '#009387',
+          tabBarColor: '#BFA38F',
           tabBarIcon: ({ color }) => (
-            <Icon name="ios-home" color={color} size={26} />
+            <AntDesign name="home" color={color} size={26} />
           ),
         }}
       />
@@ -40,9 +40,9 @@ const MainTabScreen = () => (
         component={CategoryStackScreen}
         options={{
           tabBarLabel: 'Categories',
-          tabBarColor: '#009387',
+          tabBarColor: '#BFA38F',
           tabBarIcon: ({ color }) => (
-            <Entypo name="shopping-bag" color={color} size={26} />
+            <Feather name="shopping-bag" color={color} size={26} />
           ),
         }}
       />
@@ -51,7 +51,7 @@ const MainTabScreen = () => (
         component={ExploreStackScreen}
         options={{
           tabBarLabel: 'Search',
-          tabBarColor: '#009387',
+          tabBarColor: '#BFA38F',
           tabBarIcon: ({ color }) => (
             <AntDesign name="search1" size={24} color="white" />
           ),
@@ -63,7 +63,7 @@ const MainTabScreen = () => (
         component={ProfileStackScreen}
         options={{
           tabBarLabel: 'Profile',
-          tabBarColor: '#009387',
+          tabBarColor: '#BFA38F',
           tabBarIcon: ({ color }) => (
             <AntDesign name="user" size={24} color="white" />
           ),
@@ -78,7 +78,7 @@ export default MainTabScreen;
 const HomeStackScreen = ({navigation}) => (
 <HomeStack.Navigator screenOptions={{
         headerStyle: {
-        backgroundColor: '#009387',
+        backgroundColor: '#BFA38F',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -88,7 +88,7 @@ const HomeStackScreen = ({navigation}) => (
         <HomeStack.Screen name="Home" component={HomeScreen} options={{
         title:'Products',
         headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+            <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
         )
         }} />
 </HomeStack.Navigator>
@@ -97,7 +97,7 @@ const HomeStackScreen = ({navigation}) => (
 const CategoryStackScreen = ({navigation}) => (
 <CategoryStack.Navigator screenOptions={{
         headerStyle: {
-        backgroundColor: '#009387',
+        backgroundColor: '#BFA38F',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -107,7 +107,7 @@ const CategoryStackScreen = ({navigation}) => (
         <CategoryStack.Screen name="Category" component={CategoryScreen} options={{
           title: 'Categories',
         headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+            <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
         )
         }} />
 </CategoryStack.Navigator>
@@ -117,7 +117,7 @@ const CategoryStackScreen = ({navigation}) => (
 const ProfileStackScreen = ({navigation}) => (
   <ProfileStack.Navigator screenOptions={{
           headerStyle: {
-          backgroundColor: '#009387',
+          backgroundColor: '#BFA38F',
           },
           headerTintColor: '#fff',
           headerTitleStyle: {
@@ -127,7 +127,7 @@ const ProfileStackScreen = ({navigation}) => (
           <ProfileStack.Screen name="Profile" component={ProfileScreen} options={{
             title: 'Search',
           headerLeft: () => (
-              <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+              <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
           )
           }} />
   </ProfileStack.Navigator>
@@ -136,7 +136,7 @@ const ProfileStackScreen = ({navigation}) => (
   const ExploreStackScreen = ({navigation}) => (
     <ExploreStack.Navigator screenOptions={{
             headerStyle: {
-            backgroundColor: '#009387',
+            backgroundColor: '#BFA38F',
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
@@ -146,7 +146,7 @@ const ProfileStackScreen = ({navigation}) => (
             <ExploreStack.Screen name="Explore" component={ExploreScreen} options={{
               title: 'Explore',
             headerLeft: () => (
-                <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
+                <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
             )
             }} />
     </ExploreStack.Navigator>

@@ -24,9 +24,9 @@ const SplashScreen = ({navigation}) => {
             <Animatable.Image 
                 animation="bounceIn"
                 duraton="1500"
-            source={require('../assets/background_bean.jpeg')}
+            source={require('../assets/beans2.jpg')}
             style={styles.logo}
-            resizeMode="stretch"
+            //resizeMode="stretch"
             />
         </View>
         <Animatable.View 
@@ -42,10 +42,10 @@ const SplashScreen = ({navigation}) => {
             <View style={styles.button}>
             <TouchableOpacity onPress={()=>navigation.navigate('SignInScreen')}>
                 <LinearGradient
-                    colors={['#000080', '#000080']}
+                    colors={['#00000', '#00000']}
                     style={styles.signIn}
                 >
-                    <Text style={styles.textSign}>Let's shop</Text>
+                    <Text style={styles.textSign}> Shop Now</Text>
                     <MaterialIcons 
                         name="navigate-next"
                         color="#fff"
@@ -62,7 +62,7 @@ const SplashScreen = ({navigation}) => {
 export default SplashScreen;
 
 const {height} = Dimensions.get("screen");
-const height_logo = height * 0.28;
+const height_logo = height * 0.65;
 
 const styles = StyleSheet.create({
   container: {
@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
       paddingHorizontal: 30
   },
   logo: {
+      marginTop:25,
       width: height_logo,
       height: height_logo
   },

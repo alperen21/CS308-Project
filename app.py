@@ -106,6 +106,31 @@ class Auth(Resource):
 
 api.add_resource(Auth, "/auth")
 
+
+class Users(Resource):
+    def post(self):  # registration
+        posted_data = request.get_json()
+        #status_code = check_posted_data(posted_data, "users")
+
+        
+        first_name = posted_data["first_name"]
+        last_name = posted_data["last_name"]
+        username = posted_data["username"]
+        password = posted_data["password"]
+        email = posted_data["email"]
+
+        cursor = mysql.get_db().cursor()
+        cursor.execute("""INSERT INTO `USERS` (`first_name`, `last_name`, `username`, `password`, `email`) VALUES ('{}', '{}', '{}', '{}', '{}')"""
+        .format(first_name,last_name,username,password,email))
+        mysql.get_db().commit()
+        retJson = {
+            "message":"Registration completed."
+        }
+        return retJson
+
+api.add_resource(Users, "/users")
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 # with app.app_context():

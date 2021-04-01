@@ -1,0 +1,5 @@
+{
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.linting.pylintpath": "${workspaceFoler}\\Anaconda3\\Scripts\\pylint.exe",
+}

@@ -1,2 +1,2 @@
 bunu görebiliyorsanız git çalışıyor demektir
-test dosyasııııııııııııı
+2. test dosyası

@@ -2,13 +2,14 @@ from flask import Flask, jsonify, request
 from flask_restful import Api, Resource
 from flaskext.mysql import MySQL
 from passlib.hash import sha256_crypt
+import os
 
 app = Flask(__name__)
 
-app.config["MYSQL_DATABASE_HOST"] = "localhost"
-app.config["MYSQL_DATABASE_USER"] = "root"
-app.config["MYSQL_DATABASE_PASSWORD"] = ""
-app.config["MYSQL_DATABASE_DB"] = "cs308"
+app.config["MYSQL_DATABASE_HOST"] = os.environ.get("DATABASE_HOST")
+app.config["MYSQL_DATABASE_USER"] = os.environ.get("DATABASE_USER")
+app.config["MYSQL_DATABASE_PASSWORD"] = os.environ.get("DATABASE_PASSWORD")
+app.config["MYSQL_DATABASE_DB"] = os.environ.get("DATABASE_DB")
 app.config["MYSQL_DATABASE_CURSORCLASS"] = "DictCursor"
 
 mysql = MySQL(app)

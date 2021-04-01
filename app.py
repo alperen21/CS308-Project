@@ -84,7 +84,7 @@ class Users(Resource):
         .format(first_name,last_name,username,password,email))
         mysql.get_db().commit()
         retJson = {
-            "message":"Registration successfully completed."
+            "message":"Registration completed."
         }
         return retJson
 

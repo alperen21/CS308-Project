@@ -27,6 +27,10 @@ def check_posted_data(posted_data, function_name):
         if("username" not in posted_data or "password" not in posted_data):
             return 400
         return 200
+    if (function_name == "users"):
+        if ("first_name" not in posted_data or "last_name" not in posted_data or "username" not in posted_data or "password" not in posted_data or "email" not in posted_data):
+            return 400
+        return 200
 
 
 def private(func):
@@ -112,21 +116,43 @@ class Users(Resource):
         posted_data = request.get_json()
         #status_code = check_posted_data(posted_data, "users")
 
-        
-        first_name = posted_data["first_name"]
-        last_name = posted_data["last_name"]
-        username = posted_data["username"]
-        password = posted_data["password"]
-        email = posted_data["email"]
+        status_code = check_posted_data(posted_data, "users")
 
-        cursor = mysql.get_db().cursor()
-        cursor.execute("""INSERT INTO `USERS` (`first_name`, `last_name`, `username`, `password`, `email`) VALUES ('{}', '{}', '{}', '{}', '{}')"""
-        .format(first_name,last_name,username,password,email))
-        mysql.get_db().commit()
-        retJson = {
-            "message":"Registration completed."
-        }
-        return retJson
+        if (status_code == 200):
+            first_name = posted_data["first_name"]
+            last_name = posted_data["last_name"]
+            username = posted_data["username"]
+            password = posted_data["password"]
+            email = posted_data["email"]
+
+            cursor = mysql.get_db().cursor()
+
+            query = "SELECT * FROM USERS WHERE username=(%s)"
+            cursor.execute(query, (username,))
+            data = cursor.fetchone()
+
+            if (data == None):
+
+                query = "INSERT INTO `USERS` (`first_name`, `last_name`, `username`, `password`, `email`) VALUES ((%s), (%s), (%s), (%s), (%s))"
+                cursor.execute(query, (first_name, last_name,
+                                       username, password, email))
+                mysql.get_db().commit()
+                retJson = {
+                    "message": "Registration completed."
+                }
+                return retJson
+
+            else:
+                return jsonify({
+                    "message": "user already exists",
+                    "status_code": 409
+                })
+        else:
+            return jsonify({
+                "message": "missing arguments",
+                "status_code": status_code
+            })
+
 
 api.add_resource(Users, "/users")
 

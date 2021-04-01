@@ -1,11 +1,16 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
 from flask_restful import Api, Resource
 from flaskext.mysql import MySQL
 from passlib.hash import sha256_crypt
 import os
+import jwt
+from functools import wraps
+import datetime
 
 app = Flask(__name__)
 
+
+app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY")
 app.config["MYSQL_DATABASE_HOST"] = os.environ.get("DATABASE_HOST")
 app.config["MYSQL_DATABASE_USER"] = os.environ.get("DATABASE_USER")
 app.config["MYSQL_DATABASE_PASSWORD"] = os.environ.get("DATABASE_PASSWORD")
@@ -22,6 +27,28 @@ def check_posted_data(posted_data, function_name):
         if("username" not in posted_data or "password" not in posted_data):
             return 400
         return 200
+
+
+def private(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        token = request.args.get('token')
+        if not token:
+            return jsonify({
+                "message": "Forbidden",
+                "status_code": 403
+            })
+        else:
+            try:
+                data = jwt.decode(
+                    token, app.config['SECRET_KEY'], algorithms="HS256")
+            except Exception:
+                return jsonify({
+                    "message": "invalid token",
+                    "status_code": 403
+                })
+        return func(*args, **kwargs)
+    return wrapped
 
 
 class Auth(Resource):
@@ -44,12 +71,17 @@ class Auth(Resource):
             query = "SELECT * FROM USERS WHERE username=(%s) and password=(%s)"
             cursor.execute(query, (username, password))
             data = cursor.fetchone()
-
             if (data != None):
+                token = jwt.encode({
+                    'user': data[1],
+                    'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=1800)
+                },
+                    app.config['SECRET_KEY'], algorithm='HS256')
                 retJson = {
                     "username": data[1],
                     "name": data[3],
                     "surname": data[4],
+                    "token": token,
                     "status_code": 200
                 }
 
@@ -62,6 +94,14 @@ class Auth(Resource):
                 }
 
                 return retJson
+
+    @private
+    def get(self):
+        posted_data = request.get_json()
+        return jsonify({
+            "message": "it works!",
+            "your-message": posted_data["msg"]
+        })
 
 
 api.add_resource(Auth, "/auth")

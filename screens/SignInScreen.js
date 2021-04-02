@@ -239,6 +239,21 @@ const SignInScreen = ({navigation}) => {
                         color: '#BFA38F'
                     }]}>Sign Up</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('Home')}
+                    style={[styles.signIn, {
+                        borderColor: '#BFA38F',
+                        borderWidth: 1,
+                        marginTop: 15
+                    }]}
+                >
+                    <Text style={[styles.textSign, {
+                        color: '#BFA38F'
+                    }]}>Continue Shopping</Text>
+                </TouchableOpacity>   
+
+
             </View>
         </Animatable.View>
       </View>

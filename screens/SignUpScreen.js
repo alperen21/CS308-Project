@@ -185,7 +185,7 @@ const SignUpScreen = ({navigation}) => {
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
-                    onPress={() => {}}
+                    onPress={() => navigation.navigate('SignInScreen') }
                    
                 >
                 <LinearGradient
@@ -199,7 +199,7 @@ const SignUpScreen = ({navigation}) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => navigation.goBack()}
+                    onPress={() => navigation.navigate('SignInScreen')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,
@@ -210,6 +210,21 @@ const SignUpScreen = ({navigation}) => {
                         color: '#BFA38F'
                     }]}>Sign In</Text>
                 </TouchableOpacity>
+
+
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('Home')}
+                    style={[styles.signIn, {
+                        borderColor: '#BFA38F',
+                        borderWidth: 1,
+                        marginTop: 15
+                    }]}
+                >
+                    <Text style={[styles.textSign, {
+                        color: '#BFA38F'
+                    }]}>Continue Shopping</Text>
+                </TouchableOpacity>    
+
             </View>
             </ScrollView>
         </Animatable.View>

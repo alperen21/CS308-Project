@@ -1,14 +1,79 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const CategoryScreen = ({navigation}) => {
     return (
       <View style={styles.container}>
-        <Text>Categories Screen</Text>
-        <Button
-          title="go to search Here"
-          onPress={() => navigation.navigate('Explore')}
-        />
+
+      <View style={styles.button}> 
+       
+       <TouchableOpacity
+                    onPress={() => navigation.navigate('SignUpScreen')}
+                    style={[styles.signIn, {
+                        borderColor: '#BFA38F',
+                        borderWidth: 1,
+                        marginTop: 15
+                    }]}
+                >
+                    <Text style={[styles.textSign, {
+                        color: '#BFA38F'
+                    }]}>Espresso</Text>
+        </TouchableOpacity>  
+
+        <TouchableOpacity
+                    onPress={() => navigation.navigate('SignUpScreen')}
+                    style={[styles.signIn, {
+                        borderColor: '#BFA38F',
+                        borderWidth: 1,
+                        marginTop: 15
+                    }]}
+                >
+                    <Text style={[styles.textSign, {
+                        color: '#BFA38F'
+                    }]}>Filter Coffee</Text>
+        </TouchableOpacity>  
+
+        <TouchableOpacity
+                    onPress={() => navigation.navigate('SignUpScreen')}
+                    style={[styles.signIn, {
+                        borderColor: '#BFA38F',
+                        borderWidth: 1,
+                        marginTop: 15
+                    }]}
+                >
+                    <Text style={[styles.textSign, {
+                        color: '#BFA38F'
+                    }]}>Turkish Coffee</Text>
+        </TouchableOpacity>  
+
+        <TouchableOpacity
+                    onPress={() => navigation.navigate('SignUpScreen')}
+                    style={[styles.signIn, {
+                        borderColor: '#BFA38F',
+                        borderWidth: 1,
+                        marginTop: 15
+                    }]}
+                >
+                    <Text style={[styles.textSign, {
+                        color: '#BFA38F'
+                    }]}>Hot Chocolate</Text>
+        </TouchableOpacity>  
+
+        <TouchableOpacity
+                    onPress={() => navigation.navigate('SignUpScreen')}
+                    style={[styles.signIn, {
+                        borderColor: '#BFA38F',
+                        borderWidth: 1,
+                        marginTop: 15
+                    }]}
+                >
+                    <Text style={[styles.textSign, {
+                        color: '#BFA38F'
+                    }]}>Coffee Machines</Text>
+        </TouchableOpacity>  
+
+        </View>
       </View>
     );
 };
@@ -21,4 +86,24 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     justifyContent: 'center'
   },
+
+  signIn: {
+    width: '100%',
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10
+},
+
+textSign: {
+  fontSize: 18,
+  fontWeight: 'bold'
+},
+
+button: {
+  alignItems: 'center',
+  marginTop: 50,
+  width : 200,
+  
+},
 });

@@ -109,7 +109,8 @@ const SignInScreen = ({navigation}) => {
             ]);
             return;
         }
-        signIn(foundUser);
+        // signIn(foundUser);
+        navigation.replace('Home');
     }
 
     return (

@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 
-const CategoryScreen = () => {
+const CategoryScreen = ({navigation}) => {
     return (
       <View style={styles.container}>
         <Text>Categories Screen</Text>
         <Button
-          title="Click Here"
-          onPress={() => alert('Button Clicked!')}
+          title="go to search Here"
+          onPress={() => navigation.navigate('Explore')}
         />
       </View>
     );

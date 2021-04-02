@@ -40,7 +40,7 @@ const SplashScreen = ({navigation}) => {
             }]}>Welcome to Coffee House!</Text>
             <Text style={styles.text}>Let's find your taste.</Text>
             <View style={styles.button}>
-            <TouchableOpacity onPress={()=>navigation.navigate('SignInScreen')}>
+            <TouchableOpacity onPress={()=>navigation.replace('Home')}>
                 <LinearGradient
                     colors={['#00000', '#00000']}
                     style={styles.signIn}

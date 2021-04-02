@@ -14,19 +14,22 @@ import {
 } from 'react-native-paper';
 
 import { DrawerContent } from './screens/DrawerContent';
-
+import RootStackScreen from './screens/RootStackScreen';
 import MainTabScreen from './screens/MainTabScreen';
 import SupportScreen from './screens/SupportScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import BookmarkScreen from './screens/BookmarkScreen';
-
+import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from './components/context';
+import SplashScreen from './screens/SplashScreen';
+import SignInScreen from './screens/SignInScreen';
+import SignUpScreen from './screens/SignUpScreen';
 
-import RootStackScreen from './screens/RootStackScreen';
 
 import AsyncStorage from '@react-native-community/async-storage';
 
 const Drawer = createDrawerNavigator();
+const RootStack = createStackNavigator();
 
 const App = () => {
   // const [isLoading, setIsLoading] = React.useState(true);
@@ -158,17 +161,21 @@ const App = () => {
     <PaperProvider theme={theme}>
     <AuthContext.Provider value={authContext}>
     <NavigationContainer theme={theme}>
-      { loginState.userToken !== null ? (
+      {/* { loginState.userToken !== null ? (
         <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
           <Drawer.Screen name="HomeDrawer" component={MainTabScreen} />
           <Drawer.Screen name="SupportScreen" component={SupportScreen} />
           <Drawer.Screen name="SettingsScreen" component={SettingsScreen} />
           <Drawer.Screen name="BookmarkScreen" component={BookmarkScreen} />
+          <RootStack.Screen name="SplashScreen" component={SplashScreen}/>
+          <RootStack.Screen name="SignInScreen" component={SignInScreen}/>
+          <RootStack.Screen name="SignUpScreen" component={SignUpScreen}/>
         </Drawer.Navigator>
       )
     :
     <RootStackScreen/>
-    }
+    } */}
+     <RootStackScreen/>
     
     </NavigationContainer>
     </AuthContext.Provider>

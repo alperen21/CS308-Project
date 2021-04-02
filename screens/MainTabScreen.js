@@ -12,6 +12,8 @@ import ProfileScreen from './ProfileScreen';
 import { Entypo } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
+
+
 const HomeStack = createStackNavigator();
 const CategoryStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
@@ -87,9 +89,9 @@ const HomeStackScreen = ({navigation}) => (
     }}>
         <HomeStack.Screen name="Home" component={HomeScreen} options={{
         title:'Products',
-        headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
-        )
+        // headerLeft: () => (
+        //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
+        // )
         }} />
 </HomeStack.Navigator>
 );
@@ -106,9 +108,9 @@ const CategoryStackScreen = ({navigation}) => (
     }}>
         <CategoryStack.Screen name="Category" component={CategoryScreen} options={{
           title: 'Categories',
-        headerLeft: () => (
-            <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
-        )
+        // headerLeft: () => (
+        //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
+        // )
         }} />
 </CategoryStack.Navigator>
 );
@@ -125,10 +127,10 @@ const ProfileStackScreen = ({navigation}) => (
           }
       }}>
           <ProfileStack.Screen name="Profile" component={ProfileScreen} options={{
-            title: 'Search',
-          headerLeft: () => (
-              <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
-          )
+            title: 'Profile',
+          // headerLeft: () => (
+          //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
+          // )
           }} />
   </ProfileStack.Navigator>
   );
@@ -144,10 +146,10 @@ const ProfileStackScreen = ({navigation}) => (
             }
         }}>
             <ExploreStack.Screen name="Explore" component={ExploreScreen} options={{
-              title: 'Explore',
-            headerLeft: () => (
-                <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
-            )
+              title: 'Search',
+            // headerLeft: () => (
+            //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
+            // )
             }} />
     </ExploreStack.Navigator>
     );

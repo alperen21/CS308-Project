@@ -9,7 +9,7 @@ const HomeScreen = ({navigation}) => {
       
 
       <TouchableOpacity 
-          onPress={() => navigation.navigate('Category')}
+          onPress={() => navigation.navigate('SplashScreen')}
           style={[styles.signIn, {
               borderColor: '#009387',
               borderWidth: 1,

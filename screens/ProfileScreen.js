@@ -12,17 +12,23 @@ const ProfileScreen = ({navigation}) => {
     const {signOut} = React.useContext(AuthContext);
 
     const [usertoken, setUserToken] = React.useState(null);
-
+    const [username, setUsername] = React.useState(null);
     useEffect(() => { 
           // setIsLoading(false);
           let userToken;
         //   userToken = null; 
-          AsyncStorage.getItem('userToken') 
-            .then((value) => {
+          AsyncStorage.getItem('userToken')
+           .then((value) => {
                     // console.log(value);
                     setUserToken(value);
                 });
-         
+
+
+      AsyncStorage.getItem('userName')  
+      .then((val) => {
+           //console.log(val);
+          setUsername(val);
+      });         
         // console.log('user token: ', userToken);
         //   dispatch({ type: 'RETRIEVE_TOKEN', token: userToken });
 
@@ -34,23 +40,22 @@ const ProfileScreen = ({navigation}) => {
 
       <ScrollView>
       <View style={styles.container}>
-        <Text style={{marginTop:30, fontSize:20, marginRight:30}}>  <Icon2 name='user' size={30}> </Icon2>User name</Text>
+      
         <View style={styles.button}>
         
         { usertoken === null ? (
         
-        <View>
-
+        <View style={styles.button}>
         <TouchableOpacity
                     onPress={() => navigation.navigate('SignInScreen')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,
-                        marginTop: 15
+                        marginTop: 200
                     }]}
                 >
                     <Text style={[styles.textSign, {
-                        color: '#BFA38F'
+                        color: '#BFA38F',
                     }]}>Sign in </Text>
         </TouchableOpacity>  
 
@@ -59,7 +64,7 @@ const ProfileScreen = ({navigation}) => {
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,
-                        marginTop: 15
+                        marginTop: 15,
                     }]}
                 >
                     <Text style={[styles.textSign, {
@@ -72,17 +77,18 @@ const ProfileScreen = ({navigation}) => {
          : 
         (
 
-   <View>
+   <View style={styles.button}>
+       <Text style={{marginTop:20, fontSize:20, marginRight:30}}>  <Icon2 name='user' size={30}> </Icon2> {username}</Text>
         <TouchableOpacity
                     onPress={() => navigation.navigate('SignUpScreen')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,
-                        marginTop: 15
+                        marginTop:30
                     }]}
                 >
                     <Text style={[styles.textSign, {
-                        color: '#BFA38F'
+                        color: '#BFA38F',
                     }]}>Previous Purchases </Text>
         </TouchableOpacity>  
         
@@ -152,7 +158,7 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10
+    borderRadius: 10,
 },
 
 textSign: {

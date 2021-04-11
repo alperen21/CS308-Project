@@ -116,6 +116,7 @@ const App = ({navigation}) => {
       
       try {
         await AsyncStorage.setItem('userToken', userToken);
+        await AsyncStorage.setItem('userName', userName);
       } catch(e) {
         console.log(e);
       }

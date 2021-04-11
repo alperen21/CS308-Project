@@ -13,7 +13,7 @@ const CategoryScreen = ({navigation}) => {
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,
-                        marginTop: 15
+                        marginTop: 0
                     }]}
                 >
                     <Text style={[styles.textSign, {
@@ -102,7 +102,7 @@ textSign: {
 
 button: {
   alignItems: 'center',
-  marginTop: 50,
+  marginTop: 10,
   width : 200,
   
 },

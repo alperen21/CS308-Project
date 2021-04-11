@@ -96,6 +96,9 @@ const SignInScreen = ({navigation}) => {
             return userName == item.username && password == item.password;
         } );
 
+        foundUser.userName = userName; //changed this
+        foundUser.password = password; //changed this
+
         if ( data.username.length == 0 || data.password.length == 0 ) {
             Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
                 {text: 'Okay'}
@@ -109,7 +112,8 @@ const SignInScreen = ({navigation}) => {
             ]);
             return;
         }
-        // signIn(foundUser);
+        //console.log('user token: ', password);
+        signIn(foundUser);
         navigation.replace('Home');
     }
 

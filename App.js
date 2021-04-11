@@ -25,13 +25,17 @@ import SplashScreen from './screens/SplashScreen';
 import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
 
-
 import AsyncStorage from '@react-native-community/async-storage';
+
+
+
 
 const Drawer = createDrawerNavigator();
 const RootStack = createStackNavigator();
 
-const App = () => {
+
+
+const App = ({navigation}) => {
   // const [isLoading, setIsLoading] = React.useState(true);
   // const [userToken, setUserToken] = React.useState(null); 
 
@@ -99,7 +103,9 @@ const App = () => {
     }
   };
 
+
   const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState);
+ 
 
   const authContext = React.useMemo(() => ({
     signIn: async(foundUser) => {
@@ -113,9 +119,11 @@ const App = () => {
       } catch(e) {
         console.log(e);
       }
-      // console.log('user token: ', userToken);
+    //console.log('user tokennn: ', foundUser[0].password);
+    //console.log('user passw: ', foundUser[0].password);
       dispatch({ type: 'LOGIN', id: userName, token: userToken });
     },
+
     signOut: async() => {
       // setUserToken(null);
       // setIsLoading(false);
@@ -126,20 +134,27 @@ const App = () => {
       }
       dispatch({ type: 'LOGOUT' });
     },
+
     signUp: () => {
       // setUserToken('fgkj');
       // setIsLoading(false);
+      
+      //fill out
+
     },
+
     toggleTheme: () => {
       setIsDarkTheme( isDarkTheme => !isDarkTheme );
     }
   }), []);
 
-  useEffect(() => {
+
+  useEffect(() => { 
     setTimeout(async() => {
       // setIsLoading(false);
       let userToken;
-      userToken = null;
+      userToken = null; 
+
       try {
         userToken = await AsyncStorage.getItem('userToken');
       } catch(e) {
@@ -150,6 +165,8 @@ const App = () => {
     }, 1000);
   }, []);
 
+
+
   if( loginState.isLoading ) {
     return(
       <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
@@ -157,6 +174,8 @@ const App = () => {
       </View>
     );
   }
+
+
   return (
     <PaperProvider theme={theme}>
     <AuthContext.Provider value={authContext}>

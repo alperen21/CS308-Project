@@ -6,8 +6,10 @@ import os
 import jwt
 from functools import wraps
 import datetime
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+cors = CORS(app)
 
 
 app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY")
@@ -56,6 +58,7 @@ def private(func):
 
 
 class Auth(Resource):
+    @cross_origin(origins="http://localhost:3000*")
     def post(self):  # login
         posted_data = request.get_json()
         status_code = check_posted_data(posted_data, "auth")
@@ -99,6 +102,7 @@ class Auth(Resource):
 
                 return retJson
 
+    @cross_origin(origins="http://localhost:63342*")
     @private
     def get(self):
         posted_data = request.get_json()
@@ -112,6 +116,7 @@ api.add_resource(Auth, "/auth")
 
 
 class Users(Resource):
+    @cross_origin(origins="http://localhost:3000*")
     def post(self):  # registration
         posted_data = request.get_json()
         #status_code = check_posted_data(posted_data, "users")

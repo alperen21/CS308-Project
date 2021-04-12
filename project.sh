@@ -1,0 +1,1 @@
+source "environments/project_env/bin/activate";

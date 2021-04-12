@@ -30,7 +30,14 @@ def check_posted_data(posted_data, function_name):
             return 400
         return 200
     if (function_name == "users"):
-        if ("first_name" not in posted_data or "last_name" not in posted_data or "username" not in posted_data or "password" not in posted_data or "email" not in posted_data):
+        if ("first_name" not in posted_data
+                or "last_name" not in posted_data
+                or "username" not in posted_data
+                or "password" not in posted_data
+                or "email" not in posted_data
+                or "phone" not in posted_data
+                or "address" not in posted_data
+                or "email" not in posted_data):
             return 400
         return 200
 
@@ -129,6 +136,8 @@ class Users(Resource):
             username = posted_data["username"]
             password = posted_data["password"]
             email = posted_data["email"]
+            phone = posted_data["phone"]
+            address = posted_data["address"]
 
             cursor = mysql.get_db().cursor()
 
@@ -138,10 +147,26 @@ class Users(Resource):
 
             if (data == None):
 
+                # adding the new user to the user relation
                 query = "INSERT INTO `USERS` (`first_name`, `last_name`, `username`, `password`, `email`) VALUES ((%s), (%s), (%s), (%s), (%s))"
                 cursor.execute(query, (first_name, last_name,
                                        username, password, email))
                 mysql.get_db().commit()
+
+                # adding the new user to customer relation
+
+                query = "SELECT user_id FROM USERS WHERE username = (%s)"
+                cursor.execute(query, (username,))
+                data = cursor.fetchone()
+
+                user_id = data[0]  # id of the newly created user
+
+                query = 'INSERT INTO `CUSTOMER` (customer_id, phone, address, email) VALUES (%s, %s, %s, %s)'
+
+                cursor.execute(query, (str(user_id), str(
+                    phone), str(address), str(email)))
+                mysql.get_db().commit()
+
                 retJson = {
                     "message": "Registration completed.",
                     "status_code": 200

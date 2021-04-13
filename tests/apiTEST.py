@@ -11,6 +11,8 @@ class FlaskTest(unittest.TestCase):
 
     def setUp(self):
         self.url = "http://127.0.0.1:5000"
+        if os.environ.get("TEST_ENABLED") == None:
+            self.skipTest('tests can only be used in the test environment')
 
     def tearDown(self):  # completely cleans up tables in the database
         with connect(

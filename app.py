@@ -187,6 +187,135 @@ class Users(Resource):
 
 api.add_resource(Users, "/users")
 
+class findProduct(Resource):
+    def post(self): #find product from database
+        posted_data = request.get_json()
+        productName = posted_data["productName"]
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT * FROM PRODUCT WHERE name=(%s)"
+        cursor.execute(query, (productName,))
+        data = cursor.fetchone()
+
+        if (data != None):
+            query = "SELECT * FROM PRODUCT WHERE name=(%s)"
+            cursor.execute(query, (productName))
+            data = cursor.fetchone()
+            retJson = {
+                "name": data[2],
+                "rating": data[3],
+                "model": data[4],
+                "price": data[5],
+                "stock": data[7],
+                "status_code": 200
+            }
+            return retJson
+        else:
+            return jsonify({
+                    "message": "Coffee does not exist.",
+                    "status_code": 409
+                })
+
+api.add_resource(findProduct, "/findProduct")
+
+class addProduct(Resource):
+    def post(self):  # adding new product to database
+        posted_data = request.get_json()
+
+        name = posted_data["name"]
+        rating = posted_data["rating"]
+        model = posted_data["model"]
+        price = posted_data["price"]
+        image_path = posted_data["image_path"]
+
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT * FROM PRODUCT WHERE name=(%s)"
+        cursor.execute(query, (name,))
+        data = cursor.fetchone()
+
+        if(data==None):
+            #adding a new product to product table.
+            query = "INSERT INTO `PRODUCT` (`name`, `rating`, `model`, `price`, `image_path`) VALUES ((%s), (%s), (%s), (%s), (%s))"
+            cursor.execute(query, (name, rating, model, price, image_path))
+            mysql.get_db().commit()
+
+            retJson = {
+                "message": "New coffee added..",
+                "status_code": 200
+            }
+            return retJson
+        else:
+            return jsonify({
+                "message": "This coffee already exists",
+                "status_code": 409
+            })
+
+api.add_resource(addProduct, "/addProduct")
+
+class addStock(Resource):
+    def post(self): #increasing the stock of the choosen product by 1.
+        posted_data = request.get_json()
+
+        name = posted_data["name"]
+        quantity = posted_data["quantity"]
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT * FROM PRODUCT WHERE name=(%s)"
+        cursor.execute(query, (name,))
+        data = cursor.fetchone()
+
+        if (data != None):
+            #query = "INSERT INTO `PRODUCT` (`name`, `rating`, `model`, `price`, `image_path`) VALUES ((%s), (%s), (%s), (%s), (%s))"
+            query = "UPDATE PRODUCT SET stock=stock+(%s) WHERE name=(%s)"
+            cursor.execute(query, (quantity, name))
+            mysql.get_db().commit()
+
+            retJson = {
+                "message": "Stock of {} reduced by {}...".format(name, quantity),
+                "status_code": 200
+            }
+            return retJson
+        else:
+            return jsonify({
+                "message": "This coffee does not exist",
+                "status_code": 409
+            })
+
+api.add_resource(addStock,"/addStock")
+
+
+class reduceStock(Resource):
+    def post(self): #decreasing the stock of the choosen product by 1.
+        posted_data = request.get_json()
+
+        name = posted_data["name"]
+        quantity = posted_data["quantity"]
+
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT * FROM PRODUCT WHERE name=(%s)"
+        cursor.execute(query, (name,))
+        data = cursor.fetchone()
+
+        if (data != None):
+            #query = "INSERT INTO `PRODUCT` (`name`, `rating`, `model`, `price`, `image_path`) VALUES ((%s), (%s), (%s), (%s), (%s))"
+            query = "UPDATE PRODUCT SET stock=stock-(%s) WHERE name=(%s)"
+            cursor.execute(query, (quantity, name))
+            mysql.get_db().commit()
+
+            retJson = {
+                "message": "Stock of {} reduced by {}...".format(name, quantity),
+                "status_code": 200
+            }
+            return retJson
+        else:
+            return jsonify({
+                "message": "This coffee does not exist",
+                "status_code": 409
+            })
+
+api.add_resource(reduceStock,"/reduceStock")
 
 if __name__ == "__main__":
     app.run(debug=True)

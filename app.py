@@ -114,8 +114,8 @@ class Auth(Resource):
     def get(self):
         posted_data = request.get_json()
         return jsonify({
-            "message": "it works!",
-            "your-message": posted_data["msg"]
+            "message": True,
+            "status_code": 200
         })
 
 

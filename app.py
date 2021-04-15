@@ -13,10 +13,10 @@ cors = CORS(app)
 
 
 app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY")
-app.config["MYSQL_DATABASE_HOST"] = "remotemysql.com"
-app.config["MYSQL_DATABASE_USER"] = "Ew8ozZEqfF"
-app.config["MYSQL_DATABASE_PASSWORD"] = "3J8RPxkGdZ"
-app.config["MYSQL_DATABASE_DB"] = "Ew8ozZEqfF"
+app.config["MYSQL_DATABASE_HOST"] = os.environ.get("DATABASE_HOST")
+app.config["MYSQL_DATABASE_USER"] = os.environ.get("DATABASE_USER")
+app.config["MYSQL_DATABASE_PASSWORD"] = os.environ.get("DATABASE_PASSWORD")
+app.config["MYSQL_DATABASE_DB"] = os.environ.get("DATABASE_DB")
 app.config["MYSQL_DATABASE_CURSORCLASS"] = "DictCursor"
 
 mysql = MySQL(app)

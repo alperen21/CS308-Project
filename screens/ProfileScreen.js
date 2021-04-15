@@ -60,7 +60,7 @@ const ProfileScreen = ({navigation}) => {
         </TouchableOpacity>  
 
        <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUpScreen')}
+                    onPress={() => navigation.replace('SignUpScreen')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,

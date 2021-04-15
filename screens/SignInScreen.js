@@ -20,6 +20,26 @@ import { AuthContext } from '../components/context';
 
 import Users from '../model/users';
 
+/*
+fetch('https://reactnative.dev/movies.json')
+    .then((response) => response.json())
+    .then((json) => {
+      //console.log("List of products:", json )
+      //return json.movies;
+     if (json.status === 'success') {
+          AsyncStorage.setItem('user_id', json.data.email);
+          console.log(responseJson.data.email);
+          navigation.replace('DrawerNavigationRoutes');
+        } else {
+          setErrortext(json.msg);
+          console.log('Please check your email id or password');
+        }
+    })
+    .catch((error) => {
+      console.error(error);
+    }); 
+    */
+
 const SignInScreen = ({navigation}) => {
 
     const [data, setData] = React.useState({
@@ -113,6 +133,7 @@ const SignInScreen = ({navigation}) => {
             return;
         }
         //console.log('user token: ', password);
+        //BURADA HOME YERİNE PROFILE ATIYOR NAVIGATE YAZINCA USING REPLACE FOR NOW!!!
         signIn(foundUser);
         navigation.replace('Home');
     }

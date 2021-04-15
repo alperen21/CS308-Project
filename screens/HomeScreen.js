@@ -1,9 +1,51 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, SafeAreaView,ScrollView } from 'react-native';
+import React,{useEffect,useState} from 'react';
+import { View, Text, Button, StyleSheet, TouchableOpacity, SafeAreaView,ScrollView,FlatList,Image } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {ProductsList} from './Products/ProductsList';
 
+
+
+/*const Product = (product) => (
+  <View style={{flexdirection:'row',marginvertical:,paddinghorizontal}}>
+    <Image style={{height:, width:}}
+    source={{
+      uri:product.product_image (databasedeki isim)
+    }} />
+    <View>
+    <Text>{Product.name} </Text>
+    <Text> {product.category }</Text>
+    </View>
+    <View>
+    <Text>{Product.price} </Text>
+   
+    </View>
+    
+  </View>
+);
+*/
+//const [productlist,setProductlist]=useState([])
+
+/*
+//bunu useffect icine aldi ege
+const getProducts = () => {
+  return fetch('https://reactnative.dev/movies.json')
+    .then((response) => response.json())
+    .then((json) => {
+      //console.log("List of products:", json )
+      //return json.movies;
+      setProductlist(json);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+};*/
+
+
+/*
+const renderItem = ({ item }) => (
+  <Product product={item} />
+); */
 
 const productsList = [
   {
@@ -51,6 +93,7 @@ const HomeScreen = ({navigation}) => {
             <ProductsList list={productsList} />
           </View>
         </ScrollView>
+
      </SafeAreaView>
     );
 };
@@ -64,3 +107,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
 });
+
+
+//flatlisti safearea icine yazdi
+/*
+<FlatList
+data={productlist}
+renderItem={renderItem}
+keyExtractor={item => item.id}
+/> */

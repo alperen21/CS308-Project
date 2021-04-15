@@ -17,18 +17,51 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import * as MailComposer from 'expo-mail-composer';
 
-const SignUpScreen = ({navigation}) => {
 
+
+
+
+
+const SignUpScreen = ({navigation}) => {
+    //alperen
+    
+    
     const [data, setData] = React.useState({
+        name:'',
+        lastname:'',
+        address:'',
         username: '',
         password: '',
+        email:'',
         confirm_password: '',
+        phone:'',
         check_textInputChange: false,
+        checkNamechange: false,
+        checkLastNamechange: false,
+        checkEmailchange: false,
         secureTextEntry: true,
         confirm_secureTextEntry: true,
     });
+    
+    const signUp = async () => {
+        const response = await fetch('http://localhost:5000/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify({
+                first_name: data.name,
+                last_name:data.lastname,
+                username: data.username,
+                password:data.password,
+                email:data.email
+            })
+        })
+    }
 
+   
     const textInputChange = (val) => {
+       // console.log("userName is ",val);
         if( val.length !== 0 ) {
             setData({
                 ...data,
@@ -40,6 +73,55 @@ const SignUpScreen = ({navigation}) => {
                 ...data,
                 username: val,
                 check_textInputChange: false
+            });
+        }
+    }
+    const textNameChange = (val) => {
+        //console.log("Name is ",val);
+        if( val.length !== 0 ) {
+            setData({
+                ...data,
+                name: val,
+                checkNamechange: true
+            });
+        } else {
+            setData({
+                ...data,
+                name: val,
+                checkNamechange: false
+            });
+        }
+    }
+    const textlastNameChange = (val) => {
+        //console.log("lastName is ",val);
+        if( val.length !== 0 ) {
+            setData({
+                ...data,
+                lastname: val,
+                checkLastNamechange: true
+            });
+        } else {
+            setData({
+                ...data,
+                lastname: val,
+                checkLastNamechange: false
+            });
+        }
+    }
+
+    const textemailChange = (val) => {
+        //console.log("email is ",val);
+        if( val.length !== 0 ) {
+            setData({
+                ...data,
+                email: val,
+                checkEmailchange: true
+            });
+        } else {
+            setData({
+                ...data,
+                email: val,
+                checkEmailchange: false
             });
         }
     }
@@ -83,6 +165,115 @@ const SignUpScreen = ({navigation}) => {
             style={styles.footer}
         >
             <ScrollView>
+            <Text style={styles.text_footer}>Name</Text>
+            <View style={styles.action}>
+                <FontAwesome 
+                    name="user-o"
+                    color="#000000"
+                    size={20}
+                />
+                <TextInput 
+                    placeholder="Your Name"
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                    onChangeText={(val) => textNameChange(val)}
+                />
+                {data.checkNamechange ? 
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                    <Feather 
+                        name="check-circle"
+                        color="green"
+                        size={20}
+                    />
+                </Animatable.View>
+                : null}
+            </View>
+            <Text style={styles.text_footer}>Last Name</Text>
+            <View style={styles.action}>
+                <FontAwesome 
+                    name="user-o"
+                    color="#000000"
+                    size={20}
+                />
+                <TextInput 
+                    placeholder="Your Last Name"
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                    onChangeText={(val) => textlastNameChange(val)}
+                />
+                {data.checkLastNamechange ? 
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                    <Feather 
+                        name="check-circle"
+                        color="green"
+                        size={20}
+                    />
+                </Animatable.View>
+                : null}
+            </View>
+
+        
+            {/* <Text style={styles.text_footer}>Address</Text>
+            <View style={styles.action}>
+                <FontAwesome 
+                    name="user-o"
+                    color="#000000"
+                    size={20}
+                />
+                <TextInput 
+                    placeholder="Your Address"
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                    onChangeText={(val) => textInputChange(val)}
+                />
+                {data.check_textInputChange ? 
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                    <Feather 
+                        name="check-circle"
+                        color="green"
+                        size={20}
+                    />
+                </Animatable.View>
+                : null}
+            </View> */}
+            
+
+            <Text style={styles.text_footer}>Email Adress</Text>
+            <View style={styles.action}>
+                <FontAwesome 
+                    name="user-o"
+                    color="#000000"
+                    size={20}
+                />
+                <TextInput 
+                    placeholder="Your Email Address"
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                    onChangeText={(val) => textemailChange(val)}
+                />
+                {data.checkEmailchange ? 
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                    <Feather 
+                        name="check-circle"
+                        color="green"
+                        size={20}
+                    />
+                </Animatable.View>
+                : null}
+            </View>
+
+
+
+
+
             <Text style={styles.text_footer}>Username</Text>
             <View style={styles.action}>
                 <FontAwesome 
@@ -108,6 +299,7 @@ const SignUpScreen = ({navigation}) => {
                 </Animatable.View>
                 : null}
             </View>
+
 
             <Text style={[styles.text_footer, {marginTop: 35}]}>Password</Text>
             <View style={styles.action}>
@@ -185,8 +377,8 @@ const SignUpScreen = ({navigation}) => {
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
+                    //onPress={() => navigation.navigate('SignInScreen') }
                     onPress={() => navigation.navigate('SignInScreen') }
-                   
                 >
                 <LinearGradient
                     colors={['#666666', '#666666']}

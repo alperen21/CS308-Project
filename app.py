@@ -327,6 +327,66 @@ class reduceStock(Resource):
 
 api.add_resource(reduceStock, "/reduceStock")
 
+class orderBy(Resource):
+    def post(self):
+        posted_data = request.get_json()
+
+        criteria = posted_data["criteria"]
+        orderType = posted_data["orderType"] #order type can be ASC or DESC
+
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT * FROM PRODUCT ORDER BY {} {}".format(criteria, orderType)
+        cursor.execute(query)
+        
+        data = cursor.fetchall()
+        retJson = {
+                "name": data[0],
+                "status_code": 200
+            }
+        return retJson
+
+api.add_resource(orderBy, "/orderBy")
+
+class categoryList(Resource):
+    def post(self): #retrieving all category list from db or only a specific one.
+        posted_data = request.get_json()
+        whichCategory = posted_data["whichCategory"]
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT category_name FROM CATEGORY"
+        cursor.execute(query)
+        data = cursor.fetchall()
+        if whichCategory == "all":
+            retJson = {
+                "name": data,
+                "status_code": 200
+            }
+            return retJson
+        else:
+            try:
+                intCat = int(whichCategory)
+                retJson = {
+                "name": data[intCat],
+                "status_code": 200
+            }
+                return retJson
+            except:
+                try:
+                    intCat2 = int(whichCategory)
+                except:
+                    retJson = {
+                    "message":"You need to type integer value"
+                }
+                    return retJson
+                retJson = {
+                "message":"You tried to reach a category which is not exist in database."
+            }
+                return retJson
+
+api.add_resource(categoryList, "/categoryList")
+
+
 if __name__ == "__main__":
     app.run(debug=True)
 # with app.app_context():

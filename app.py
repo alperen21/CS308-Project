@@ -13,10 +13,10 @@ cors = CORS(app)
 
 
 app.config["SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY")
-app.config["MYSQL_DATABASE_HOST"] = os.environ.get("DATABASE_HOST")
-app.config["MYSQL_DATABASE_USER"] = os.environ.get("DATABASE_USER")
-app.config["MYSQL_DATABASE_PASSWORD"] = os.environ.get("DATABASE_PASSWORD")
-app.config["MYSQL_DATABASE_DB"] = os.environ.get("DATABASE_DB")
+app.config["MYSQL_DATABASE_HOST"] = "remotemysql.com"
+app.config["MYSQL_DATABASE_USER"] = "Ew8ozZEqfF"
+app.config["MYSQL_DATABASE_PASSWORD"] = "3J8RPxkGdZ"
+app.config["MYSQL_DATABASE_DB"] = "Ew8ozZEqfF"
 app.config["MYSQL_DATABASE_CURSORCLASS"] = "DictCursor"
 
 mysql = MySQL(app)
@@ -316,6 +316,66 @@ class reduceStock(Resource):
             })
 
 api.add_resource(reduceStock,"/reduceStock")
+
+class orderBy(Resource):
+    def post(self):
+        posted_data = request.get_json()
+
+        criteria = posted_data["criteria"]
+        orderType = posted_data["orderType"] #order type can be ASC or DESC
+
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT * FROM PRODUCT ORDER BY {} {}".format(criteria, orderType)
+        cursor.execute(query)
+        
+        data = cursor.fetchall()
+        retJson = {
+                "name": data[0],
+                "status_code": 200
+            }
+        return retJson
+
+api.add_resource(orderBy, "/orderBy")
+
+class categoryList(Resource):
+    def post(self): #retrieving all category list from db or only a specific one.
+        posted_data = request.get_json()
+        whichCategory = posted_data["whichCategory"]
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT category_name FROM CATEGORY"
+        cursor.execute(query)
+        data = cursor.fetchall()
+        if whichCategory == "all":
+            retJson = {
+                "name": data,
+                "status_code": 200
+            }
+            return retJson
+        else:
+            try:
+                intCat = int(whichCategory)
+                retJson = {
+                "name": data[intCat],
+                "status_code": 200
+            }
+                return retJson
+            except:
+                try:
+                    intCat2 = int(whichCategory)
+                except:
+                    retJson = {
+                    "message":"You need to type integer value"
+                }
+                    return retJson
+                retJson = {
+                "message":"You tried to reach a category which is not exist in database."
+            }
+                return retJson
+
+api.add_resource(categoryList, "/categoryList")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

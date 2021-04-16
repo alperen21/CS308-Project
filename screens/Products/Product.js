@@ -3,6 +3,7 @@ import {StyleSheet, View, Text, Image, Alert} from 'react-native';
 import PropTypes from 'prop-types';
 import {Button} from './Button';
 
+
 const styles = StyleSheet.create({
   container: {
     shadowColor: '#cdcdcd',
@@ -26,9 +27,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   notInStock: {textAlign: 'center'},
+
+  together: {
+    
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+
+  },
 });
 
-const Product = ({title, description, price, image, addToCart}) => {
+const Product = ({title, description, price, image, addToCart, navigation}) => {
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={{uri: image}} />
@@ -37,17 +45,30 @@ const Product = ({title, description, price, image, addToCart}) => {
         <Text style={styles.price}>{price}</Text>
       </View>
       <Text style={styles.description}>{description}</Text>
-      {addToCart ? (
+      
+      <View style={styles.together}>
+      <Button
+          title="Add to Cart"
+          onPress={() => Alert.alert(`${title} was added to cart`)}
+        />
+      <Button
+        title="View Details"
+        onPress={() => navigation.navigate('ProductDetails')} //navigate
+      />
+      </View>
+      {/* {addToCart ? (
         <Button
           title="Add to Cart"
           onPress={() => Alert.alert(`${title} was added to cart`)}
         />
       ) : (
         <Text style={styles.notInStock}>Not in stock</Text>
-      )}
+      )} */}
     </View>
   );
 };
+
+
 
 Product.propTypes = {
   /**

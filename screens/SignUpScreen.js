@@ -405,7 +405,7 @@ const SignUpScreen = ({navigation}) => {
 
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('Home')}
+                    onPress={() => navigation.replace('Home')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,

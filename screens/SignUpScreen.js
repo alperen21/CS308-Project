@@ -54,9 +54,21 @@ const SignUpScreen = ({navigation}) => {
                 last_name:data.lastname,
                 username: data.username,
                 password:data.password,
-                email:data.email
+                email:data.email,
+                address: "kadikoy" ,
+                phone: 536710
+
             })
         })
+
+        let json= await response.json();
+        console.log(json);
+        if(json.status_code == 200){
+            navigation.navigate('SignInScreen');
+        }
+        else{
+
+        }
     }
 
    
@@ -378,7 +390,7 @@ const SignUpScreen = ({navigation}) => {
                 <TouchableOpacity
                     style={styles.signIn}
                     //onPress={() => navigation.navigate('SignInScreen') }
-                    onPress={() => navigation.navigate('SignInScreen') }
+                    onPress={() => {signUp()} } //navigation.navigate('SignInScreen')
                 >
                 <LinearGradient
                     colors={['#666666', '#666666']}

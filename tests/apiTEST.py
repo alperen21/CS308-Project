@@ -590,6 +590,52 @@ class ProductTest(unittest.TestCase):
         response = requests.post(
             self.url + "/findProduct", data=json.dumps(body), headers=self.headers)
 
+    def testFindPriceLowerThan(self):
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+
+            query = 'INSERT INTO `PRODUCT`(`name`, `rating`, `model`, `price`, `image_path`, `stock`) VALUES ("test product", 3.2, "AX92039", 5, "images/f-c.png", 5)'
+            with connection.cursor() as cursor:
+
+                cursor.execute(query)
+                connection.commit()
+
+                cursor.execute(
+                    "SELECT product_id FROM PRODUCT WHERE name='test product'")
+                id = cursor.fetchone()[0]
+        body = {
+            "rating_lower_than": 3
+        }
+        response = requests.post(
+            self.url + "/findProduct", data=json.dumps(body), headers=self.headers)
+
+    def testFindPriceHigherThan(self):
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+
+            query = 'INSERT INTO `PRODUCT`(`name`, `rating`, `model`, `price`, `image_path`, `stock`) VALUES ("test product", 3.2, "AX92039", 5, "images/f-c.png", 5)'
+            with connection.cursor() as cursor:
+
+                cursor.execute(query)
+                connection.commit()
+
+                cursor.execute(
+                    "SELECT product_id FROM PRODUCT WHERE name='test product'")
+                id = cursor.fetchone()[0]
+        body = {
+            "rating_lower_than": 3
+        }
+        response = requests.post(
+            self.url + "/findProduct", data=json.dumps(body), headers=self.headers)
+
 
 if __name__ == '__main__':
     unittest.main()

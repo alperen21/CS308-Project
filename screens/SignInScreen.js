@@ -18,27 +18,6 @@ import { useTheme } from 'react-native-paper';
 
 import { AuthContext } from '../components/context';
 
-import Users from '../model/users';
-
-/*
-fetch('https://reactnative.dev/movies.json')
-    .then((response) => response.json())
-    .then((json) => {
-      //console.log("List of products:", json )
-      //return json.movies;
-     if (json.status === 'success') {
-          AsyncStorage.setItem('user_id', json.data.email);
-          console.log(responseJson.data.email);
-          navigation.replace('DrawerNavigationRoutes');
-        } else {
-          setErrortext(json.msg);
-          console.log('Please check your email id or password');
-        }
-    })
-    .catch((error) => {
-      console.error(error);
-    }); 
-    */
 
 const SignInScreen = ({navigation}) => {
 
@@ -51,10 +30,47 @@ const SignInScreen = ({navigation}) => {
         isValidPassword: true,
     });
 
-    const { colors } = useTheme();
-
     const { signIn } = React.useContext(AuthContext);
 
+    const signInHandle = async () => {
+        const response = await fetch('http://localhost:5000/auth', {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify({
+            
+                username: data.username,
+                password:data.password,
+
+            })
+        })
+
+        let json= await response.json();
+        console.log(json);
+    
+        if(json.status_code == 200){
+
+            signIn(data.username);
+
+            //PROFILE I RENDER ETTTİRRRRRRRR!!!!!
+
+            navigation.replace('Home');
+        }
+        else if(json.status_code == 400){
+
+            alert('missing field')
+            //missing field
+        }
+        else {
+            alert('user not found')
+            //user not found
+        }
+    }
+
+    const { colors } = useTheme();
+
+    
     const textInputChange = (val) => {
         if( val.trim().length >= 4 ) {
             setData({
@@ -74,7 +90,7 @@ const SignInScreen = ({navigation}) => {
     }
 
     const handlePasswordChange = (val) => {
-        if( val.trim().length >= 8 ) {
+        if( val.trim().length >= 2 ) {
             setData({
                 ...data,
                 password: val,
@@ -108,34 +124,6 @@ const SignInScreen = ({navigation}) => {
                 isValidUser: false
             });
         }
-    }
-
-    const loginHandle = (userName, password) => {
-
-        const foundUser = Users.filter( item => {
-            return userName == item.username && password == item.password;
-        } );
-
-        foundUser.userName = userName; //changed this
-        foundUser.password = password; //changed this
-
-        if ( data.username.length == 0 || data.password.length == 0 ) {
-            Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
-                {text: 'Okay'}
-            ]);
-            return;
-        }
-
-        if ( foundUser.length == 0 ) {
-            Alert.alert('Invalid User!', 'Username or password is incorrect.', [
-                {text: 'Okay'}
-            ]);
-            return;
-        }
-        //console.log('user token: ', password);
-        //BURADA HOME YERİNE PROFILE ATIYOR NAVIGATE YAZINCA USING REPLACE FOR NOW!!!
-        signIn(foundUser);
-        navigation.replace('Home');
     }
 
     return (
@@ -228,7 +216,7 @@ const SignInScreen = ({navigation}) => {
             </View>
             { data.isValidPassword ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
+            <Text style={styles.errorMsg}>Password must be 2 characters long.</Text>
             </Animatable.View>
             }
             
@@ -240,7 +228,8 @@ const SignInScreen = ({navigation}) => {
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
-                    onPress={() => {loginHandle( data.username, data.password )}}
+                    // onPress={() => {loginHandle( data.username, data.password )}}
+                    onPress={() => {signInHandle()} }
                 >
                 <LinearGradient
                     colors={['#666666', '#666666']}

@@ -11,18 +11,17 @@ const ProfileScreen = ({navigation}) => {
 
     const {signOut} = React.useContext(AuthContext);
 
-    const [usertoken, setUserToken] = React.useState(null);
+    // const [usertoken, setUserToken] = React.useState(null);
     const [username, setUsername] = React.useState(null);
     useEffect(() => { 
           // setIsLoading(false);
-          let userToken;
-        //   userToken = null; 
-          AsyncStorage.getItem('userToken')
-           .then((value) => {
-                    // console.log(value);
-                    setUserToken(value);
-                });
-
+        //   let userToken;
+        //    userToken = null; 
+        //   AsyncStorage.getItem('userToken')
+        //    .then((value) => {
+        //             // console.log(value);
+        //             setUserToken(value);
+        //         });
 
       AsyncStorage.getItem('userName')  
       .then((val) => {
@@ -43,7 +42,7 @@ const ProfileScreen = ({navigation}) => {
       
         <View style={styles.button}>
         
-        { usertoken === null ? (
+        { username === null ? (
         
         <View style={styles.button}>
         <TouchableOpacity

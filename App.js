@@ -76,28 +76,28 @@ const App = ({navigation}) => {
       case 'RETRIEVE_TOKEN': 
         return {
           ...prevState,
-          userToken: action.token,
+          // userToken: action.token,
           isLoading: false,
         };
       case 'LOGIN': 
         return {
           ...prevState,
           userName: action.id,
-          userToken: action.token,
+          // userToken: action.token,
           isLoading: false,
         };
       case 'LOGOUT': 
         return {
           ...prevState,
           userName: null,
-          userToken: null,
+          // userToken: null,
           isLoading: false,
         };
       case 'REGISTER': 
         return {
           ...prevState,
           userName: action.id,
-          userToken: action.token,
+          // userToken: action.token,
           isLoading: false,
         };
     }
@@ -108,28 +108,29 @@ const App = ({navigation}) => {
  
 
   const authContext = React.useMemo(() => ({
-    signIn: async(foundUser) => {
+    signIn: async(uname) => {
       // setUserToken('fgkj');
       // setIsLoading(false);
-      const userToken = String(foundUser[0].userToken);
-      const userName = foundUser[0].username;
+      // const userToken = String(foundUser[0].userToken);
+      const userName = uname;
       
       try {
-        await AsyncStorage.setItem('userToken', userToken);
+        // await AsyncStorage.setItem('userToken', userToken);
         await AsyncStorage.setItem('userName', userName);
       } catch(e) {
         console.log(e);
       }
     //console.log('user tokennn: ', foundUser[0].password);
     //console.log('user passw: ', foundUser[0].password);
-      dispatch({ type: 'LOGIN', id: userName, token: userToken });
+      // dispatch({ type: 'LOGIN', id: userName, token: userToken });
+      dispatch({ type: 'LOGIN', id: userName});
     },
 
     signOut: async() => {
       // setUserToken(null);
       // setIsLoading(false);
       try {
-        await AsyncStorage.removeItem('userToken');
+        await AsyncStorage.removeItem('userName');
       } catch(e) {
         console.log(e);
       }
@@ -153,16 +154,16 @@ const App = ({navigation}) => {
   useEffect(() => { 
     setTimeout(async() => {
       // setIsLoading(false);
-      let userToken;
-      userToken = null; 
+      let userName;
+      userName = null; 
 
       try {
-        userToken = await AsyncStorage.getItem('userToken');
+        userName = await AsyncStorage.getItem('userName');
       } catch(e) {
         console.log(e);
       }
       // console.log('user token: ', userToken);
-      dispatch({ type: 'RETRIEVE_TOKEN', token: userToken });
+      dispatch({ type: 'RETRIEVE_TOKEN', userName: userName });
     }, 1000);
   }, []);
 

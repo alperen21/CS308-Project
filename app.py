@@ -272,7 +272,7 @@ class addStock(Resource):
             mysql.get_db().commit()
 
             retJson = {
-                "message": "Stock of {} reduced by {}...".format(name, quantity),
+                "message": "Stock of {} increased by {}...".format(name, quantity),
                 "status_code": 200
             }
             return retJson
@@ -376,6 +376,21 @@ class categoryList(Resource):
 
 api.add_resource(categoryList, "/categoryList")
 
+class productsOfCategory(Resource):
+    def post(self): #retrieving all products which belong to input category name.
+        posted_data = request.get_json()
+        category_name = posted_data["category_name"]
+        cursor = mysql.get_db().cursor()
+        query = "SELECT * FROM PRODUCT P, CATEGORY C WHERE P.category_id = C.category_id AND C.category_name = (%s)"
+        cursor.execute(query, (category_name, ))
+        data = cursor.fetchall()
+        retJson = {
+            "productDetails": data,
+            "status_code": 200
+        }
+        return retJson
+
+api.add_resource(productsOfCategory, "/productsOfCategory")
 
 if __name__ == "__main__":
     app.run(debug=True)

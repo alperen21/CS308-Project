@@ -403,10 +403,9 @@ class productsOfCategory(Resource):
         cursor.execute(query, (category_name, ))
         data = cursor.fetchall()
 
-        data_json = dict()
-
-        for index, info in enumerate(data):
-            data_json[index] = {
+        data_list = list()
+        for info in data:
+            data_list.append({
                 "category_id": info[0],
                 "product_id": info[1],
                 "name": info[2],
@@ -418,10 +417,10 @@ class productsOfCategory(Resource):
                 "category_id": info[8],
                 "pm_id": info[9],
                 "category_name": info[10]
-            }
+            })
 
         retJson = {
-            "productDetails": data_json,
+            "category_elements": data_list,
             "status_code": 200
         }
         return retJson

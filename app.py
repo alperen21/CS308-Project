@@ -402,8 +402,26 @@ class productsOfCategory(Resource):
         query = "SELECT * FROM PRODUCT P, CATEGORY C WHERE P.category_id = C.category_id AND C.category_name = (%s)"
         cursor.execute(query, (category_name, ))
         data = cursor.fetchall()
+
+        data_json = dict()
+
+        for index, info in enumerate(data):
+            data_json[index] = {
+                "category_id": info[0],
+                "product_id": info[1],
+                "name": info[2],
+                "rating": info[3],
+                "model": info[4],
+                "price": info[5],
+                "image_path": info[6],
+                "stock": info[7],
+                "category_id": info[8],
+                "pm_id": info[9],
+                "category_name": info[10]
+            }
+
         retJson = {
-            "productDetails": data,
+            "productDetails": data_json,
             "status_code": 200
         }
         return retJson

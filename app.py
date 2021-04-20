@@ -280,11 +280,7 @@ class addStock(Resource):
             mysql.get_db().commit()
 
             retJson = {
-<<<<<<< HEAD
-                "message": "Stock of {} increased by {}...".format(name, quantity),
-=======
                 "message": "Stock of {} increased by {}...".format(product_id, quantity),
->>>>>>> 60f8738cf481a9d741e14f7ebe2595bcb3fd1ba8
                 "status_code": 200
             }
             return retJson
@@ -331,29 +327,34 @@ class reduceStock(Resource):
 
 api.add_resource(reduceStock, "/reduceStock")
 
+
 class orderBy(Resource):
     def post(self):
         posted_data = request.get_json()
 
         criteria = posted_data["criteria"]
-        orderType = posted_data["orderType"] #order type can be ASC or DESC
+        orderType = posted_data["orderType"]  # order type can be ASC or DESC
 
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT * FROM PRODUCT ORDER BY {} {}".format(criteria, orderType)
+        query = "SELECT * FROM PRODUCT ORDER BY {} {}".format(
+            criteria, orderType)
         cursor.execute(query)
-        
+
         data = cursor.fetchall()
         retJson = {
-                "name": data[0],
-                "status_code": 200
-            }
+            "name": data[0],
+            "status_code": 200
+        }
         return retJson
+
 
 api.add_resource(orderBy, "/orderBy")
 
+
 class categoryList(Resource):
-    def post(self): #retrieving all category list from db or only a specific one.
+    # retrieving all category list from db or only a specific one.
+    def post(self):
         posted_data = request.get_json()
         whichCategory = posted_data["whichCategory"]
         cursor = mysql.get_db().cursor()
@@ -371,27 +372,30 @@ class categoryList(Resource):
             try:
                 intCat = int(whichCategory)
                 retJson = {
-                "name": data[intCat],
-                "status_code": 200
-            }
+                    "name": data[intCat],
+                    "status_code": 200
+                }
                 return retJson
             except:
                 try:
                     intCat2 = int(whichCategory)
                 except:
                     retJson = {
-                    "message":"You need to type integer value"
-                }
+                        "message": "You need to type integer value"
+                    }
                     return retJson
                 retJson = {
-                "message":"You tried to reach a category which is not exist in database."
-            }
+                    "message": "You tried to reach a category which is not exist in database."
+                }
                 return retJson
+
 
 api.add_resource(categoryList, "/categoryList")
 
+
 class productsOfCategory(Resource):
-    def post(self): #retrieving all products which belong to input category name.
+    # retrieving all products which belong to input category name.
+    def post(self):
         posted_data = request.get_json()
         category_name = posted_data["category_name"]
         cursor = mysql.get_db().cursor()
@@ -403,6 +407,7 @@ class productsOfCategory(Resource):
             "status_code": 200
         }
         return retJson
+
 
 api.add_resource(productsOfCategory, "/productsOfCategory")
 

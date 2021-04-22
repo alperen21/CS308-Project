@@ -26,7 +26,7 @@ api = Api(app)
 
 def check_posted_data(posted_data, function_name):
     if (function_name == "private_wrapper"):
-        if ("token" not in posted_data):
+        if ("token" not in posted_data or "user" not in posted_data):
             return 403
         else:
             return 200
@@ -48,21 +48,36 @@ def check_posted_data(posted_data, function_name):
         return 200
 
 
+def check_headers(request, function_name):
+    if (function_name == "private_wrapper"):
+        if ("token" not in request.headers or "user" not in request.headers):
+            return False
+
+
 def private(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
-        posted_data = request.get_json()
-        status_code = check_posted_data(posted_data, "private_wrapper")
-        if status_code != 200:
+        if check_headers(request, "private_wrapper") == False:
             return jsonify({
                 "message": "Forbidden",
                 "status_code": 403
             })
         else:
-            token = posted_data["token"]
+            token = request.headers["token"]
+            user = request.headers["user"]
             try:
                 data = jwt.decode(
                     token, app.config['SECRET_KEY'], algorithms="HS256")
+                if (user != data["user"]):
+                    return jsonify({
+                        "message": "token does not match the user",
+                        "status_code": 403
+                    })
+            except jwt.ExpiredSignatureError:
+                return jsonify({
+                    "message": "token expired",
+                    "status_code": 403
+                })
             except Exception:
                 return jsonify({
                     "message": "invalid token",
@@ -99,6 +114,7 @@ class Auth(Resource):
                     'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=1800)
                 },
                     app.config['SECRET_KEY'], algorithm='HS256')
+
                 retJson = {
                     "username": data[1],
                     "name": data[3],
@@ -141,7 +157,6 @@ class Users(Resource):
         if (status_code == 200):
             first_name = posted_data["first_name"]
             last_name = posted_data["last_name"]
-            print(last_name)
             username = posted_data["username"]
             password = posted_data["password"]
             email = posted_data["email"]
@@ -231,6 +246,7 @@ api.add_resource(findProduct, "/findProduct")
 
 
 class addProduct(Resource):
+    @private
     def post(self):  # adding new product to database
         posted_data = request.get_json()
 
@@ -303,9 +319,9 @@ api.add_resource(addStock, "/addStock")
 
 
 class reduceStock(Resource):
+    @private
     def post(self):  # decreasing the stock of the choosen product by 1.
         posted_data = request.get_json()
-
         product_id = posted_data["product_id"]
         quantity = posted_data["quantity"]
 
@@ -316,16 +332,27 @@ class reduceStock(Resource):
         data = cursor.fetchone()
 
         if (data != None):
-            #query = "INSERT INTO `PRODUCT` (`name`, `rating`, `model`, `price`, `image_path`) VALUES ((%s), (%s), (%s), (%s), (%s))"
-            query = "UPDATE PRODUCT SET stock=stock-(%s) WHERE product_id=(%s)"
-            cursor.execute(query, (quantity, product_id))
-            mysql.get_db().commit()
 
-            retJson = {
-                "message": "Stock of {} reduced by {}...".format(product_id, quantity),
-                "status_code": 200
-            }
-            return retJson
+            if (int(data[7])-quantity > 0):
+                query = "UPDATE PRODUCT SET stock=stock-(%s) WHERE product_id=(%s)"
+                cursor.execute(query, (quantity, product_id))
+                mysql.get_db().commit()
+
+                retJson = {
+                    "message": "Stock of {} reduced by {}...".format(product_id, quantity),
+                    "status_code": 200
+                }
+                return retJson
+            else:
+                query = "UPDATE PRODUCT SET stock='0' WHERE product_id=(%s)"
+                cursor.execute(query, (product_id,))
+                mysql.get_db().commit()
+
+                retJson = {
+                    "message": "Stock of {} reduced to 0...".format(product_id),
+                    "status_code": 200
+                }
+                return retJson
         else:
             return jsonify({
                 "message": "This item does not exist",
@@ -407,7 +434,22 @@ class productsOfCategory(Resource):
         posted_data = request.get_json()
         category_name = posted_data["category_name"]
         cursor = mysql.get_db().cursor()
+
         query = "SELECT * FROM PRODUCT P, CATEGORY C WHERE P.category_id = C.category_id AND C.category_name = (%s)"
+
+        if ("lowest_rating" in posted_data):
+            query = query + \
+                " AND P.rating >= {}".format(posted_data["lowest_rating"])
+        if ("highest_rating" in posted_data):
+            query = query + \
+                " AND P.rating <= {}".format(posted_data["highest_rating"])
+        if ("lowest_price" in posted_data):
+            query = query + \
+                " AND P.price >= {}".format(posted_data["lowest_price"])
+        if ("highest_rating" in posted_data):
+            query = query + \
+                " AND P.rating <= {}".format(posted_data["highest_rating"])
+
         cursor.execute(query, (category_name, ))
         data = cursor.fetchall()
 
@@ -437,12 +479,51 @@ class productsOfCategory(Resource):
 api.add_resource(productsOfCategory, "/productsOfCategory")
 
 
-class cart(Resource):
-    def post(self):  # add a product to the cart
-        pass
+class products(Resource):
+    def post(self):
+
+        posted_data = request.get_json()
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT * FROM PRODUCT"
+
+        if ("lowest_rating" in posted_data):
+            query = query + \
+                " AND P.rating >= {}".format(posted_data["lowest_rating"])
+        if ("highest_rating" in posted_data):
+            query = query + \
+                " AND P.rating <= {}".format(posted_data["highest_rating"])
+        if ("lowest_price" in posted_data):
+            query = query + \
+                " AND P.price >= {}".format(posted_data["lowest_price"])
+        if ("highest_rating" in posted_data):
+            query = query + \
+                " AND P.rating <= {}".format(posted_data["highest_rating"])
+
+        cursor.execute(query)
+        data = cursor.fetchall()
+
+        data_list = list()
+        for info in data:
+            data_list.append({
+                "category_id": info[0],
+                "product_id": info[1],
+                "name": info[2],
+                "rating": info[3],
+                "model": info[4],
+                "price": info[5],
+                "image_path": info[6],
+                "stock": info[7],
+            })
+
+        retJson = {
+            "category_elements": data_list,
+            "status_code": 200
+        }
+        return retJson
 
 
-api.add_resource(cart, "/card")
+api.add_resource(products, "/products")
 
 if __name__ == "__main__":
     app.run(debug=True)

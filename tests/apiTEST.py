@@ -4,6 +4,8 @@ import json
 import mysql.connector
 from mysql.connector import connect, Error
 import os
+import jwt
+import datetime
 # delete from users
 
 
@@ -22,8 +24,18 @@ class LoginRegisterTest(unittest.TestCase):
             "phone": "555555555",
             "address": "atasehir"
         }
+
+        token = jwt.encode({
+            'user': "alpereny16",
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=1800)
+        },
+
+            os.environ.get("FLASK_SECRET_KEY"), algorithm='HS256')
+
         self.headers = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "user": "alpereny16",
+            "token": token
         }
 
     def tearDown(self):  # completely cleans up tables in the database
@@ -223,18 +235,26 @@ class LoginRegisterTest(unittest.TestCase):
         self.assertEqual(response.json()["message"], True)
 
     def testGetLoggedInUserWrongToken(self):  # register a user to the database
-
+        special_headers = {
+            "Content-Type": "application/json",
+            "user": "alpereny16",
+            "token": "asdjhfgadshjkfgdhsajfgadshjkfgdashjk"
+        }
         response = requests.get(
-            self.url + "/auth?token=asd", data=json.dumps(self.body), headers=self.headers)
+            self.url + "/auth?token=asd", data=json.dumps(self.body), headers=special_headers)
 
         self.assertEqual(response.json()["message"], "invalid token")
 
     def testGetLoggedInUserNoToken(self):  # register a user to the database
-
+        special_headers = {
+            "Content-Type": "application/json",
+            "user": "alpereny16",
+            "token": "asdjhfgadshjkfgdhsajfgadshjkfgdashjk"
+        }
         response = requests.get(
-            self.url + "/auth", data=json.dumps(self.body), headers=self.headers)
+            self.url + "/auth", data=json.dumps(self.body), headers=special_headers)
 
-        self.assertEqual(response.json()["message"], "Forbidden")
+        self.assertEqual(response.json()["message"], "invalid token")
 
 
 class ProductTest(unittest.TestCase):
@@ -250,8 +270,17 @@ class ProductTest(unittest.TestCase):
             "price": 100,
             "image_path": "images/f-c.png"
         }
+        token = jwt.encode({
+            'user': "alpereny16",
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=1800)
+        },
+
+            os.environ.get("FLASK_SECRET_KEY"), algorithm='HS256')
+
         self.headers = {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "user": "alpereny16",
+            "token": token
         }
 
     def tearDown(self):  # completely cleans up tables in the database
@@ -402,7 +431,7 @@ class ProductTest(unittest.TestCase):
             "quantity": 2
         }
         response = requests.post(
-            self.url + "/removeStock", data=json.dumps(body), headers=self.headers)
+            self.url + "/reduceStock", data=json.dumps(body), headers=self.headers)
         expected = "This item does not exist"
         self.assertEqual(response.json()["message"], expected)
 
@@ -542,7 +571,7 @@ class ProductTest(unittest.TestCase):
             "productName": "test product"
         }
         response = requests.post(
-            self.url + "/findProduct", data=json.dumps(body), headers=self.headers)
+            self.url + "/reduceStock", data=json.dumps(body), headers=self.headers)
 
     def testFindRatingHigherThan(self):
         with connect(
@@ -598,20 +627,19 @@ class ProductTest(unittest.TestCase):
             database=os.environ.get("DATABASE_DB")
         ) as connection:
 
-            query = 'INSERT INTO `PRODUCT`(`name`, `rating`, `model`, `price`, `image_path`, `stock`) VALUES ("test product", 3.2, "AX92039", 5, "images/f-c.png", 5)'
+            query = """INSERT INTO `PRODUCT`(`name`, `rating`, `model`, `price`, `image_path`, `stock`) VALUES ("test product 1", 3.2, "AX92039", 5, "images/f-c.png", 5);
+            INSERT INTO `PRODUCT`(`name`, `rating`, `model`, `price`, `image_path`, `stock`) VALUES ("test product 2", 3.2, "AX92039", 1, "images/f-c.png", 5);
+            """
             with connection.cursor() as cursor:
 
                 cursor.execute(query)
                 connection.commit()
 
-                cursor.execute(
-                    "SELECT product_id FROM PRODUCT WHERE name='test product'")
-                id = cursor.fetchone()[0]
         body = {
-            "rating_lower_than": 3
+            "lowest_rating": 3
         }
         response = requests.post(
-            self.url + "/findProduct", data=json.dumps(body), headers=self.headers)
+            self.url + "/productsOfCategory", data=json.dumps(body), headers=self.headers)
 
     def testFindPriceHigherThan(self):
         with connect(

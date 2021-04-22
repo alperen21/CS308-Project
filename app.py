@@ -487,18 +487,28 @@ class products(Resource):
 
         query = "SELECT * FROM PRODUCT"
 
+        if ("lowest_rating" in posted_data or "highest_rating" in posted_data or "lowest_price" in posted_data or "highest_rating" in posted_data):
+            query = query + " WHERE"
+
         if ("lowest_rating" in posted_data):
+            query = query + " AND" if query[-5:] != "WHERE" else query
             query = query + \
-                " AND P.rating >= {}".format(posted_data["lowest_rating"])
+                " rating >= {}".format(posted_data["lowest_rating"])
+
         if ("highest_rating" in posted_data):
+            query = query + " AND" if query[-5:] != "WHERE" else query
             query = query + \
-                " AND P.rating <= {}".format(posted_data["highest_rating"])
+                " rating <= {}".format(posted_data["highest_rating"])
+
         if ("lowest_price" in posted_data):
+            query = query + " AND" if query[-5:] != "WHERE" else query
             query = query + \
-                " AND P.price >= {}".format(posted_data["lowest_price"])
-        if ("highest_rating" in posted_data):
+                " price >= {}".format(posted_data["lowest_price"])
+
+        if ("highest_price" in posted_data):
+            query = query + " AND" if query[-5:] != "WHERE" else query
             query = query + \
-                " AND P.rating <= {}".format(posted_data["highest_rating"])
+                " rating <= {}".format(posted_data["highest_price"])
 
         cursor.execute(query)
         data = cursor.fetchall()

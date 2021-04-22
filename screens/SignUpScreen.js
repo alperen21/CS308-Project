@@ -19,9 +19,6 @@ import * as MailComposer from 'expo-mail-composer';
 
 
 
-
-
-
 const SignUpScreen = ({navigation}) => {
     //alperen
     

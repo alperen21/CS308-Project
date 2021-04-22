@@ -5,14 +5,14 @@ import PropTypes from 'prop-types';
 const styles = StyleSheet.create({
   button: {
     backgroundColor: '#000000bf',
-    borderRadius: 30,
-    paddingHorizontal: 19,
+    borderRadius: 20,
+    paddingHorizontal:13,
     paddingVertical: 12,
   },
   text: {
     color: '#ffffff',
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '500',
   },
 });

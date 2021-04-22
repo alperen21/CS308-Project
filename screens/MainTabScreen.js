@@ -9,6 +9,7 @@ import HomeScreen from './HomeScreen';
 import CategoryScreen from './CategoryScreen';
 import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
+//import EspressoScreen from './EspressoScreen';
 import { Entypo } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -18,7 +19,7 @@ const HomeStack = createStackNavigator();
 const CategoryStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const ExploreStack = createStackNavigator();
-
+//const EspressoStack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
 const MainTabScreen = () => (
@@ -71,6 +72,7 @@ const MainTabScreen = () => (
           ),
         }}
       />
+     
      
     </Tab.Navigator>
 );
@@ -153,3 +155,22 @@ const ProfileStackScreen = ({navigation}) => (
             }} />
     </ExploreStack.Navigator>
     );
+
+    // const EspressoStackScreen = ({navigation}) => (
+    //   <EspressoStack.Navigator screenOptions={{
+    //           headerStyle: {
+    //           backgroundColor: '#BFA38F',
+    //           },
+    //           headerTintColor: '#fff',
+    //           headerTitleStyle: {
+    //           fontWeight: 'bold'
+    //           }
+    //       }}>
+    //           <EspressoStack.Screen name="Espresso" component={EspressoScreen} options={{
+    //             title: 'Search',
+    //           // headerLeft: () => (
+    //           //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
+    //           // )
+    //           }} />
+    //   </EspressoStack.Navigator>
+    //   );

@@ -9,7 +9,7 @@ const CategoryScreen = ({navigation}) => {
       <View style={styles.button}> 
        
        <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUpScreen')}
+                    onPress={() => navigation.navigate('EspressoScreen')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,
@@ -22,7 +22,7 @@ const CategoryScreen = ({navigation}) => {
         </TouchableOpacity>  
 
         <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUpScreen')}
+                    onPress={() => navigation.navigate('FilterCoffeeScreen')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,
@@ -35,7 +35,7 @@ const CategoryScreen = ({navigation}) => {
         </TouchableOpacity>  
 
         <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUpScreen')}
+                    onPress={() => navigation.navigate('TurkishCoffeeScreen')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,
@@ -48,7 +48,7 @@ const CategoryScreen = ({navigation}) => {
         </TouchableOpacity>  
 
         <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUpScreen')}
+                    onPress={() => navigation.navigate('HotchocolateScreen')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,
@@ -61,7 +61,7 @@ const CategoryScreen = ({navigation}) => {
         </TouchableOpacity>  
 
         <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUpScreen')}
+                    onPress={() => navigation.navigate('CoffeeMachineScreen')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,

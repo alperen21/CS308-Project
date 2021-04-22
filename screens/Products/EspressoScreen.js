@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView,ScrollView,FlatList,Image } from 'react-native';
-
-import {Button} from './Products/Button';
+import MainTabScreen from '../MainTabScreen';
+import {Button} from './Button';
 import PropTypes from 'prop-types';
 
 
@@ -30,7 +30,7 @@ import PropTypes from 'prop-types';
 
 
 
-  const HomeScreen = ({navigation}) =>{
+  const EspressoScreen = () =>{
   const [productlist,setProductList]=useState([]);
   
   useEffect(() => { 
@@ -39,19 +39,21 @@ import PropTypes from 'prop-types';
 
           const getProducts = async() => {
         
-            const response = await fetch('http://localhost:5000/products', {
+            const response = await fetch('http://localhost:5000/productsOfCategory', {
               method: 'POST',
               headers: {
                   'Content-Type' : 'application/json',
                    Accept: 'application/json',
+                   //'category_name':'Espresso'
               },
               body: JSON.stringify({
-                //category_name:'Coffee Machines'
+                category_name:'Espresso'
               })
               
             })
             let json= await response.json();
-            setProductList(json.category_elements);  
+            setProductList(json.category_elements);
+      
           }
           
 
@@ -60,13 +62,13 @@ import PropTypes from 'prop-types';
     //console.log("start4",item.name);
     return (
    
-      <View style={{ flexDirection:'row',marginVertical:50,paddingHorizontal:10}}>
+      <View style={{flexDirection:'row',marginVertical:50,paddingHorizontal:10}}>
       <Image style={styles.image}
       source={{
         uri:item.image_path 
       }} />
       <View>
-      <Text style={{ fontSize:15}}>{item.name} </Text>
+      <Text style={{fontSize:18}}>{item.name} </Text>
       <Text style={{fontSize:15}}> Model: {item.model }</Text>
       <Text style={{fontSize:18}}> Rating: {item.rating }</Text>
       <Text > </Text>
@@ -76,7 +78,7 @@ import PropTypes from 'prop-types';
           title="Add to Cart"
           onPress={() => Alert.alert(`${title} was added to cart`)}
         />
-          <Button
+          <Button 
         title="View Details"
         onPress={() => navigation.navigate('ProductDetails')} //navigate
       />
@@ -94,9 +96,9 @@ import PropTypes from 'prop-types';
   };
   
     return (
-      <SafeAreaView   style={{flex:1}}>
+      <SafeAreaView  >
         
-      <FlatList  style={{flex:1}}
+      <FlatList  
       data={productlist}
       renderItem={renderItem} 
       keyExtractor={(item)=> item.product_id.toString()}
@@ -106,7 +108,7 @@ import PropTypes from 'prop-types';
     );
 };
 
-export default HomeScreen;
+export default EspressoScreen;
 
 
 const styles = StyleSheet.create({
@@ -136,9 +138,11 @@ const styles = StyleSheet.create({
     together: {
       
       flexDirection: 'row',
-      justifyContent: 'space-between',
+      
   
     },
 
  
   });
+
+  

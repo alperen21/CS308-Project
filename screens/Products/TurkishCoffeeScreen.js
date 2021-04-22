@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView,ScrollView,FlatList,Image } from 'react-native';
-
-import {Button} from './Products/Button';
+import MainTabScreen from '../MainTabScreen';
+import {Button} from './Button';
 import PropTypes from 'prop-types';
 
 
@@ -30,7 +30,7 @@ import PropTypes from 'prop-types';
 
 
 
-  const HomeScreen = ({navigation}) =>{
+  const TurkishCoffeeScreen = () =>{
   const [productlist,setProductList]=useState([]);
   
   useEffect(() => { 
@@ -39,19 +39,21 @@ import PropTypes from 'prop-types';
 
           const getProducts = async() => {
         
-            const response = await fetch('http://localhost:5000/products', {
+            const response = await fetch('http://localhost:5000/productsOfCategory', {
               method: 'POST',
               headers: {
                   'Content-Type' : 'application/json',
                    Accept: 'application/json',
               },
               body: JSON.stringify({
-                //category_name:'Coffee Machines'
+                category_name:'Turkish Coffee'
               })
               
             })
             let json= await response.json();
-            setProductList(json.category_elements);  
+            setProductList(json.category_elements);
+      
+        
           }
           
 
@@ -106,7 +108,7 @@ import PropTypes from 'prop-types';
     );
 };
 
-export default HomeScreen;
+export default TurkishCoffeeScreen;
 
 
 const styles = StyleSheet.create({
@@ -142,3 +144,5 @@ const styles = StyleSheet.create({
 
  
   });
+
+  

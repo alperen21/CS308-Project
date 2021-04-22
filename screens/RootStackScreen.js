@@ -6,7 +6,11 @@ import SplashScreen from './SplashScreen';
 import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
 import MainTabScreen from './MainTabScreen';
-
+import EspressoScreen from './Products/EspressoScreen';
+import FilterCoffeeScreen from './Products/FilterCoffeeScreen';
+import TurkishCoffeeScreen from './Products/TurkishCoffeeScreen';
+import HotchocolateScreen from './Products/HotchocolateScreen';
+import CoffeeMachineScreen from './Products/CoffeeMachineScreen';
 const RootStack = createStackNavigator();
 
 const RootStackScreen = ({navigation}) => (
@@ -15,7 +19,11 @@ const RootStackScreen = ({navigation}) => (
         <RootStack.Screen name="SplashScreen" component={SplashScreen}/>
         <RootStack.Screen name="SignInScreen" component={SignInScreen}/>
         <RootStack.Screen name="SignUpScreen" component={SignUpScreen}/>
-    
+        <RootStack.Screen name="EspressoScreen" component={EspressoScreen}/>
+        <RootStack.Screen name="FilterCoffeeScreen" component={FilterCoffeeScreen}/>
+        <RootStack.Screen name="TurkishCoffeeScreen" component={TurkishCoffeeScreen}/>
+        <RootStack.Screen name="HotchocolateScreen" component={HotchocolateScreen}/>
+        <RootStack.Screen name="CoffeeMachineScreen" component={CoffeeMachineScreen}/>
     </RootStack.Navigator>
 );
 

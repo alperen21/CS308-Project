@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, Button, StyleSheet,useState } from 'react-native';
+import { SearchBar } from 'react-native-elements';
+
 
 const ExploreScreen = () => {
     return (
@@ -11,6 +13,28 @@ const ExploreScreen = () => {
         />
       </View>
     );
+
+  //   const [state, setState] = React.useState({
+  //     search:'',
+   
+  // });
+   
+  
+  //   updateSearch = (search) => {
+  //     this.setState({ search });
+  //   };
+  
+  //   //render(){
+  //     const { search } = this.state;
+  
+  //     return (
+  //       <SearchBar 
+  //         placeholder="Type Here..."
+  //         onChangeText={this.updateSearch}
+  //         value={search}
+  //       />
+  //     );
+  //  // };
 };
 
 export default ExploreScreen;

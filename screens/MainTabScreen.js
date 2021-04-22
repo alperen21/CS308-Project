@@ -9,17 +9,20 @@ import HomeScreen from './HomeScreen';
 import CategoryScreen from './CategoryScreen';
 import ExploreScreen from './ExploreScreen';
 import ProfileScreen from './ProfileScreen';
-//import EspressoScreen from './EspressoScreen';
+import EspressoScreen from './Products/EspressoScreen';
+import FilterCoffeeScreen from './Products/FilterCoffeeScreen';
+import TurkishCoffeeScreen from './Products/TurkishCoffeeScreen';
 import { Entypo } from '@expo/vector-icons'; 
 import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
+import HotchocolateScreen from './Products/HotchocolateScreen';
+import CoffeeMachineScreen from './Products/CoffeeMachineScreen';
 
 
 const HomeStack = createStackNavigator();
 const CategoryStack = createStackNavigator();
 const ProfileStack = createStackNavigator();
 const ExploreStack = createStackNavigator();
-//const EspressoStack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 
 const MainTabScreen = () => (
@@ -114,6 +117,36 @@ const CategoryStackScreen = ({navigation}) => (
         //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
         // )
         }} />
+         <ExploreStack.Screen name="Espresso" component={EspressoScreen} options={{
+              title: 'Espresso Coffee',
+            // headerLeft: () => (
+            //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
+            // )
+            }} />
+             <ExploreStack.Screen name="FilterCoffee" component={FilterCoffeeScreen} options={{
+              title: 'Filter Coffee ',
+            // headerLeft: () => (
+            //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
+            // )
+            }} />
+             <ExploreStack.Screen name="TurkishCoffee" component={TurkishCoffeeScreen} options={{
+              title: 'Turkish Coffee ',
+            // headerLeft: () => (
+            //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
+            // )
+            }} />
+            <ExploreStack.Screen name="Hotchocolate" component={HotchocolateScreen} options={{
+              title: 'Turkish Coffee ',
+            // headerLeft: () => (
+            //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
+            // )
+            }} />
+            <ExploreStack.Screen name="CoffeeMachine" component={CoffeeMachineScreen} options={{
+              title: 'Turkish Coffee ',
+            // headerLeft: () => (
+            //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
+            // )
+            }} />
 </CategoryStack.Navigator>
 );
 
@@ -153,24 +186,8 @@ const ProfileStackScreen = ({navigation}) => (
             //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
             // )
             }} />
+            
     </ExploreStack.Navigator>
     );
 
-    // const EspressoStackScreen = ({navigation}) => (
-    //   <EspressoStack.Navigator screenOptions={{
-    //           headerStyle: {
-    //           backgroundColor: '#BFA38F',
-    //           },
-    //           headerTintColor: '#fff',
-    //           headerTitleStyle: {
-    //           fontWeight: 'bold'
-    //           }
-    //       }}>
-    //           <EspressoStack.Screen name="Espresso" component={EspressoScreen} options={{
-    //             title: 'Search',
-    //           // headerLeft: () => (
-    //           //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
-    //           // )
-    //           }} />
-    //   </EspressoStack.Navigator>
-    //   );
+  

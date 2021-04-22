@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet,useState } from 'react-native';
-import { SearchBar } from 'react-native-elements';
 
 
 const ExploreScreen = () => {

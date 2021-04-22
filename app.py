@@ -25,6 +25,12 @@ api = Api(app)
 
 
 def check_posted_data(posted_data, function_name):
+    if (function_name == "private_wrapper"):
+        if ("token" not in posted_data):
+            return 403
+        else:
+            return 200
+
     if (function_name == "auth"):
         if("username" not in posted_data or "password" not in posted_data):
             return 400
@@ -45,13 +51,15 @@ def check_posted_data(posted_data, function_name):
 def private(func):
     @wraps(func)
     def wrapped(*args, **kwargs):
-        token = request.args.get('token')
-        if not token:
+        posted_data = request.get_json()
+        status_code = check_posted_data(posted_data, "private_wrapper")
+        if status_code != 200:
             return jsonify({
                 "message": "Forbidden",
                 "status_code": 403
             })
         else:
+            token = posted_data["token"]
             try:
                 data = jwt.decode(
                     token, app.config['SECRET_KEY'], algorithms="HS256")
@@ -427,6 +435,14 @@ class productsOfCategory(Resource):
 
 
 api.add_resource(productsOfCategory, "/productsOfCategory")
+
+
+class cart(Resource):
+    def post(self):  # add a product to the cart
+        pass
+
+
+api.add_resource(cart, "/card")
 
 if __name__ == "__main__":
     app.run(debug=True)

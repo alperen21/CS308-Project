@@ -136,13 +136,13 @@ const CategoryStackScreen = ({navigation}) => (
             // )
             }} />
             <ExploreStack.Screen name="Hotchocolate" component={HotchocolateScreen} options={{
-              title: 'Turkish Coffee ',
+              title: ' Hot Chocolate ',
             // headerLeft: () => (
             //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
             // )
             }} />
             <ExploreStack.Screen name="CoffeeMachine" component={CoffeeMachineScreen} options={{
-              title: 'Turkish Coffee ',
+              title: 'Coffee Machines',
             // headerLeft: () => (
             //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
             // )

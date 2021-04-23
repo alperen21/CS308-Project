@@ -9,7 +9,9 @@ import {
     Platform,
     StyleSheet,
     ScrollView,
-    StatusBar
+    StatusBar,
+    TouchableWithoutFeedback,
+    Keyboard
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -36,6 +38,8 @@ const SignUpScreen = ({navigation}) => {
         checkNamechange: false,
         checkLastNamechange: false,
         checkEmailchange: false,
+        checkAddresschange:false,
+        checkPhonechange:false,
         secureTextEntry: true,
         confirm_secureTextEntry: true,
     });
@@ -52,8 +56,8 @@ const SignUpScreen = ({navigation}) => {
                 username: data.username,
                 password:data.password,
                 email:data.email,
-                address: "kadikoy" ,
-                phone: 536710
+                address: data.address ,
+                phone: data.phone
 
             })
         })
@@ -134,6 +138,41 @@ const SignUpScreen = ({navigation}) => {
             });
         }
     }
+    const textphoneChange = (val) => {
+        //console.log("email is ",val);
+        if( val.length !== 0 ) {
+            setData({
+                ...data,
+                phone: val,
+                checkPhonechange: true
+            });
+        } else {
+            setData({
+                ...data,
+                phone: val,
+                checkPhonechange: false
+            });
+        }
+    }
+    const textaddressChange = (val) => {
+        //console.log("email is ",val);
+        if( val.length !== 0 ) {
+            setData({
+                ...data,
+                address: val,
+                checkAddresschange: true
+            });
+        } else {
+            setData({
+                ...data,
+                address: val,
+                checkAddresschange: false
+            });
+        }
+    }
+
+
+
 
     const handlePasswordChange = (val) => {
         setData({
@@ -226,34 +265,9 @@ const SignUpScreen = ({navigation}) => {
             </View>
 
         
-            {/* <Text style={styles.text_footer}>Address</Text>
-            <View style={styles.action}>
-                <FontAwesome 
-                    name="user-o"
-                    color="#000000"
-                    size={20}
-                />
-                <TextInput 
-                    placeholder="Your Address"
-                    style={styles.textInput}
-                    autoCapitalize="none"
-                    onChangeText={(val) => textInputChange(val)}
-                />
-                {data.check_textInputChange ? 
-                <Animatable.View
-                    animation="bounceIn"
-                >
-                    <Feather 
-                        name="check-circle"
-                        color="green"
-                        size={20}
-                    />
-                </Animatable.View>
-                : null}
-            </View> */}
             
 
-            <Text style={styles.text_footer}>Email Adress</Text>
+            <Text style={styles.text_footer}>Email Address</Text>
             <View style={styles.action}>
                 <FontAwesome 
                     name="user-o"
@@ -278,9 +292,58 @@ const SignUpScreen = ({navigation}) => {
                 </Animatable.View>
                 : null}
             </View>
+           
+            <Text style={styles.text_footer}> Address</Text>
+            <View style={styles.action}>
+                <FontAwesome 
+                    name="user-o"
+                    color="#000000"
+                    size={20}
+                />
+                <TextInput 
+                    placeholder="Your Address"
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                    onChangeText={(val) => textaddressChange(val)}
+                />
+                {data.checkAddresschange ? 
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                    <Feather 
+                        name="check-circle"
+                        color="green"
+                        size={20}
+                    />
+                </Animatable.View>
+                : null}
+            </View>
 
-
-
+            <Text style={styles.text_footer}> Phone Number</Text>
+            <View style={styles.action}>
+                <FontAwesome 
+                    name="user-o"
+                    color="#000000"
+                    size={20}
+                />
+                <TextInput 
+                    placeholder="Your Phone Number"
+                    style={styles.textInput}
+                    autoCapitalize="none"
+                    onChangeText={(val) => textphoneChange(val)}
+                />
+                {data.checkPhonechange ? 
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                    <Feather 
+                        name="check-circle"
+                        color="green"
+                        size={20}
+                    />
+                </Animatable.View>
+                : null}
+            </View>
 
 
             <Text style={styles.text_footer}>Username</Text>
@@ -310,7 +373,9 @@ const SignUpScreen = ({navigation}) => {
             </View>
 
 
-            <Text style={[styles.text_footer, {marginTop: 35}]}>Password</Text>
+            <Text style={[styles.text_footer, {marginTop: 20}]}>Password</Text>
+            
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.action}>
                 <Feather 
                     name="lock"
@@ -331,7 +396,7 @@ const SignUpScreen = ({navigation}) => {
                     <Feather 
                         name="eye-off"
                         color="grey"
-                        size={20}
+                        size={20} 
                     />
                     :
                     <Feather 
@@ -342,6 +407,7 @@ const SignUpScreen = ({navigation}) => {
                     }
                 </TouchableOpacity>
             </View>
+            </TouchableWithoutFeedback>
 
             <Text style={[styles.text_footer, {marginTop: 35}]}>Confirm Password</Text>
             <View style={styles.action}>

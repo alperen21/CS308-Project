@@ -60,25 +60,32 @@ import PropTypes from 'prop-types';
     //console.log("start4",item.name);
     return (
    
-      <View style={{ flexDirection:'row',marginVertical:50,paddingHorizontal:10}}>
+      <View style={{ flexDirection:'row',marginVertical:20,paddingHorizontal:10}}>
       <Image style={styles.image}
       source={{
         uri:item.image_path 
       }} />
       <View>
       <Text style={{ fontSize:15}}>{item.name} </Text>
-      <Text style={{fontSize:15}}> Model: {item.model }</Text>
-      <Text style={{fontSize:18}}> Rating: {item.rating }</Text>
+      {/* <Text style={{fontSize:15}}> Model: {item.model }</Text>
+      <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
       <Text > </Text>
       <Text style={{fontSize:20}}> ${item.price} </Text>
       <View style={styles.together}>
       <Button 
           title="Add to Cart"
-          onPress={() => Alert.alert(`${title} was added to cart`)}
+          onPress={() => navigation.navigate('Cart')}
         />
           <Button
         title="View Details"
-        onPress={() => navigation.navigate('ProductDetails')} //navigate
+        onPress={() => navigation.navigate('ProductDetails',{
+          itemImage:item.image_path,
+          itemName: item.name,
+          itemModel: item.model,
+          itemPrice:item.price,
+          itemRating:item.rating,
+          itemStock:item.stock,
+        })} //navigate
       />
         </View>
         

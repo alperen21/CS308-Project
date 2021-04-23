@@ -11,6 +11,9 @@ import FilterCoffeeScreen from './Products/FilterCoffeeScreen';
 import TurkishCoffeeScreen from './Products/TurkishCoffeeScreen';
 import HotchocolateScreen from './Products/HotchocolateScreen';
 import CoffeeMachineScreen from './Products/CoffeeMachineScreen';
+import CartScreen from './CartScreen';
+import ProductDetailsScreen from './Products/ProductDetailsScreen';
+
 const RootStack = createStackNavigator();
 
 const RootStackScreen = ({navigation}) => (
@@ -24,6 +27,8 @@ const RootStackScreen = ({navigation}) => (
         <RootStack.Screen name="TurkishCoffeeScreen" component={TurkishCoffeeScreen}/>
         <RootStack.Screen name="HotchocolateScreen" component={HotchocolateScreen}/>
         <RootStack.Screen name="CoffeeMachineScreen" component={CoffeeMachineScreen}/>
+        <RootStack.Screen name="CartScreen" component={CartScreen}/>
+        <RootStack.Screen name="ProductDetailsScreen" component={ProductDetailsScreen}/>
     </RootStack.Navigator>
 );
 

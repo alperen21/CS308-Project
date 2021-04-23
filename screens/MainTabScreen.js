@@ -17,6 +17,9 @@ import { AntDesign } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import HotchocolateScreen from './Products/HotchocolateScreen';
 import CoffeeMachineScreen from './Products/CoffeeMachineScreen';
+import CartScreen from './CartScreen';
+
+import ProductDetailsScreen from './Products/ProductDetailsScreen';
 
 
 const HomeStack = createStackNavigator();
@@ -83,7 +86,7 @@ const MainTabScreen = () => (
 export default MainTabScreen;
 
 const HomeStackScreen = ({navigation}) => (
-<HomeStack.Navigator screenOptions={{
+<HomeStack.Navigator   screenOptions={{
         headerStyle: {
         backgroundColor: '#BFA38F',
         },
@@ -92,12 +95,31 @@ const HomeStackScreen = ({navigation}) => (
         fontWeight: 'bold'
         }
     }}>
+     
+       
+     
         <HomeStack.Screen name="Home" component={HomeScreen} options={{
         title:'Products',
-        // headerLeft: () => (
-        //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
+        headerRight: () => (
+            <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+        )
+        }} />
+        <HomeStack.Screen name="Cart" component={CartScreen} options={{
+        title:'Cart',
+        // headerRight: () => (
+        //     <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('CartScreen')}></Icon.Button>
         // )
         }} />
+         <HomeStack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{
+              title: 'Product Details',
+              headerRight: () => (
+                <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+            )
+            }} />
+
+         
+        
+        
 </HomeStack.Navigator>
 );
 
@@ -113,40 +135,48 @@ const CategoryStackScreen = ({navigation}) => (
     }}>
         <CategoryStack.Screen name="Category" component={CategoryScreen} options={{
           title: 'Categories',
-        // headerLeft: () => (
-        //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
-        // )
+          headerRight: () => (
+            <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+        )
         }} />
-         <ExploreStack.Screen name="Espresso" component={EspressoScreen} options={{
+         <CategoryStack.Screen name="Espresso" component={EspressoScreen} options={{
               title: 'Espresso Coffee',
-            // headerLeft: () => (
-            //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
-            // )
+              headerRight: () => (
+                <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+            )
             }} />
-             <ExploreStack.Screen name="FilterCoffee" component={FilterCoffeeScreen} options={{
+             <CategoryStack.Screen name="FilterCoffee" component={FilterCoffeeScreen} options={{
               title: 'Filter Coffee ',
-            // headerLeft: () => (
-            //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
-            // )
+              headerRight: () => (
+                <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+            )
             }} />
-             <ExploreStack.Screen name="TurkishCoffee" component={TurkishCoffeeScreen} options={{
+             <CategoryStack.Screen name="TurkishCoffee" component={TurkishCoffeeScreen} options={{
               title: 'Turkish Coffee ',
-            // headerLeft: () => (
-            //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
-            // )
+              headerRight: () => (
+                <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+            )
             }} />
-            <ExploreStack.Screen name="Hotchocolate" component={HotchocolateScreen} options={{
+            <CategoryStack.Screen name="Hotchocolate" component={HotchocolateScreen} options={{
               title: ' Hot Chocolate ',
-            // headerLeft: () => (
-            //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
-            // )
+              headerRight: () => (
+                <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+            )
             }} />
-            <ExploreStack.Screen name="CoffeeMachine" component={CoffeeMachineScreen} options={{
+            <CategoryStack.Screen name="CoffeeMachine" component={CoffeeMachineScreen} options={{
               title: 'Coffee Machines',
-            // headerLeft: () => (
-            //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
-            // )
+              headerRight: () => (
+                <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+            )
             }} />
+            <CategoryStack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{
+              title: 'Product Details',
+              headerRight: () => (
+                <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+            )
+            }} />
+
+        
 </CategoryStack.Navigator>
 );
 
@@ -163,9 +193,9 @@ const ProfileStackScreen = ({navigation}) => (
       }}>
           <ProfileStack.Screen name="Profile" component={ProfileScreen} options={{
             title: 'Profile',
-          // headerLeft: () => (
-          //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
-          // )
+            headerRight: () => (
+              <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+          )
           }} />
   </ProfileStack.Navigator>
   );
@@ -182,9 +212,9 @@ const ProfileStackScreen = ({navigation}) => (
         }}>
             <ExploreStack.Screen name="Explore" component={ExploreScreen} options={{
               title: 'Search',
-            // headerLeft: () => (
-            //     <Icon.Button name="ios-menu" size={25} backgroundColor="#BFA38F" onPress={() => navigation.openDrawer()}></Icon.Button>
-            // )
+              headerRight: () => (
+                <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+            )
             }} />
             
     </ExploreStack.Navigator>

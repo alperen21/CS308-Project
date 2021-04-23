@@ -480,6 +480,7 @@ api.add_resource(productsOfCategory, "/productsOfCategory")
 
 
 class products(Resource):
+    @cross_origin(origins="http://localhost:3000*")
     def post(self):
 
         posted_data = request.get_json()

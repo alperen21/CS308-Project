@@ -8,6 +8,7 @@ from functools import wraps
 import datetime
 from flask_cors import CORS, cross_origin
 from emailClass import SMTPemail
+import datetime
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -63,6 +64,15 @@ def check_posted_data(posted_data, function_name):
             return 400
         return 200
 
+    elif (function_name == "comment_post"):
+        if ("product_name" not in posted_data or "comment" not in posted_data):
+            return 400
+        return 200
+    elif (function_name == "comment_get"):
+        if ("product_name" not in posted_data):
+            return 400
+        return 200
+
 
 def check_headers(request, function_name):
     if (function_name == "private_wrapper"):
@@ -101,6 +111,78 @@ def private(func):
                 })
         return func(*args, **kwargs)
     return wrapped
+
+
+class Comment(Resource):
+    @cross_origin(origins="http://localhost:3000*")
+    @private
+    def post(self):
+        posted_data = request.get_json()
+        if (check_posted_data(posted_data, "comment_post") == 200):
+            username = request.headers["user"]
+            cursor = mysql.get_db().cursor()
+
+            product_name = posted_data["product_name"]
+            comment = posted_data["comment"]
+
+            # get customer id
+            query = "SELECT user_id FROM USERS WHERE username = (%s)"
+            cursor.execute(query, (username,))
+            user_id = cursor.fetchone()[0]
+
+            # get product_id
+            query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"
+            cursor.execute(query, (product_name,))
+            product_id = cursor.fetchone()[0]
+
+            query = "INSERT INTO `COMMENTS`(`product_id`, `customer_id`, `text`) VALUES ((%s),(%s),(%s))"
+            cursor.execute(query, (product_id, user_id, comment,))
+            mysql.get_db().commit()
+
+            return jsonify({
+                "message": "success",
+                "status_code": 200
+            })
+        return jsonify({
+            "message": "Bad Request",
+            "status_code": 403
+        })
+
+    @cross_origin(origins="http://localhost:3000*")
+    def get(self):
+        posted_data = request.get_json()
+        if (check_posted_data(posted_data, "comment_get") == 200):
+            # get product_id
+            product_name = posted_data["product_name"]
+            cursor = mysql.get_db().cursor()
+
+            query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"
+            cursor.execute(query, (product_name,))
+            product_id = cursor.fetchone()[0]
+
+            query = "SELECT text, time FROM `COMMENTS` WHERE product_id=(%s)"
+            cursor.execute(query, (product_id,))
+            comments = cursor.fetchall()
+            product_comments = list()
+            print(comments)
+
+            for comment in comments:
+                product_comments.append({
+                    "text": comment[0],
+                    "time": str(comment[1])
+                })
+
+            return jsonify({
+                "status_code": 200,
+                "comments": product_comments
+            })
+        return jsonify({
+            "status_code": 403,
+            "message": "bad request"
+        })
+
+
+api.add_resource(Comment, "/comment")
 
 
 class Auth(Resource):

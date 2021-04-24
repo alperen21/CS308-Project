@@ -31,11 +31,11 @@ def check_posted_data(posted_data, function_name):
         else:
             return 200
 
-    if (function_name == "auth"):
+    elif (function_name == "auth"):
         if("username" not in posted_data or "password" not in posted_data):
             return 400
         return 200
-    if (function_name == "users"):
+    elif (function_name == "users"):
         if ("first_name" not in posted_data
                 or "last_name" not in posted_data
                 or "username" not in posted_data
@@ -44,6 +44,21 @@ def check_posted_data(posted_data, function_name):
                 or "phone" not in posted_data
                 or "address" not in posted_data
                 or "email" not in posted_data):
+            return 400
+        return 200
+
+    elif (function_name == "basket_post"):
+        if ("product_name" not in posted_data or "quantity" not in posted_data):
+            return 400
+        return 200
+
+    elif (function_name == "basket_delete"):
+        if ("product_name" not in posted_data):
+            return 400
+        return 200
+
+    elif (function_name == "basket_put"):
+        if ("product_name" not in posted_data or "quantity" not in posted_data):
             return 400
         return 200
 
@@ -216,25 +231,29 @@ class findProduct(Resource):
     def post(self):  # find product from database
         posted_data = request.get_json()
         productName = posted_data["productName"]
+        productName = "%"+productName+"%"
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT * FROM PRODUCT WHERE name=(%s)"
+        query = "SELECT * FROM PRODUCT WHERE name like (%s)"
         cursor.execute(query, (productName,))
-        data = cursor.fetchone()
+        data = cursor.fetchall()
+
+        data_list = list()
 
         if (data != None):
-            query = "SELECT * FROM PRODUCT WHERE name=(%s)"
-            cursor.execute(query, (productName))
-            data = cursor.fetchone()
-            retJson = {
-                "name": data[2],
-                "rating": data[3],
-                "model": data[4],
-                "price": data[5],
-                "stock": data[7],
+            for element in data:
+                product = {
+                    "name": element[2],
+                    "rating": element[3],
+                    "model": element[4],
+                    "price": element[5],
+                    "stock": element[7]
+                }
+                data_list.append(product)
+            return jsonify({
+                "items": data_list,
                 "status_code": 200
-            }
-            return retJson
+            })
         else:
             return jsonify({
                 "message": "Item does not exist.",
@@ -536,6 +555,209 @@ class products(Resource):
 
 api.add_resource(products, "/products")
 
+
+class basket(Resource):
+    @cross_origin(origins="http://localhost:3000*")
+    @private
+    def post(self):  # add items to basket
+        posted_data = request.get_json()
+        return_code = check_posted_data(posted_data, "basket_post")
+        if (return_code == 200):
+            username = request.headers["user"]
+            product_name = posted_data["product_name"]
+            quantity = posted_data["quantity"]
+            cursor = mysql.get_db().cursor()
+
+            # get user id
+            query = "SELECT user_id FROM USERS WHERE username = (%s)"
+            cursor.execute(query, (username,))
+            customer_id = cursor.fetchone()
+
+            # get product id
+            query = "SELECT product_id, price FROM PRODUCT WHERE name = (%s)"
+            cursor.execute(query, (product_name,))
+            product_data = cursor.fetchone()
+            product_id = product_data[0]
+            cost = product_data[1]
+
+            # add to basket
+            query = "INSERT INTO `BASKET`(`cost`, `quantity`, `product_name`, `product_id`, `customer_id`) VALUES ((%s),(%s),(%s),(%s),(%s))"
+            cursor.execute(
+                query, (cost, quantity, product_name, product_id, customer_id))
+            mysql.get_db().commit()
+
+            retJson = {
+                "message": "item added",
+                "status_code": 200
+            }
+
+            return retJson
+
+        else:
+            return jsonify({
+                "message": "Bad Request",
+                "status_code": 400
+            })
+
+    @cross_origin(origins="http://localhost:3000*")
+    @private
+    def get(self):
+        username = request.headers["user"]
+        cursor = mysql.get_db().cursor()
+
+        # get user id
+        query = "SELECT user_id FROM USERS WHERE username = (%s)"
+        cursor.execute(query, (username,))
+        customer_id = cursor.fetchone()
+
+        # fetch all product_id's
+        query = "SELECT product_id FROM BASKET WHERE customer_id = (%s)"
+        cursor.execute(query, (customer_id,))
+        product_ids = cursor.fetchall()
+
+        products = list()
+
+        for id in product_ids:
+            query = "SELECT name, model, price, image_path FROM PRODUCT WHERE product_id = (%s)"
+            cursor.execute(query, (id,))
+            product_info = cursor.fetchone()
+            products.append({
+                "name": product_info[0],
+                "model": product_info[1],
+                "price": product_info[2],
+                "image_path": product_info[3]
+            })
+
+        return jsonify({
+            "products": products,
+            "status_code": 200
+        })
+
+    @cross_origin(origins="http://localhost:3000*")
+    @private
+    def delete(self):  # delete an item from basket
+        username = request.headers["user"]
+        cursor = mysql.get_db().cursor()
+        posted_data = request.get_json()
+        if (check_posted_data(posted_data, "basket_delete") == 200):
+            product_name = posted_data["product_name"]
+
+            # get user id
+            query = "SELECT user_id FROM USERS WHERE username = (%s)"
+            cursor.execute(query, (username,))
+            customer_id = cursor.fetchone()[0]
+
+            # get product_id
+            query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"
+            cursor.execute(query, (product_name,))
+            product_id = cursor.fetchone()[0]
+
+            query = "DELETE FROM BASKET WHERE customer_id = (%s) AND product_id = (%s)"
+            cursor.execute(query, (customer_id, product_id))
+            mysql.get_db().commit()
+
+            return jsonify({
+                "message": "successful",
+                "status_code": 200
+            })
+        return jsonify({
+            "message": "Bad Request",
+            "status_code": 403
+        })
+
+    @cross_origin(origins="http://localhost:3000*")
+    @private
+    def put(self):  # delete an item from basket
+        username = request.headers["user"]
+        cursor = mysql.get_db().cursor()
+        posted_data = request.get_json()
+        if (check_posted_data(posted_data, "basket_put") == 200):
+            product_name = posted_data["product_name"]
+            quantity = posted_data["quantity"]
+            # get user id
+            query = "SELECT user_id FROM USERS WHERE username = (%s)"
+            cursor.execute(query, (username,))
+            customer_id = cursor.fetchone()[0]
+
+            # get product_id
+            query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"
+            cursor.execute(query, (product_name,))
+            product_id = cursor.fetchone()[0]
+
+            query = "UPDATE BASKET SET quantity=(%s) WHERE customer_id = (%s) AND product_id = (%s)"
+            cursor.execute(query, (quantity, customer_id, product_id))
+            mysql.get_db().commit()
+
+            return jsonify({
+                "message": "successful",
+                "status_code": 200
+            })
+        return jsonify({
+            "message": "Bad Request",
+            "status_code": 403
+        })
+
+
+api.add_resource(basket, "/basket")
+
+
+class order(Resource):
+    @cross_origin(origins="http://localhost:3000*")
+    @private
+    def post(self):  # order everything on basket
+        username = request.headers["user"]
+        cursor = mysql.get_db().cursor()
+
+        # get customer id
+        query = "SELECT user_id FROM USERS WHERE username = (%s)"
+        cursor.execute(query, (username,))
+        customer_id = cursor.fetchone()[0]
+        print(customer_id)
+        # add each product to cart
+
+        query = "SELECT cost, quantity, product_id FROM BASKET WHERE customer_id = (%s)"
+
+        cursor.execute(query, (customer_id,))
+        elements = cursor.fetchall()
+        print(elements)
+        for element in elements:
+
+            query = "INSERT INTO `CART`(`customer_id`,`product_id`, `total_cost`, `quantity`) VALUES ((%s),(%s),(%s),(%s))"
+            quantity = element[1]
+            total_cost = int(element[0])*int(quantity)
+            product_id = element[2]
+            cursor.execute(
+                query, (customer_id, product_id, total_cost, quantity))
+            mysql.get_db().commit()
+
+            # get cart id
+            query = "SELECT cart_id FROM CART WHERE customer_id = (%s) and product_id = (%s)"
+            cursor.execute(query, (customer_id, product_id))
+            cart_id = cursor.fetchone()[0]
+
+            # add to cart_product
+            query = "INSERT INTO `CART_PRODUCT`(`cart_id`,`product_id`) VALUES ((%s),(%s))"
+            cursor.execute(query, (cart_id, product_id))
+            mysql.get_db().commit()
+
+            # add to orders
+            query = "INSERT INTO `ORDERS`(`amount`,`status`,`cart_id`,`customer_id`,`sm_id`) VALUES ((%s),(%s),(%s),(%s),(%s))"
+            cursor.execute(
+                query, (quantity, "Preparing", cart_id, customer_id, 5))
+            mysql.get_db().commit()
+
+            # remove from basket
+            query = "DELETE FROM `BASKET` WHERE product_id = (%s) AND customer_id = (%s)"
+            cursor.execute(query, (product_id, customer_id))
+            mysql.get_db().commit()
+
+        return jsonify({
+            "message": "successful",
+            "status_code": 200
+        })
+
+
+api.add_resource(order, "/order")
 if __name__ == "__main__":
     app.run(debug=True)
 # with app.app_context():

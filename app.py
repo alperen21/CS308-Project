@@ -7,6 +7,7 @@ import jwt
 from functools import wraps
 import datetime
 from flask_cors import CORS, cross_origin
+from emailClass import SMTPemail
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -210,6 +211,12 @@ class Users(Resource):
                     "message": "Registration completed.",
                     "status_code": 200
                 }
+
+                message = f"Hello {first_name}, \nWelcome to our website! \n"
+
+                mail = SMTPemail("alperenyildiz@sabanciuniv.edu",
+                                 message, "Hello and welcome!")
+                mail.send()
                 return retJson
 
             else:
@@ -247,6 +254,7 @@ class findProduct(Resource):
                     "rating": element[3],
                     "model": element[4],
                     "price": element[5],
+                    "image_path": element[6],
                     "stock": element[7]
                 }
                 data_list.append(product)

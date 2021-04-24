@@ -4,23 +4,23 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Fla
 import { Searchbar } from 'react-native-paper';
 
 const ExploreScreen = () => {
+
+  // const sleep = (milliseconds) => {
+  //   return new Promise(resolve => setTimeout(resolve, milliseconds))
+  // }
+  
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [productlist, setProductList] = useState([]);
 
   const onChangeSearch = (query) => {
-    console.log("check", query);
+    // console.log("check query:", query);
     setSearchQuery(query);
   }
 
 
-
-
-  const [productlist, setProductList] = useState([]);
-  useEffect(() => {
-    //onChangeSearch();
-    getProducts();
-  }, []);
-
   const getProducts = async () => {
+
+    // console.log("we are in get products:", productlist);
 
     const response = await fetch('http://localhost:5000/findProduct', {
       method: 'POST',
@@ -34,19 +34,19 @@ const ExploreScreen = () => {
 
     })
     let json = await response.json();
+
     if (json.status_code == 200) {
       setProductList(json.items);
-      console.log("pppp", json.items);
-
+      // console.log("we are in get products, data must come here!!:", productlist);
     }
     else {
-
       alert('Item does not exist')
       //missing field
     }
   }
+
   const renderItem = ({ item }) => {
-    console.log("start4", item.name);
+    // console.log("in render item:", item.name);
     return (
       <View style={{ flexDirection: 'row', marginVertical: 50, paddingHorizontal: 0 }}>
         <Image style={styles.image}
@@ -82,46 +82,34 @@ const ExploreScreen = () => {
       </View>
     )
   };
+
+
   const onIconPressed = () => {
     getProducts();
-    console.log("dumb3",productlist);
-    if (productlist!==null){
-    return (
-      <SafeAreaView>
-    <FlatList
-      data={productlist}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.product_id.toString()}
-    /> </SafeAreaView>)
-  }
-  };
+    //must wait here a few second...!!! --- wait for database
+//     sleep(500).then(() => {
+//     console.log("on icon pressed debug: ",productlist);
+// })
+  
+};
 
   return (
     <SafeAreaView>
 
-      {/* <FlatList  
-      data={productlist}
-      renderItem={renderItem} 
-      keyExtractor={(item)=> item.product_id.toString()}
-      /> */}
       <Searchbar
         placeholder="What are you looking for?"
         onChangeText={onChangeSearch}
         value={searchQuery}
         onIconPress={onIconPressed}
       /> 
-       {/* <FlatList
+       <FlatList
       data={productlist}
       renderItem={renderItem}
-      keyExtractor={(item) => item.product_id.toString()}
-    />  */}
-      
-      {/*  */}
+      keyExtractor={(item) => item.model.toString()}
+    /> 
 
     </SafeAreaView>
   );
-
-
 };
 
 
@@ -137,7 +125,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 30,
   },
-  image: { width: 140, height: 200, marginBottom: 10 },
+  image: { width: 14, height: 20, marginBottom: 10 },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

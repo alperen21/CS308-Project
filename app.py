@@ -235,6 +235,7 @@ api.add_resource(Users, "/users")
 
 
 class findProduct(Resource):
+    @cross_origin(origins="http://localhost:3000*")
     def post(self):  # find product from database
         posted_data = request.get_json()
         productName = posted_data["productName"]
@@ -312,6 +313,7 @@ api.add_resource(addProduct, "/addProduct")
 
 class addStock(Resource):
     # increasing the stock of the choosen product by the given quantity.
+    @cross_origin(origins="http://localhost:3000*")
     def post(self):
         posted_data = request.get_json()
 
@@ -346,6 +348,7 @@ api.add_resource(addStock, "/addStock")
 
 
 class reduceStock(Resource):
+    @cross_origin(origins="http://localhost:3000*")
     @private
     def post(self):  # decreasing the stock of the choosen product by 1.
         posted_data = request.get_json()
@@ -391,6 +394,7 @@ api.add_resource(reduceStock, "/reduceStock")
 
 
 class orderBy(Resource):
+    @cross_origin(origins="http://localhost:3000*")
     def post(self):
         posted_data = request.get_json()
 
@@ -416,6 +420,7 @@ api.add_resource(orderBy, "/orderBy")
 
 class categoryList(Resource):
     # retrieving all category list from db or only a specific one.
+    @cross_origin(origins="http://localhost:3000*")
     def post(self):
         posted_data = request.get_json()
         whichCategory = posted_data["whichCategory"]
@@ -457,6 +462,7 @@ api.add_resource(categoryList, "/categoryList")
 
 class productsOfCategory(Resource):
     # retrieving all products which belong to input category name.
+    @cross_origin(origins="http://localhost:3000*")
     def post(self):
         posted_data = request.get_json()
         category_name = posted_data["category_name"]
@@ -566,7 +572,6 @@ api.add_resource(products, "/products")
 
 class basket(Resource):
     @cross_origin(origins="http://localhost:3000*")
-    @private
     def post(self):  # add items to basket
         posted_data = request.get_json()
         return_code = check_posted_data(posted_data, "basket_post")
@@ -642,7 +647,6 @@ class basket(Resource):
         })
 
     @cross_origin(origins="http://localhost:3000*")
-    @private
     def delete(self):  # delete an item from basket
         username = request.headers["user"]
         cursor = mysql.get_db().cursor()
@@ -674,7 +678,6 @@ class basket(Resource):
         })
 
     @cross_origin(origins="http://localhost:3000*")
-    @private
     def put(self):  # delete an item from basket
         username = request.headers["user"]
         cursor = mysql.get_db().cursor()

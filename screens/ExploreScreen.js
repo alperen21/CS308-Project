@@ -1,47 +1,163 @@
-import React from 'react';
-import { View, Text, Button, StyleSheet,useState } from 'react-native';
-
+import React, { useEffect, useState } from 'react';
+import { Button } from './Products/Button';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Image } from 'react-native';
+import { Searchbar } from 'react-native-paper';
 
 const ExploreScreen = () => {
-    return (
-      <View style={styles.container}>
-        <Text>Explore Screen</Text>
-        <Button
-          title="Click Here"
-          onPress={() => alert('Button Clicked!')}
-        />
-      </View>
-    );
+  const [searchQuery, setSearchQuery] = React.useState('');
 
-  //   const [state, setState] = React.useState({
-  //     search:'',
-   
-  // });
-   
-  
-  //   updateSearch = (search) => {
-  //     this.setState({ search });
-  //   };
-  
-  //   //render(){
-  //     const { search } = this.state;
-  
-  //     return (
-  //       <SearchBar 
-  //         placeholder="Type Here..."
-  //         onChangeText={this.updateSearch}
-  //         value={search}
-  //       />
-  //     );
-  //  // };
+  const onChangeSearch = (query) => {
+    console.log("check", query);
+    setSearchQuery(query);
+  }
+
+
+
+
+  const [productlist, setProductList] = useState([]);
+  useEffect(() => {
+    //onChangeSearch();
+    getProducts();
+  }, []);
+
+  const getProducts = async () => {
+
+    const response = await fetch('http://localhost:5000/findProduct', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        productName: searchQuery
+      })
+
+    })
+    let json = await response.json();
+    if (json.status_code == 200) {
+      setProductList(json.items);
+      console.log("pppp", json.items);
+
+    }
+    else {
+
+      alert('Item does not exist')
+      //missing field
+    }
+  }
+  const renderItem = ({ item }) => {
+    console.log("start4", item.name);
+    return (
+      <View style={{ flexDirection: 'row', marginVertical: 50, paddingHorizontal: 0 }}>
+        <Image style={styles.image}
+          source={{
+            uri: item.image_path
+          }} />
+        <View>
+          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.name} </Text>
+          <Text style={{ fontSize: 15 }}> Model: {item.model}</Text>
+          {/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
+          <Text > </Text>
+          <Text style={{ fontSize: 20 }}> ${item.price} </Text>
+          <View style={styles.together}>
+            <Button
+              title="Add to Cart"
+              onPress={() => Alert.alert(`${title}was added to cart`)}
+            />
+            <Button
+              title="View Details"
+              onPress={() => navigation.navigate('ProductDetails', {
+                itemImage: item.image_path,
+                itemName: item.name,
+                itemModel: item.model,
+                itemPrice: item.price,
+                itemRating: item.rating,
+                itemStock: item.stock,
+              })} //navigate
+            />
+          </View>
+        </View>
+        <View>
+        </View>
+      </View>
+    )
+  };
+  const onIconPressed = () => {
+    getProducts();
+    console.log("dumb3",productlist);
+    if (productlist!==null){
+    return (
+      <SafeAreaView>
+    <FlatList
+      data={productlist}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.product_id.toString()}
+    /> </SafeAreaView>)
+  }
+  };
+
+  return (
+    <SafeAreaView>
+
+      {/* <FlatList  
+      data={productlist}
+      renderItem={renderItem} 
+      keyExtractor={(item)=> item.product_id.toString()}
+      /> */}
+      <Searchbar
+        placeholder="What are you looking for?"
+        onChangeText={onChangeSearch}
+        value={searchQuery}
+        onIconPress={onIconPressed}
+      /> 
+       {/* <FlatList
+      data={productlist}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.product_id.toString()}
+    />  */}
+      
+      {/*  */}
+
+    </SafeAreaView>
+  );
+
+
 };
+
 
 export default ExploreScreen;
 
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
-    alignItems: 'center', 
-    justifyContent: 'center'
+    shadowColor: '#cdcdcd',
+    shadowOffset: { width: 5, height: 5 },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 5,
+    marginBottom: 30,
   },
+  image: { width: 140, height: 200, marginBottom: 10 },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  title: { fontSize: 18, fontWeight: 'bold' },
+  description: { color: '#b1b1b1', marginBottom: 10 },
+  price: {
+    color: '#7de3bb',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  notInStock: { textAlign: 'center' },
+
+  together: {
+
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+
+  },
+
+
 });

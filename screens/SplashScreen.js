@@ -94,7 +94,8 @@ const styles = StyleSheet.create({
   },
   text: {
       color: 'grey',
-      marginTop:5
+      marginTop:5,
+      fontSize:20
   },
   button: {
       alignItems: 'flex-end',
@@ -102,11 +103,12 @@ const styles = StyleSheet.create({
   },
   signIn: {
       width: 150,
-      height: 40,
+      height: 45,
       justifyContent: 'center',
       alignItems: 'center',
       borderRadius: 20,
-      flexDirection: 'row'
+      flexDirection: 'row',
+      marginTop:5,
   },
   textSign: {
       color: 'white',

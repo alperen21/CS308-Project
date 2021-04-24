@@ -60,15 +60,16 @@ import PropTypes from 'prop-types';
     //console.log("start4",item.name);
     return (
    
-      <View style={{ flexDirection:'row',marginVertical:20,paddingHorizontal:10}}>
+      <View style={{ flexDirection:'row',marginVertical:25,paddingHorizontal:10}}>
       <Image style={styles.image}
       source={{
         uri:item.image_path 
       }} />
       <View>
-      <Text style={{ fontSize:15}}>{item.name} </Text>
-      {/* <Text style={{fontSize:15}}> Model: {item.model }</Text>
-      <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
+        <Text style={{ width:260 ,fontSize:18 ,fontWeight: 'bold'}}>{item.name} </Text>
+      
+      <Text style={{fontSize:15}}> Model: {item.model }</Text>
+      {/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
       <Text > </Text>
       <Text style={{fontSize:20}}> ${item.price} </Text>
       <View style={styles.together}>
@@ -125,13 +126,13 @@ const styles = StyleSheet.create({
       elevation: 5,
       marginBottom: 30,
     },
-    image: {width: 150, height: 200, marginBottom: 10},
+    image: {width: 140, height: 200, marginBottom: 10},
     rowContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       marginBottom: 10,
     },
-    title: {fontSize: 18, fontWeight: 'bold'},
+    title: {fontSize: 19, fontWeight: 'bold'},
     description: {color: '#b1b1b1', marginBottom: 10},
     price: {
       color: '#7de3bb',

@@ -1,6 +1,5 @@
 import React,{useEffect,useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView,ScrollView,FlatList,Image } from 'react-native';
-import MainTabScreen from '../MainTabScreen';
 import {Button} from './Button';
 import PropTypes from 'prop-types';
 
@@ -30,7 +29,7 @@ import PropTypes from 'prop-types';
 
 
 
-  const CoffeeMachineScreen = () =>{
+  const CoffeeMachineScreen = ({navigation}) =>{
   const [productlist,setProductList]=useState([]);
   
   useEffect(() => { 
@@ -66,9 +65,9 @@ import PropTypes from 'prop-types';
         uri:item.image_path 
       }} />
       <View>
-      <Text style={{ fontSize:15}}>{item.name} </Text>
+      <Text style={{ fontSize:18, fontWeight: 'bold'}}>{item.name} </Text>
       <Text style={{fontSize:15}}> Model: {item.model }</Text>
-      <Text style={{fontSize:18}}> Rating: {item.rating }</Text>
+      {/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
       <Text > </Text>
       <Text style={{fontSize:20}}> ${item.price} </Text>
       <View style={styles.together}>
@@ -78,7 +77,14 @@ import PropTypes from 'prop-types';
         />
           <Button
         title="View Details"
-        onPress={() => navigation.navigate('ProductDetails')} //navigate
+        onPress={() => navigation.navigate('ProductDetails',{
+          itemImage:item.image_path,
+          itemName: item.name,
+          itemModel: item.model,
+          itemPrice:item.price,
+          itemRating:item.rating,
+          itemStock:item.stock,
+        })} //navigate
       />
         </View>
         

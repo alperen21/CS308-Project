@@ -70,7 +70,7 @@ const ProductDetailsScreen =({ route, navigation }) =>{
       justifyContent: 'space-between',
       marginBottom: 10,
     },
-    title: {fontSize: 25, fontWeight: 'bold'},
+    title: {fontSize: 23, fontWeight: 'bold'},
     description: {color: '#b1b1b1', marginBottom: 10},
     price: {
       color: '#7de3bb',

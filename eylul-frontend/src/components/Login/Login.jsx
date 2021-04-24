@@ -1,38 +1,74 @@
 import React from 'react';
-import { Form, FormGroup, Label, Input } from 'reactstrap';
-import { IconButton } from '@material-ui/core';
+import { Label } from 'reactstrap';
 import {useState} from "react";
 import { Link } from 'react-router-dom';
 import './App.css';
+import { useHistory } from "react-router-dom"; 
 
 export const Login = () => {
-
-    const [email, setEmail] = useState("");
+    const history = useHistory();
+    const login= async() =>{
+        const response = await fetch('http://localhost:5000/auth',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+                body: JSON.stringify({
+                    username: username,
+                    password: password,
+                })
+            })
+            let json=await response.json();
+            console.log(json);
+            if(json.status_code===200){
+                history.push("/home");
+            }
+            else{
+                alert("Kullanıcı bilgileri hatalı!")
+            }
+        }
+        
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    
+    const toRegister = async() => {
+        history.push("/register");
+    }
 
-    function login(){
-        console.log("Email: ", email);
-        console.log("Password: ", password);
+    const toHome = async() => {
+        history.push("/home");
     }
 
     return (
-        <div>
-             <div>
-            <h2>Log in</h2>
-            <Form>
-                <FormGroup>
-                    <Label for="exampleEmail">Email</Label>
-                    <Input type="email" name="email" id="exampleEmail" value={email} placeholder="Email" onChange={(e) => setEmail(e.target.value)}/>
-                </FormGroup>
-                <FormGroup>
-                    <Label for="examplePassword">Password</Label>
-                    <Input type="password" name="password" id="examplePassword" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-                </FormGroup>
-                <Link to="/home" onClick={() => login()} >Sign in</Link>
-                <IconButton component={Link} to="/home">Don't have an account? Sign up here!</IconButton>
-            </Form>
-        </div>
-        </div>
+            <div class="container" id="container">
+                <div class="form-container sign-in-container">
+                    <form>
+                        <h1>Sign in</h1>
+                            <Label for="exampleUsername">Username</Label>
+                            <input type="username" name="username" id="exampleUsername" value={username} placeholder="Username" onChange={(e) => setUsername(e.target.value)}/>
+                        
+                            <Label for="examplePassword">Password</Label>
+                            <input type="password" name="password" id="examplePassword" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                        
+                        <li><Link onClick={() => login()} >Sign in</Link></li>
+                        <Link onClick={() => toHome()} style={{marginTop: '5px'}}   >or continue as guest </Link>
+                    </form>
+                </div>
+                <div class="overlay-container">
+                <div class="overlay">
+                    <div class="overlay-panel overlay-left">
+                        <h1>Welcome Back!</h1>
+                        <p>To keep connected with us please login with your personal info</p>
+                        <button class="ghost" id="signIn">Sign In</button>
+                    </div>
+                    <div class="overlay-panel overlay-right">
+                        <h1>Hello, Friend!</h1>
+                        <p>Enter your personal details and start journey with us</p>
+                        <button onClick={() => toRegister()} class="ghost" id="signIn">Sign Up</button>
+                    </div>
+                </div>
+            </div>
+            </div>
     )
 }
 

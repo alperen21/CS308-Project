@@ -1,23 +1,20 @@
 import React from 'react'
 import {Card, CardMedia, CardContent, CardActions, Typography, IconButton} from '@material-ui/core';
 import { AddShoppingCart } from '@material-ui/icons';
-import { useHistory } from "react-router-dom"; 
+
 import useStyles from './styles';
 
-const Product = ({ product }) => {
-    const history = useHistory();
+const Espresso = ({ product }) => {
     const classes = useStyles();
-
-    
     return (
         <Card classname={classes.root}>
             <CardMedia className ={classes.media} image={product.image_path} title={product.name}/>
             <CardContent>
                 <div className={classes.CardContent}>
-                    <Typography variant="h6" gutterBottom>
+                    <Typography variant="h5" gutterBottom>
                         {product.name}
                     </Typography>
-                    <Typography variant="h6">
+                    <Typography variant="h5">
                         {'$'}
                         {product.price}
                     </Typography>
@@ -33,4 +30,4 @@ const Product = ({ product }) => {
     )
 }
 
-export default Product
+export default Espresso;

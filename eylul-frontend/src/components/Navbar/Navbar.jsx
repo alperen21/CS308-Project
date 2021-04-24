@@ -6,14 +6,35 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import logo from '../../assests/coffee.png';
 import useStyles from './styles';
-
+import { useHistory } from "react-router-dom"; 
 
 const Navbar = () => {
+    const history = useHistory();
     const classes = useStyles();
-    const [age, setAge] = React.useState('');
 
-    const handleChange = (event) => {
-        setAge(event.target.value);
+    const toFilter = async() => {
+        history.push("/filter_coffees");
+    }
+    const toTurkish = async() => {
+        history.push("/turkish_coffees");
+    }
+    const toEspresso = async() => {
+        history.push("/espressos");
+    }
+    const toHChoco = async() => {
+        history.push("/hot_chocolates");
+    }
+    const toFilterM = async() => {
+        history.push("/filter_coffee_machines");
+    }
+    const toTurkishM = async() => {
+        history.push("/turkish_coffee_machines");
+    }
+    const toEspressoM = async() => {
+        history.push("/espresso_machines");
+    }
+    const toCart = async() => {
+        history.push("/cart");
     };
 
     return (
@@ -26,25 +47,18 @@ const Navbar = () => {
                         </Typography>
                         <div className={classes.grow} />
                         <FormControl className={classes.formControl}>
-                            <InputLabel id="demo-simple-select-label">Categories</InputLabel>
-                            <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={age}
-                            onChange={handleChange}
-                            >
-                            <MenuItem value={10}>Filter coffee</MenuItem>
-                            <MenuItem value={20}>Turkish coffee</MenuItem>
-                            <MenuItem value={30}>Espresso</MenuItem>
-                            <MenuItem value={30}>Hot chocolate</MenuItem>
-                            <MenuItem value={30}>Filter coffee Machine</MenuItem>
-                            <MenuItem value={30}>Turkish coffee machine</MenuItem>
-                            <MenuItem value={30}>Espresso machine</MenuItem>
+                            <InputLabel id="demo-simple-select-label"></InputLabel>
+                            <Select placeholder="Categories" labelId="demo-simple-select-label" id="demo-simple-select" >
+                            <MenuItem onClick={() => toFilter()} >Filter coffee</MenuItem>
+                            <MenuItem onClick={() => toTurkish()}>Turkish coffee</MenuItem>
+                            <MenuItem onClick={() => toEspresso()}>Espresso</MenuItem>
+                            <MenuItem onClick={() => toHChoco()}>Hot chocolate</MenuItem>
+                            <MenuItem onClick={() => toEspressoM()}>Coffee machines</MenuItem>
                             </Select>
                         </FormControl>
                         <div className={classes.button}>
                             <IconButton aria-label="Show cart items" color="inherit">
-                                <Badge badgeContent={2} color="secondary">
+                                <Badge onClick={() => toCart()} badgeContent={2} color="secondary">
                                     <ShoppingCart />
                                 </Badge>
                             </IconButton>

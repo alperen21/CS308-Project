@@ -3,10 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 export default makeStyles(() => ({
   root: {
     // maxWidth: 345, original width style
-    maxWidth: '100',
+    maxWidth: '50',
     maxHeight:'50',
     margin: 'auto',
-    padding: 100,
   },
   media: {
     height: 128,
@@ -22,7 +21,5 @@ export default makeStyles(() => ({
   cardContent: {
     display: 'flex',
     justifyContent: 'space-between',
-    maxHeight:'5px',
-    padding: "10px"
   },
 }));

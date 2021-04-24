@@ -572,6 +572,7 @@ api.add_resource(products, "/products")
 
 class basket(Resource):
     @cross_origin(origins="http://localhost:3000*")
+    @private
     def post(self):  # add items to basket
         posted_data = request.get_json()
         return_code = check_posted_data(posted_data, "basket_post")
@@ -647,6 +648,7 @@ class basket(Resource):
         })
 
     @cross_origin(origins="http://localhost:3000*")
+    @private
     def delete(self):  # delete an item from basket
         username = request.headers["user"]
         cursor = mysql.get_db().cursor()
@@ -678,6 +680,7 @@ class basket(Resource):
         })
 
     @cross_origin(origins="http://localhost:3000*")
+    @private
     def put(self):  # delete an item from basket
         username = request.headers["user"]
         cursor = mysql.get_db().cursor()

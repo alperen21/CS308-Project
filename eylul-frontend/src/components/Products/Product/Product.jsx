@@ -1,5 +1,5 @@
 import React from 'react'
-import {Card, CardMedia, CardContent, CardActions, Typography, IconButton} from '@material-ui/core';
+import {Card, CardMedia, CardContent, CardActions, Typography, IconButton, Link} from '@material-ui/core';
 import { AddShoppingCart } from '@material-ui/icons';
 import { useHistory } from "react-router-dom"; 
 import useStyles from './styles';
@@ -8,6 +8,9 @@ const Product = ({ product }) => {
     const history = useHistory();
     const classes = useStyles();
 
+    const toDetails = async() => {
+        history.push("/product_details");
+    }
     
     return (
         <Card classname={classes.root}>
@@ -28,6 +31,7 @@ const Product = ({ product }) => {
                 <IconButton aria-label="Add to Cart">
                     <AddShoppingCart />
                 </IconButton>
+                <Link onClick={() => toDetails()} style={{marginTop: '5px'}}   >View Details </Link>
             </CardActions>
         </Card>
     )

@@ -153,7 +153,7 @@ class Comment(Resource):
         posted_data = request.get_json()
         if (check_posted_data(posted_data, "comment_get") == 200):
             # get product_id
-            product_name = posted_data["product_name"]
+            product_name = request.headers["product_name"]
             cursor = mysql.get_db().cursor()
 
             query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"

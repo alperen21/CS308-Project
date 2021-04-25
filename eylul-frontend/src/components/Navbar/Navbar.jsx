@@ -36,6 +36,9 @@ const Navbar = () => {
     const toCart = async() => {
         history.push("/cart");
     };
+    const toHome = async() => {
+        history.push("/home");
+    };
 
     return (
         <div>
@@ -43,7 +46,7 @@ const Navbar = () => {
                 <AppBar position="fixed" className={classes.appBar} color="inherit">
                     <Toolbar>
                         <Typography variant="h6" className={classes.title} color="inherit">
-                            <img src={logo} alt="commerce.js" height="25px" className={classes.image} /> Coffee Shop
+                            <img src={logo} alt="commerce.js" height="25px" className={classes.image} onClick={() => toHome()}/> Coffee Shop
                         </Typography>
                         <div className={classes.grow} />
                         <FormControl className={classes.formControl}>

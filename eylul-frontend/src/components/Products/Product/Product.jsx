@@ -9,8 +9,26 @@ const Product = ({ product }) => {
     const classes = useStyles();
 
     const toDetails = async() => {
-        history.push("/product_details");
+        history.push({
+            pathname: "/product_details",
+            state: {product: product}});
     }
+
+    const HandleAddtoCart= async(name, quantity) =>{
+        const response = await fetch('http://localhost:5000/basket',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept:"application/json",
+            },
+                body: JSON.stringify({
+                    product: name,
+                    quantity: quantity,
+                })
+            })
+            let json=await response.json();
+            console.log(json.category_elements);
+        }
     
     return (
         <Card classname={classes.root}>
@@ -28,7 +46,7 @@ const Product = ({ product }) => {
                 <Typography variant="body2 color=" text>{product.model}</Typography>
             </CardContent>
             <CardActions disableSpacing classname={classes.cardActions}>
-                <IconButton aria-label="Add to Cart">
+                <IconButton onClick={() => HandleAddtoCart(product.name,1)} aria-label="Add to Cart">
                     <AddShoppingCart />
                 </IconButton>
                 <Link onClick={() => toDetails()} style={{marginTop: '5px'}}   >View Details </Link>

@@ -780,16 +780,9 @@ api.add_resource(basket, "/basket")
 
 class order(Resource):
     @cross_origin(origins="http://localhost:3000*")
-    @private
     def post(self):  # order everything on basket
-        username = request.headers["user"]
         cursor = mysql.get_db().cursor()
-
-        # get customer id
-        query = "SELECT user_id FROM USERS WHERE username = (%s)"
-        cursor.execute(query, (username,))
-        customer_id = cursor.fetchone()[0]
-        print(customer_id)
+        customer_id = -1
         # add each product to cart
 
         query = "SELECT cost, quantity, product_id FROM BASKET WHERE customer_id = (%s)"

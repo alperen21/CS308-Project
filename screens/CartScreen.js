@@ -2,9 +2,11 @@ import React from 'react';
 import { StyleSheet, Button, Text, View, TouchableOpacity, ScrollView, Image, ActivityIndicator, TextInput, Alert } from 'react-native';
 import { MaterialIcons, AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
+// const {navigation,route} = this.props;
 export default class CartScreen extends React.Component {
 	constructor(props){
 		super(props);
+		
 		this.state = {
 			selectAll: false,
 			cartItemsIsLoading: false,
@@ -74,6 +76,10 @@ export default class CartScreen extends React.Component {
 	
 	
 	render() {
+	//	const { route } = this.props;
+		//const { itemName, itemPrice,itemRating,itemModel,itemImage,itemStock } = route.params;
+		
+	
 		const styles = StyleSheet.create({
 			centerElement: {justifyContent: 'center', alignItems: 'center'},
 		});

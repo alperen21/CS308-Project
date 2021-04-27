@@ -3,7 +3,7 @@ import { Button } from './Products/Button';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Image } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 
-const ExploreScreen = () => {
+const ExploreScreen = ({navigation}) => {
 
   // const sleep = (milliseconds) => {
   //   return new Promise(resolve => setTimeout(resolve, milliseconds))
@@ -34,7 +34,7 @@ const ExploreScreen = () => {
 
     })
     let json = await response.json();
-
+    console.log("code: ", json.status_code);
     if (json.status_code == 200) {
       setProductList(json.items);
       // console.log("we are in get products, data must come here!!:", productlist);
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 30,
   },
-  image: { width: 14, height: 20, marginBottom: 10 },
+  image: { width: 140, height: 200, marginBottom: 10 },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

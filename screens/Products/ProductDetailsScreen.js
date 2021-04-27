@@ -11,6 +11,8 @@ import Star from 'react-native-star-view';
 
 
 const ProductDetailsScreen =({ route, navigation }) =>{
+
+  const [comment,setCommentList]=useState([]);
   const starStyle = {
     width: 155,
     height: 35,
@@ -18,6 +20,48 @@ const ProductDetailsScreen =({ route, navigation }) =>{
   };
     /* 2. Get the param */
     const { itemName, itemPrice,itemRating,itemModel,itemImage,itemStock } = route.params;
+
+    useEffect(() => { 
+      getComments();
+            },[]);
+
+    const getComments = async() => {
+        
+      const response = await fetch('http://localhost:5000/getcomment', {
+        method: 'POST',
+        headers: {
+            'Content-Type' : 'application/json',
+             Accept: 'application/json',
+            
+        },
+        body: JSON.stringify({
+          product_name: itemName
+        })
+        
+      })
+      let json= await response.json();
+      setCommentList(json.comments);  
+    }
+
+    const renderItem = ({ item }) => {
+      return (
+        <View>
+        <View style={{ flexDirection:'column',marginVertical:40,paddingHorizontal:10}}>
+      <Text style={{fontSize:18 ,fontWeight:'bold'}}> {item.username} </Text> 
+      <View><Text style={{fontSize:15,marginTop:15}}> {item.text} </Text></View>
+      </View>
+      <View
+  style={{
+    //borderBottomColor: '#BFA38F',
+    borderColor:'#BFA38F',
+    borderBottomWidth: 3,
+    borderEndWidth:1000,
+  }}
+/>  
+      </View>
+    )
+  };
+  
    
     return (
       <ScrollView>
@@ -43,7 +87,12 @@ const ProductDetailsScreen =({ route, navigation }) =>{
           <View></View>
       </View>
       <View style={{marginTop:20,alignItems: 'left'}}>
-          <Text style={styles.title}> Reviews:</Text>
+          <Text style={{textDecorationLine:'underline',fontWeight:'bold' ,fontSize:28 ,color: '#BFA38F'}}> REVIEWS</Text>
+          <FlatList  
+          data={comment}
+          renderItem={renderItem} 
+          keyExtractor={(item)=> item.username.toString()}
+          />
           
           </View>  
       </ScrollView>

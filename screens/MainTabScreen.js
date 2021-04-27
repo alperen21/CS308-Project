@@ -216,6 +216,12 @@ const ProfileStackScreen = ({navigation}) => (
                 <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
             )
             }} />
+            <ExploreStack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{
+              title: 'Product Details',
+              headerRight: () => (
+                <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+            )
+            }} />
             
     </ExploreStack.Navigator>
     );

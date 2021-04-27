@@ -32,7 +32,8 @@ import PropTypes from 'prop-types';
 
   const HomeScreen = ({navigation}) =>{
   const [productlist,setProductList]=useState([]);
-  
+  const [iteminfo,setitemName]=React.useState({name:''});
+  //const [productbasket,setBasket]=useState([]);
   useEffect(() => { 
     getProducts();
           },[]);
@@ -53,10 +54,32 @@ import PropTypes from 'prop-types';
             let json= await response.json();
             setProductList(json.category_elements);  
           }
+
+          const addToBasket = async() => {
+        
+            const response2 = await  fetch('http://localhost:5000/basket', {
+              method: 'POST',
+              headers: {
+                  'Content-Type' : 'application/json',
+                   Accept: 'application/json',
+              },
+              body: JSON.stringify({
+                //category_name:'Coffee Machines'
+                product_name: iteminfo.name,
+                quantity:1
+              })
+              
+            })
+           console.log("item geldi mi",iteminfo.name);
+            let json= await response2.json();
+            //console.log("mesajımız: ", json.message)
+            //console.log("code: ", json.status_code)
+            //setBasket(json.category_elements);  
+          }
+
           
 
-
-  const renderItem = ({ item }) => {
+  const renderItem = ( {item }) => {
     //console.log("start4",item.name);
     return (
    
@@ -75,7 +98,9 @@ import PropTypes from 'prop-types';
       <View style={styles.together}>
       <Button 
           title="Add to Cart"
-          onPress={() => navigation.navigate('Cart')}
+          // onPress={() =>{ setitemName({name:item.name}), console.log("trial name",iteminfo.name),addToBasket(),navigation.navigate('Cart')}}
+          onPress={() =>{ navigation.navigate('Cart')}}
+          
         />
           <Button
         title="View Details"
@@ -100,6 +125,7 @@ import PropTypes from 'prop-types';
     )
     
   };
+  
   
     return (
       <SafeAreaView   style={{flex:1}}>

@@ -113,6 +113,38 @@ def private(func):
     return wrapped
 
 
+class getComment(Resource):
+    @cross_origin(origins="http://localhost:3000*")
+    def post(self):
+        posted_data = request.get_json()
+        product_name = posted_data["product_name"]
+        cursor = mysql.get_db().cursor()
+        # get product_id
+        query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"
+        cursor.execute(query, (product_name,))
+        product_id = cursor.fetchone()[0]
+
+        query = "SELECT text, time FROM `COMMENTS` WHERE product_id=(%s)"
+        cursor.execute(query, (product_id,))
+        comments = cursor.fetchall()
+        product_comments = list()
+        print(comments)
+
+        for comment in comments:
+            product_comments.append({
+                "text": comment[0],
+                "time": str(comment[1])
+            })
+
+        return jsonify({
+            "status_code": 200,
+            "comments": product_comments
+        })
+
+
+api.add_resource(getComment, "/getcomment")
+
+
 class Comment(Resource):
     @cross_origin(origins="http://localhost:3000*")
     @private

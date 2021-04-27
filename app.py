@@ -654,20 +654,15 @@ api.add_resource(products, "/products")
 
 class basket(Resource):
     @cross_origin(origins="http://localhost:3000*")
-    @private
     def post(self):  # add items to basket
         posted_data = request.get_json()
         return_code = check_posted_data(posted_data, "basket_post")
         if (return_code == 200):
-            username = request.headers["user"]
             product_name = posted_data["product_name"]
             quantity = posted_data["quantity"]
             cursor = mysql.get_db().cursor()
 
-            # get user id
-            query = "SELECT user_id FROM USERS WHERE username = (%s)"
-            cursor.execute(query, (username,))
-            customer_id = cursor.fetchone()
+            customer_id = -1
 
             # get product id
             query = "SELECT product_id, price FROM PRODUCT WHERE name = (%s)"
@@ -696,15 +691,10 @@ class basket(Resource):
             })
 
     @cross_origin(origins="http://localhost:3000*")
-    @private
     def get(self):
-        username = request.headers["user"]
         cursor = mysql.get_db().cursor()
 
-        # get user id
-        query = "SELECT user_id FROM USERS WHERE username = (%s)"
-        cursor.execute(query, (username,))
-        customer_id = cursor.fetchone()
+        customer_id = -1
 
         # fetch all product_id's
         query = "SELECT product_id FROM BASKET WHERE customer_id = (%s)"
@@ -730,18 +720,13 @@ class basket(Resource):
         })
 
     @cross_origin(origins="http://localhost:3000*")
-    @private
     def delete(self):  # delete an item from basket
-        username = request.headers["user"]
         cursor = mysql.get_db().cursor()
         posted_data = request.get_json()
         if (check_posted_data(posted_data, "basket_delete") == 200):
             product_name = posted_data["product_name"]
 
-            # get user id
-            query = "SELECT user_id FROM USERS WHERE username = (%s)"
-            cursor.execute(query, (username,))
-            customer_id = cursor.fetchone()[0]
+            customer_id = -1
 
             # get product_id
             query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"
@@ -762,18 +747,14 @@ class basket(Resource):
         })
 
     @cross_origin(origins="http://localhost:3000*")
-    @private
-    def put(self):  # delete an item from basket
-        username = request.headers["user"]
+    def put(self):  # change quantity of an item from basket
         cursor = mysql.get_db().cursor()
         posted_data = request.get_json()
         if (check_posted_data(posted_data, "basket_put") == 200):
             product_name = posted_data["product_name"]
             quantity = posted_data["quantity"]
-            # get user id
-            query = "SELECT user_id FROM USERS WHERE username = (%s)"
-            cursor.execute(query, (username,))
-            customer_id = cursor.fetchone()[0]
+
+            customer_id = -1
 
             # get product_id
             query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"

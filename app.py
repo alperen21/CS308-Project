@@ -113,6 +113,15 @@ def private(func):
     return wrapped
 
 
+def user_id_to_username(user_id):
+    cursor = mysql.get_db().cursor()
+    query = "SELECT username FROM USERS WHERE user_id = (%s)"
+    cursor.execute(query, (user_id,))
+    username = cursor.fetchone()
+
+    return username[0]
+
+
 class getComment(Resource):
     @cross_origin(origins="http://localhost:3000*")
     def post(self):
@@ -124,7 +133,7 @@ class getComment(Resource):
         cursor.execute(query, (product_name,))
         product_id = cursor.fetchone()[0]
 
-        query = "SELECT text, time FROM `COMMENTS` WHERE product_id=(%s)"
+        query = "SELECT text, time, customer_id FROM `COMMENTS` WHERE product_id=(%s)"
         cursor.execute(query, (product_id,))
         comments = cursor.fetchall()
         product_comments = list()
@@ -132,6 +141,7 @@ class getComment(Resource):
 
         for comment in comments:
             product_comments.append({
+                "username": user_id_to_username(comment[2]),
                 "text": comment[0],
                 "time": str(comment[1])
             })

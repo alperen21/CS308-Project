@@ -175,6 +175,12 @@ const CategoryStackScreen = ({navigation}) => (
                 <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
             )
             }} />
+            <CategoryStack.Screen name="Cart" component={CartScreen} options={{
+        title:'Cart',
+        // headerRight: () => (
+        //     <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('CartScreen')}></Icon.Button>
+        // )
+        }} />
 
         
 </CategoryStack.Navigator>
@@ -197,6 +203,12 @@ const ProfileStackScreen = ({navigation}) => (
               <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
           )
           }} />
+          <ProfileStack.Screen name="Cart" component={CartScreen} options={{
+        title:'Cart',
+        // headerRight: () => (
+        //     <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('CartScreen')}></Icon.Button>
+        // )
+        }} />
   </ProfileStack.Navigator>
   );
   
@@ -222,6 +234,12 @@ const ProfileStackScreen = ({navigation}) => (
                 <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
             )
             }} />
+            <ExploreStack.Screen name="Cart" component={CartScreen} options={{
+        title:'Cart',
+        // headerRight: () => (
+        //     <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('CartScreen')}></Icon.Button>
+        // )
+        }} />
             
     </ExploreStack.Navigator>
     );

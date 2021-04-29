@@ -29,14 +29,15 @@ export const Product_Detail = (product) => {
   <div className="comments">
     <h3 className="h3_b">Comments</h3>
     <div className="single-comment">
-    <h4 className="h4_b">Deniz Atalay</h4>
-    <p className="p_b">Very good taste, my favourite drink!</p>
+    <h4 style={{marginTop: "5px"}} className="h4_b">Deniz Atalay</h4>
+    <p style={{marginLeft: "3px"}} className="p_b">Very good taste, my favourite drink!</p>
     </div>
     <div>
     <FormGroup>
-        <Input type="textarea" name="text" id="exampleText" />
+        <Input style={{float: "center"}} type="textarea" placeholder="You can comment here..."
+        style={{resize: "none", width: "90%"}} name="text" id="exampleText" />
       </FormGroup>
-      <button className="button_b">Comment!</button>
+      <button style={{marginTop: "7px" , position: "relative"}} className="button_b">Comment!</button>
     </div>
   </div>
 </div>

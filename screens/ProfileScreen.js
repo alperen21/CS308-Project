@@ -14,19 +14,11 @@ const ProfileScreen = ({navigation}) => {
     // const [usertoken, setUserToken] = React.useState(null);
     const [username, setUsername] = React.useState(null);
     useEffect(() => { 
-          // setIsLoading(false);
-        //   let userToken;
-        //    userToken = null; 
-        //   AsyncStorage.getItem('userToken')
-        //    .then((value) => {
-        //             // console.log(value);
-        //             setUserToken(value);
-        //         });
 
       AsyncStorage.getItem('userName')  
       .then((val) => {
-           //console.log(val);
           setUsername(val);
+          console.log("am i logged in ????????????",val);
       });         
         // console.log('user token: ', userToken);
         //   dispatch({ type: 'RETRIEVE_TOKEN', token: userToken });
@@ -79,7 +71,7 @@ const ProfileScreen = ({navigation}) => {
    <View style={styles.button}>
        <Text style={{marginTop:20, fontSize:20, marginRight:30}}>  <Icon2 name='user' size={30}> </Icon2> {username}</Text>
         <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUpScreen')}
+                    onPress={() => alert('does not exist')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,
@@ -92,7 +84,7 @@ const ProfileScreen = ({navigation}) => {
         </TouchableOpacity>  
         
         <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUpScreen')}
+                    onPress={() => alert('does not exist')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,
@@ -106,7 +98,7 @@ const ProfileScreen = ({navigation}) => {
 
 
         <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUpScreen')}
+                    onPress={() => alert('does not exist')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,

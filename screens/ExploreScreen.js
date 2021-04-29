@@ -34,7 +34,7 @@ const ExploreScreen = ({navigation}) => {
 
     })
     let json = await response.json();
-    console.log("code: ", json.status_code);
+    // console.log("code: ", json.status_code);
     if (json.status_code == 200) {
       setProductList(json.items);
       // console.log("we are in get products, data must come here!!:", productlist);

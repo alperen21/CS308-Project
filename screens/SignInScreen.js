@@ -13,6 +13,7 @@ import * as Animatable from 'react-native-animatable';
 import {LinearGradient} from 'expo-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import ProfileScreen from './ProfileScreen'
 
 import { useTheme } from 'react-native-paper';
 
@@ -53,9 +54,13 @@ const SignInScreen = ({navigation}) => {
 
             signIn(data.username);
 
-            //PROFILE I RENDER ETTTİRRRRRRRR!!!!!
+            //PROFILE I RENDER ETTTİRRRRRRRR!!!!! but, how?
 
-            navigation.replace('Home');
+            // ProfileScreen();
+
+            navigation.replace('Home'); //card a gidince log out yapıyor?
+            // navigation.navigate('Products');
+
         }
         else if(json.status_code == 400){
 
@@ -255,7 +260,7 @@ const SignInScreen = ({navigation}) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('Home')}
+                    onPress={() => navigation.navigate('Products')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,

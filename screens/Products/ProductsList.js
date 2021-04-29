@@ -1,13 +1,13 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
-import {Product} from './Product';
+import { Product } from './Product';
 
 const styles = StyleSheet.create({
-  container: {flex: 1, alignItems: 'center', justifyContent: 'flex-start'},
+  container: { flex: 1, alignItems: 'center', justifyContent: 'flex-start' },
 });
 
-const ProductsList = ({list}) => {
+const ProductsList = ({ list }) => {
   return (
     <View style={styles.container}>
       {list.map((product, index) => (
@@ -36,4 +36,4 @@ ProductsList.propTypes = {
   ),
 };
 
-export {ProductsList};
+export { ProductsList };

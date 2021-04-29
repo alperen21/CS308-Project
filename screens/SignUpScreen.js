@@ -22,8 +22,6 @@ import * as MailComposer from 'expo-mail-composer';
 
 
 const SignUpScreen = ({navigation}) => {
-    //alperen
-    
     
     const [data, setData] = React.useState({
         name:'',
@@ -480,7 +478,7 @@ const SignUpScreen = ({navigation}) => {
 
 
                 <TouchableOpacity
-                    onPress={() => navigation.replace('Home')}
+                    onPress={() => navigation.navigate('Home')}
                     style={[styles.signIn, {
                         borderColor: '#BFA38F',
                         borderWidth: 1,

@@ -18,7 +18,6 @@ import RootStackScreen from './screens/RootStackScreen';
 import MainTabScreen from './screens/MainTabScreen';
 import SupportScreen from './screens/SupportScreen';
 import SettingsScreen from './screens/SettingsScreen';
-import BookmarkScreen from './screens/BookmarkScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthContext } from './components/context';
 import SplashScreen from './screens/SplashScreen';
@@ -85,6 +84,7 @@ const App = ({navigation}) => {
           userName: action.id,
           // userToken: action.token,
           isLoading: false,
+          
         };
       case 'LOGOUT': 
         return {
@@ -124,6 +124,7 @@ const App = ({navigation}) => {
     //console.log('user passw: ', foundUser[0].password);
       // dispatch({ type: 'LOGIN', id: userName, token: userToken });
       dispatch({ type: 'LOGIN', id: userName});
+      // navigation.replace('Home');
     },
 
     signOut: async() => {
@@ -182,20 +183,7 @@ const App = ({navigation}) => {
     <PaperProvider theme={theme}>
     <AuthContext.Provider value={authContext}>
     <NavigationContainer theme={theme}>
-      {/* { loginState.userToken !== null ? (
-        <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
-          <Drawer.Screen name="HomeDrawer" component={MainTabScreen} />
-          <Drawer.Screen name="SupportScreen" component={SupportScreen} />
-          <Drawer.Screen name="SettingsScreen" component={SettingsScreen} />
-          <Drawer.Screen name="BookmarkScreen" component={BookmarkScreen} />
-          <RootStack.Screen name="SplashScreen" component={SplashScreen}/>
-          <RootStack.Screen name="SignInScreen" component={SignInScreen}/>
-          <RootStack.Screen name="SignUpScreen" component={SignUpScreen}/>
-        </Drawer.Navigator>
-      )
-    :
-    <RootStackScreen/>
-    } */}
+     
      <RootStackScreen/>
     
     </NavigationContainer>

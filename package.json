@@ -34,6 +34,7 @@
     "react-native-location-picker-controller": "^1.1.2",
     "react-native-location-view": "^0.3.0",
     "react-native-maps": "0.27.1",
+    "react-native-numeric-input": "^1.9.0",
     "react-native-paper": "^3.10.1",
     "react-native-reanimated": "~1.9.0",
     "react-native-safe-area-context": "3.0.2",

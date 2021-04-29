@@ -18,7 +18,7 @@ const RootStack = createStackNavigator();
 
 const RootStackScreen = ({navigation}) => (
     <RootStack.Navigator headerMode='none' initialRouteName= 'SplashScreen'>
-        <RootStack.Screen name="Home" component={MainTabScreen} />
+        <RootStack.Screen name="Home" component={MainTabScreen}/>
         <RootStack.Screen name="SplashScreen" component={SplashScreen}/>
         <RootStack.Screen name="SignInScreen" component={SignInScreen}/>
         <RootStack.Screen name="SignUpScreen" component={SignUpScreen}/>

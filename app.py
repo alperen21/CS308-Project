@@ -745,13 +745,13 @@ class basket(Resource):
         customer_id = -1
 
         # fetch all product_id's
-        query = "SELECT product_id FROM BASKET WHERE customer_id = (%s)"
+        query = "SELECT product_id, quantity FROM BASKET WHERE customer_id = (%s)"
         cursor.execute(query, (customer_id,))
         product_ids = cursor.fetchall()
 
         products = list()
 
-        for id in product_ids:
+        for id, quantity in product_ids:
             query = "SELECT name, model, price, image_path FROM PRODUCT WHERE product_id = (%s)"
             cursor.execute(query, (id,))
             product_info = cursor.fetchone()
@@ -759,7 +759,8 @@ class basket(Resource):
                 "name": product_info[0],
                 "model": product_info[1],
                 "price": product_info[2],
-                "image_path": product_info[3]
+                "image_path": product_info[3],
+                "quantity": quantity
             })
 
         return jsonify({

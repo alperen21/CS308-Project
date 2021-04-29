@@ -230,6 +230,7 @@ api.add_resource(Comment, "/comment")
 class Auth(Resource):
     @cross_origin(origins="http://localhost:3000*")
     def post(self):  # login
+
         posted_data = request.get_json()
         status_code = check_posted_data(posted_data, "auth")
 
@@ -245,6 +246,11 @@ class Auth(Resource):
             password = posted_data["password"]
 
             cursor = mysql.get_db().cursor()
+
+            query = "DELETE FROM BASKET"
+            cursor.execute(query)
+            mysql.get_db().commit()
+
             query = "SELECT * FROM USERS WHERE username=(%s) and password=(%s)"
             cursor.execute(query, (username, password))
             data = cursor.fetchone()
@@ -338,7 +344,7 @@ class Users(Resource):
 
                 message = f"Hello {first_name}, \nWelcome to our website! \n"
 
-                mail = SMTPemail("alperenyildiz@sabanciuniv.edu",
+                mail = SMTPemail(email,
                                  message, "Hello and welcome!")
                 mail.send()
                 return retJson

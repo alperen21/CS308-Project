@@ -137,7 +137,6 @@ class getComment(Resource):
         cursor.execute(query, (product_id,))
         comments = cursor.fetchall()
         product_comments = list()
-        print(comments)
 
         for comment in comments:
             product_comments.append({
@@ -206,7 +205,6 @@ class Comment(Resource):
             cursor.execute(query, (product_id,))
             comments = cursor.fetchall()
             product_comments = list()
-            print(comments)
 
             for comment in comments:
                 product_comments.append({
@@ -651,7 +649,7 @@ class products(Resource):
 
         query = "SELECT * FROM PRODUCT"
 
-        if ("lowest_rating" in posted_data or "highest_rating" in posted_data or "lowest_price" in posted_data or "highest_rating" in posted_data):
+        if ("lowest_rating" in posted_data or "highest_rating" in posted_data or "lowest_price" in posted_data or "highest_price" in posted_data):
             query = query + " WHERE"
 
         if ("lowest_rating" in posted_data):
@@ -672,7 +670,7 @@ class products(Resource):
         if ("highest_price" in posted_data):
             query = query + " AND" if query[-5:] != "WHERE" else query
             query = query + \
-                " rating <= {}".format(posted_data["highest_price"])
+                " price <= {}".format(posted_data["highest_price"])
 
         cursor.execute(query)
         data = cursor.fetchall()
@@ -838,7 +836,6 @@ class order(Resource):
 
         cursor.execute(query, (customer_id,))
         elements = cursor.fetchall()
-        print(elements)
         for element in elements:
 
             query = "INSERT INTO `CART`(`customer_id`,`product_id`, `total_cost`, `quantity`) VALUES ((%s),(%s),(%s),(%s))"

@@ -50,6 +50,6 @@ class SMTPemail():
             )
 
             self.disconnect()
-            print("email sent to:", self.TO)
+            print("")
         except Exception:
-            print("email could not be sent to:", self.TO)
+            print("")

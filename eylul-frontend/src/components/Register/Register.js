@@ -22,10 +22,13 @@ export const Register = () => {
 		  },
 
 		  body : JSON.stringify({
-			  username: username,
-			  password: password,
-			  firstname: name,
-			  lastname: surname,
+            first_name: name,
+			last_name: surname,
+            username: username,
+			password: password,
+            email: email,
+            phone: phoneNumber,
+            address: address
 		  })
 	  })
 	  let json = await response.json();

@@ -61,7 +61,7 @@ const Navbar = () => {
                         </FormControl>
                         <div className={classes.button}>
                             <IconButton aria-label="Show cart items" color="inherit">
-                                <Badge onClick={() => toCart()} badgeContent={2} color="secondary">
+                                <Badge onClick={() => toCart()}color="secondary">
                                     <ShoppingCart />
                                 </Badge>
                             </IconButton>

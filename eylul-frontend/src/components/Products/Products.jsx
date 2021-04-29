@@ -23,6 +23,8 @@ const Products = () => {
             let json=await response.json();
             console.log(json.category_elements);
             setProducts(json.category_elements);
+            if(typeof products== 'undefined')
+                console.log("problem with products array")
         }
 
     useEffect(() => {
@@ -31,6 +33,10 @@ const Products = () => {
 
     return(
         <div style={{ padding: 20 }}>
+             <div className={classes.toolbar}/>
+             <div className={classes.toolbar}/>
+             <div className={classes.toolbar}/>
+             <div className={classes.toolbar}/>
              <div className={classes.toolbar}/>
              <div className={classes.toolbar}/>
              <div className={classes.toolbar}/>

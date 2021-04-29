@@ -2,9 +2,9 @@ import React from 'react'
 import { Container, Typography, Button, Grid } from '@material-ui/core';
 import {useState, useEffect} from "react";
 import useStyles from './styles';
+import Product from './Product/Product';
 
 const Cart = () => {
-    
     const [cart, setCart] = useState([]);
     const classes=useStyles();
 
@@ -17,8 +17,8 @@ const Cart = () => {
             },
             })
             const data=await response.json();
-            console.log(data.category_elements);
-            setCart(data.category_elements);
+            console.log(data.products);
+            setCart(data.products);
             console.log(cart)
         }
 
@@ -37,15 +37,15 @@ const Cart = () => {
             <Grid container spacing = {3}>
                 {cart.map((cart) => (
                     <Grid cart xs={12} sm={4} key={cart.name}>
-                            <div>{cart.name}</div>
+                            <Product product={cart}/>
                     </Grid>
                 ))}
             </Grid>
             <div className={classes.cardDetails}>
-                    <Typography variant="h4">Subtotal: </Typography>
+                    <Typography variant="h4">Subtotal: {cart.cost} </Typography>
                     <div>
                         <Button className={classes.emptyButton} size="large" type="button" variant="contained" color="secondary"> Empty Cart</Button>
-                        <Button className={classes.emptyButton} size="large" type="button" variant="contained" color="primary"> Cehckout</Button>
+                        <Button className={classes.emptyButton} size="large" type="button" variant="contained" color="primary"> Checkout</Button>
                     </div>
             </div>
         </>
@@ -53,7 +53,12 @@ const Cart = () => {
     return (
         <Container>
             <div className={classes.toolbar} />
-            <Typography className={classes.title} variant="h3">Your shopping cart</Typography>
+             <div className={classes.toolbar}/>
+             <div className={classes.toolbar}/>
+             <div className={classes.toolbar}/>
+             <div className={classes.toolbar}/>
+            <Typography className={classes.title} align="center" variant="h4">Your shopping cart</Typography>
+            <br></br>
             { isEmpty ? <EmptyCart/> : <FilledCart/>}
         </Container>
     );

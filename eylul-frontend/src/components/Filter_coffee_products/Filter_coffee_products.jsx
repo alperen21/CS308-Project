@@ -30,18 +30,14 @@ const Filter_coffee_products = () => {
     }, [])  
 
     return(
-        <div style={{ padding: 20 }}>
-            <main className={classes.content}>
-                <main className={classes.toolbar}>
-                    <Grid container spacing={5}>
-                        {products.slice(0,12).map((product) => (
-                            <Grid item key={product.id} xs={12} sm={6} md={4} lg={3} >
-                                <Filter_coffee_product product={product} />
-                            </Grid>
-                        ))}
+            <div style={{ padding: 20 }}>
+                <Grid container spacing={5}>
+                {products.slice(0,12).map((product) => (
+                    <Grid item key={product.id} xs={12} sm={6} md={4} lg={3} >
+                        <Filter_coffee_product product={product} />
                     </Grid>
-                </main>
-            </main>
+                ))}
+            </Grid>
         </div>
     );
 

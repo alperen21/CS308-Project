@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, SafeAreaView, ScrollView, Image, ActivityIndicator, TextInput, Alert } from 'react-native';
+import { StyleSheet, Text, View, FlatList,TouchableHighlight,TouchableOpacity, SafeAreaView, ScrollView, Image, ActivityIndicator, TextInput, Alert } from 'react-native';
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import NumericInput from 'react-native-numeric-input'
-import { Button } from './Products/Button';
+// import { Button } from './Products/Button';
 import AsyncStorage from '@react-native-community/async-storage';
-
-
+import { Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/FontAwesome';
 // const {navigation,route} = this.props;
-
+//var subtotal=0;
 
 const CartScreen = ({ navigation }) => {
 
-
+	const [totalprice, setTotalprice] = React.useState(0);
 	const [username, setUsername] = React.useState(null);
 	useEffect(() => {
 
@@ -43,8 +43,18 @@ const CartScreen = ({ navigation }) => {
 		})
 
 		let json = await response2.json();
-		//console.log("basket products::!!!", json);
+		console.log("basket products::!!!", json);
 		setBasketList(json.products);
+		totalcalculate(json.products);
+	}
+    function  totalcalculate(products)
+	{
+		let total=0;
+		for (const product of products){
+			total+=product.price*product.quantity;
+		}
+	setTotalprice(total);
+
 	}
 
 
@@ -114,7 +124,7 @@ const CartScreen = ({ navigation }) => {
 		var total_price = 0;
 		// setQuantity(item.quantity);
 		total_price = total_price + item.quantity * item.price;
-
+       // subtotal=subtotal+total_price;
 		//console.log("again",prices);
 		return (
 
@@ -125,25 +135,29 @@ const CartScreen = ({ navigation }) => {
 							uri: item.image_path
 						}} />
 					<View>
-						<Text style={{ width: 250, marginTop: 10, fontSize: 14, fontWeight: 'bold' }}>{item.name} </Text>
+						<Text style={{ width: 300, marginTop: 10, fontSize: 14, fontWeight: 'bold' }}>{item.name} </Text>
 						<Text style={{ fontSize: 15 }}> Model: {item.model}</Text>
 						{/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
 						<Text > </Text>
 
 						<View style={{ flexDirection: 'row' }}>
 
-							<View style={{}}><Text style={{ fontSize: 20 }}> ${item.price} </Text></View>
-
-							<View style={{ marginLeft: 70 }}><TextInput style={styles.input}>  {item.quantity} </TextInput></View>
-							<View style={{ marginLeft: 10 }} >
-								<MaterialIcons name="add" size={21} color="black" onPress={() => { changeQuantity(item.name, item.quantity + 1) }} />
-								<MaterialIcons name="remove" size={21} color="black" onPress={() => { changeQuantity(item.name, item.quantity - 1) }} />
+							<View style={{}}><Text style={{ fontSize: 18, color:'#000000bf' }}> ${item.price} </Text></View>
+							<View style={{ marginTop:7,marginLeft: 38 }} >
+								
+								<MaterialIcons name="remove"  size={21} color="#000000bf" onPress={() => { changeQuantity(item.name, item.quantity - 1) }} />
+								</View>
+							
+							<View style={{ marginLeft: 0 }}><TextInput style={styles.input}>{item.quantity} </TextInput></View>
+							<View style={{ marginTop:7,marginLeft: 0 }} >
+								
+							<MaterialIcons name="add" size={21} color="#000000bf" onPress={() => { changeQuantity(item.name, item.quantity + 1) }} />
 							</View>
 
-							<View style={{ marginLeft: 25 }}>
-								<MaterialIcons name="delete" size={28} color="black" onPress={() => { deleteBasket(item.name) }} />
+							<View style={{ marginLeft: 30 }}>
+								<MaterialIcons name="delete" size={28} color="#DF0101" onPress={() => { alert("Item deleted from basket"),deleteBasket(item.name) }} />
 							</View>
-							<View ><Text style={{ fontWeight: 'bold', marginLeft: 25, fontSize: 20 }}>${total_price}</Text></View>
+							<View ><Text style={{ fontWeight: '600', marginLeft: 25, fontSize: 20 ,color:'#000000bf'}}>${total_price}</Text></View>
 						</View>
 
 					</View>
@@ -162,29 +176,16 @@ const CartScreen = ({ navigation }) => {
 	};
 
 	return (
-
-
-		<SafeAreaView  >
+		<View style={{flex: 1}}>
+		<ScrollView>
 
 			<FlatList
 				data={basketlist}
 				renderItem={renderItem}
 				keyExtractor={(item) => item.name.toString()}
 			/>
-			<View
-				style={{
-					//borderBottomColor: '#BFA38F',
-					borderColor: '#BFA38F',
-					borderBottomWidth: 3,
-					borderEndWidth: 1000,
-				}}
-			/>
-
-			<Button
-				title="Checkout"
-				onPress={() => { alert("does not exist") }}
-			/>
-
+			
+			
 			{/* if (basketlist !== null) {
 				<Button 			
 				title="Checkout"
@@ -196,7 +197,39 @@ const CartScreen = ({ navigation }) => {
 			}
 			 */}
 
-		</SafeAreaView>
+		</ScrollView>
+		<View
+				style={{
+					//borderBottomColor: '#BFA38F',
+					borderColor: '#000000bf',
+					borderBottomWidth: 5,
+					borderEndWidth: 1000,
+					marginBottom:15
+				}}
+			/>
+		<View style={{ flexDirection:'row'}}>
+		
+		<Text style={{marginLeft:10,fontWeight:"500",fontSize:20,color:'black'}}> <AntDesign name="shoppingcart" size={24} color="black"/>  SUBTOTAL:  ${totalprice}</Text>
+		<View style={{marginHorizontal:90}}>
+			<Button style={{marginBottom:12}}
+			 icon={
+				<Icon
+				  name="arrow-right"
+				  size={15}
+				  color="white"
+				/>
+			  }
+			  buttonStyle={{
+				backgroundColor:'#04B45F'
+			  }}
+			  
+			title='Checkout'
+			onPress={() => { alert("does not exist") }}
+			/>
+			</View>	
+			
+		</View>
+		</View>
 	);
 };
 
@@ -233,12 +266,26 @@ const styles = StyleSheet.create({
 
 	},
 	input: {
-		height: 35,
+		height: 30,
 		width: 25,
 		margin: 1,
-		borderWidth: 0.5,
-		fontSize: 15
+		borderWidth: 0.3,
+		fontSize: 15,
+		textAlign:'center'
 	},
+	button: {
+		backgroundColor: '#000000bf',
+		borderRadius: 20,
+		paddingHorizontal:13,
+		paddingVertical: 12,
+		marginTop:20
+	  },
+	  buttontext: {
+		color: '#ffffff',
+		textAlign: 'center',
+		fontSize: 15,
+		fontWeight: '500',
+	  },
 
 
 });

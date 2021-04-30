@@ -6,11 +6,12 @@ import { set } from 'react-native-reanimated';
 // import { color } from 'react-native-reanimated'; 
 import Icon2 from 'react-native-vector-icons/Feather';
 import { AuthContext } from '../components/context';
+import { useIsFocused } from "@react-navigation/native";
 
 const ProfileScreen = ({navigation}) => {
 
     const {signOut} = React.useContext(AuthContext);
-
+    const isFocused = useIsFocused();
     // const [usertoken, setUserToken] = React.useState(null);
     const [username, setUsername] = React.useState(null);
     useEffect(() => { 
@@ -18,12 +19,12 @@ const ProfileScreen = ({navigation}) => {
       AsyncStorage.getItem('userName')  
       .then((val) => {
           setUsername(val);
-        //   console.log("am i logged in ????????????",val);
+          console.log("am i logged in ????????????",val);
       });         
         // console.log('user token: ', userToken);
         //   dispatch({ type: 'RETRIEVE_TOKEN', token: userToken });
 
-      }, []);
+      }, [isFocused]);
 
 
     return (

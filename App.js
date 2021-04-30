@@ -27,14 +27,15 @@ import SignUpScreen from './screens/SignUpScreen';
 import AsyncStorage from '@react-native-community/async-storage';
 
 
-
+//import { LogBox } from 'react-native';
 
 const Drawer = createDrawerNavigator();
 const RootStack = createStackNavigator();
 
 
-
+//LogBox.ignoreAllLogs();
 const App = ({navigation}) => {
+  
   // const [isLoading, setIsLoading] = React.useState(true);
   // const [userToken, setUserToken] = React.useState(null); 
 

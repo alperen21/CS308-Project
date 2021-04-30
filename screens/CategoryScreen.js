@@ -70,7 +70,7 @@ const CategoryScreen = ({navigation}) => {
                 >
                     <Text style={[styles.textSign, {
                         color: '#BFA38F'
-                    }]}>Coffee Machines</Text>
+                    }]}>Coffee Machines </Text>
         </TouchableOpacity>  
 
         </View>

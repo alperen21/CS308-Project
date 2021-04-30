@@ -9,6 +9,7 @@ import datetime
 from flask_cors import CORS, cross_origin
 from emailClass import SMTPemail
 import datetime
+import threading
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -24,6 +25,12 @@ app.config["MYSQL_DATABASE_CURSORCLASS"] = "DictCursor"
 mysql = MySQL(app)
 mysql.init_app(app)
 api = Api(app)
+
+
+def send_mail(first_name, email):
+    message = f"Hello {first_name}, \nWelcome to our website! \n"
+    mail = SMTPemail(email, message, "Hello and welcome!")
+    mail.send()
 
 
 def check_posted_data(posted_data, function_name):
@@ -300,12 +307,15 @@ class Users(Resource):
 
         if (status_code == 200):
             first_name = posted_data["first_name"]
+            email = posted_data["email"]
+            mail_thread = threading.Thread(
+                target=send_mail, args=(first_name, email))
             last_name = posted_data["last_name"]
             username = posted_data["username"]
             password = posted_data["password"]
-            email = posted_data["email"]
             phone = posted_data["phone"]
             address = posted_data["address"]
+            mail_thread.start()
 
             cursor = mysql.get_db().cursor()
 
@@ -339,12 +349,7 @@ class Users(Resource):
                     "message": "Registration completed.",
                     "status_code": 200
                 }
-
-                message = f"Hello {first_name}, \nWelcome to our website! \n"
-
-                mail = SMTPemail(email,
-                                 message, "Hello and welcome!")
-                mail.send()
+                mail_thread.join()
                 return retJson
 
             else:

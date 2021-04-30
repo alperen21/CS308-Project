@@ -45,6 +45,29 @@ const ExploreScreen = ({navigation}) => {
     }
   }
 
+  const addToBasket = async(itemname) => {
+        
+    const response2 = await  fetch('http://localhost:5000/basket', {
+      method: 'POST',
+      headers: {
+          'Content-Type' : 'application/json',
+           Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        //category_name:'Coffee Machines'
+        product_name: itemname,
+        quantity:1
+      })
+      
+    })
+  //  console.log("item geldi mi",itemname);
+    let json= await response2.json();
+    //console.log("mesajımız: ", json.message)
+    //console.log("code: ", json.status_code)
+    //setBasket(json.category_elements);  
+  }
+
+
   const renderItem = ({ item }) => {
     // console.log("in render item:", item.name);
     return (
@@ -62,7 +85,7 @@ const ExploreScreen = ({navigation}) => {
           <View style={styles.together}>
             <Button
               title="Add to Cart"
-              onPress={() => Alert.alert(`${title}was added to cart`)}
+              onPress={() => addToBasket(item.name)}
             />
             <Button
               title="View Details"

@@ -18,7 +18,7 @@ const ProfileScreen = ({navigation}) => {
       AsyncStorage.getItem('userName')  
       .then((val) => {
           setUsername(val);
-          console.log("am i logged in ????????????",val);
+        //   console.log("am i logged in ????????????",val);
       });         
         // console.log('user token: ', userToken);
         //   dispatch({ type: 'RETRIEVE_TOKEN', token: userToken });

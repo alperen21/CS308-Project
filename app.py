@@ -128,6 +128,24 @@ def check_headers(request, function_name):
     if (function_name == "private_wrapper"):
         if ("token" not in request.headers or "user" not in request.headers):
             return False
+        return True
+
+
+def check_if_user(request):  # to check if logged in or guest
+    if ("token" not in request.headers or "user" not in request.headers):
+        return False
+    else:
+        try:
+            token = request.headers["token"]
+            user = request.headers["user"]
+            data = jwt.decode(
+                token, app.config['SECRET_KEY'], algorithms="HS256")
+            if (user != data["user"]):
+                return False
+            else:
+                return True
+        except Exception:
+            return False
 
 
 def private(func):
@@ -721,16 +739,13 @@ api.add_resource(products, "/products")
 
 class basket(Resource):
     @cross_origin(origins="http://localhost:3000*")
-    @private
     def post(self):  # add items to basket
-        token = request.headers["token"]
-        user = request.headers["user"]
-
+        if check_if_user(request):
+            customer_id = username_to_id(request.headers["user"])
+        else:
+            customer_id = -1
         posted_data = request.get_json()
         return_code = check_posted_data(posted_data, "basket_post")
-
-        customer_id = username_to_id(user)
-
         if (return_code == 200):
             product_name = posted_data["product_name"]
             quantity = posted_data["quantity"]
@@ -748,7 +763,6 @@ class basket(Resource):
             cursor.execute(query, (product_id, customer_id))
             data = cursor.fetchone()
             if (data is None):
-
                 # add to basket
                 query = "INSERT INTO `BASKET`(`cost`, `quantity`, `product_name`, `product_id`, `customer_id`) VALUES ((%s),(%s),(%s),(%s),(%s))"
                 cursor.execute(
@@ -761,7 +775,8 @@ class basket(Resource):
                 mysql.get_db().commit()
             retJson = {
                 "message": "item added",
-                "status_code": 200
+                "status_code": 200,
+                "customer_id": customer_id
             }
 
             return retJson
@@ -773,10 +788,12 @@ class basket(Resource):
             })
 
     @cross_origin(origins="http://localhost:3000*")
-    @private
     def get(self):
         cursor = mysql.get_db().cursor()
-        customer_id = customer_id = username_to_id(request.headers["user"])
+        if check_if_user(request):
+            customer_id = customer_id = username_to_id(request.headers["user"])
+        else:
+            customer_id = -1
 
         # fetch all product_id's
         query = "SELECT product_id, quantity FROM BASKET WHERE customer_id = (%s)"
@@ -799,18 +816,22 @@ class basket(Resource):
 
         return jsonify({
             "products": products,
-            "status_code": 200
+            "status_code": 200,
+            "customer_id": customer_id
         })
 
     @cross_origin(origins="http://localhost:3000*")
-    @private
     def delete(self):  # delete an item from basket
         cursor = mysql.get_db().cursor()
         posted_data = request.get_json()
         if (check_posted_data(posted_data, "basket_delete") == 200):
             product_name = posted_data["product_name"]
 
-            customer_id = customer_id = username_to_id(request.headers["user"])
+            if check_if_user(request):
+                customer_id = customer_id = username_to_id(
+                    request.headers["user"])
+            else:
+                customer_id = -1
 
             # get product_id
             query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"
@@ -825,7 +846,8 @@ class basket(Resource):
             if (data is None):
                 return({
                     "message": "product not found",
-                    "status_code": 404
+                    "status_code": 404,
+                    "customer_id": customer_id
                 })
 
             query = "DELETE FROM BASKET WHERE customer_id = (%s) AND product_id = (%s)"
@@ -834,7 +856,8 @@ class basket(Resource):
 
             return jsonify({
                 "message": "successful",
-                "status_code": 200
+                "status_code": 200,
+                "customer_id": customer_id
             })
         return jsonify({
             "message": "Bad Request",
@@ -849,7 +872,11 @@ class basket(Resource):
             product_name = posted_data["product_name"]
             quantity = posted_data["quantity"]
 
-            customer_id = -1
+            if check_if_user(request):
+                customer_id = username_to_id(
+                    request.headers["user"])
+            else:
+                customer_id = -1
 
             # get product_id
             query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"
@@ -858,11 +885,13 @@ class basket(Resource):
 
             query = "UPDATE BASKET SET quantity=(%s) WHERE customer_id = (%s) AND product_id = (%s)"
             cursor.execute(query, (quantity, customer_id, product_id))
+            print(query, (quantity, customer_id, product_id))
             mysql.get_db().commit()
 
             return jsonify({
                 "message": "successful",
-                "status_code": 200
+                "status_code": 200,
+                "customer_id": customer_id
             })
         return jsonify({
             "message": "Bad Request",
@@ -874,6 +903,7 @@ api.add_resource(basket, "/basket")
 
 
 class order(Resource):
+    @private
     @cross_origin(origins="http://localhost:3000*")
     def post(self):  # order everything on basket
         cursor = mysql.get_db().cursor()
@@ -885,6 +915,7 @@ class order(Resource):
 
         cursor.execute(query, (customer_id,))
         elements = cursor.fetchall()
+        print(elements)
         for element in elements:
 
             query = "INSERT INTO `CART`(`customer_id`,`product_id`, `total_cost`, `quantity`) VALUES ((%s),(%s),(%s),(%s))"
@@ -907,7 +938,7 @@ class order(Resource):
 
             # add to orders
             query = "INSERT INTO `ORDERS`(`amount`,`status`,`cart_id`,`customer_id`,`sm_id`, `time`) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))"
-            now = datetime.now()
+            now = datetime.datetime.now()
             dt_string = now.strftime("%H:%M:%S")
             cursor.execute(
                 query, (quantity, "Preparing", cart_id, customer_id, 5, str(dt_string)))

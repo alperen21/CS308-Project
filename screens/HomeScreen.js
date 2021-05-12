@@ -1,11 +1,39 @@
 import React,{useEffect,useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView,ScrollView,FlatList,Image } from 'react-native';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import {Button} from './Products/Button';
 import PropTypes from 'prop-types';
-
+import { useIsFocused } from "@react-navigation/native";
 
   const HomeScreen = ({navigation}) =>{
+
+
+    const [token_id, setToken] = React.useState(null);
+    const [username, setUsername] = React.useState(null);
+    useEffect(() => { 
+
+      AsyncStorage.getItem('userName')  
+      .then((val) => {
+          setUsername(val);
+          //console.log("?????try??????",val);
+      });    
+
+      }, []);
+
+
+    useEffect(() => { 
+      
+      AsyncStorage.getItem('token')  
+      .then((val) => {
+          setToken(val);
+          //console.log("?????token check home screen??????",val);
+      }); 
+
+      }, []);
+
+
+
+
   const [productlist,setProductList]=useState([]);
   useEffect(() => { 
     getProducts();
@@ -28,6 +56,7 @@ import PropTypes from 'prop-types';
             setProductList(json.category_elements);  
           }
 
+
           const addToBasket = async(itemname) => {
         
             const response2 = await  fetch('http://localhost:5000/basket', {
@@ -35,15 +64,19 @@ import PropTypes from 'prop-types';
               headers: {
                   'Content-Type' : 'application/json',
                    Accept: 'application/json',
+                   user: username,
+                   token: token_id,
               },
               body: JSON.stringify({
                 //category_name:'Coffee Machines'
                 product_name: itemname,
                 quantity:1
+                
               })
               
             })
-          //  console.log("item geldi mi",itemname);
+            
+            console.log("username2 geldi mi",username);
             let json= await response2.json();
             //console.log("mesajımız: ", json.message)
             //console.log("code: ", json.status_code)

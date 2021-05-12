@@ -6,22 +6,38 @@ import NumericInput from 'react-native-numeric-input'
 import AsyncStorage from '@react-native-community/async-storage';
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useIsFocused } from "@react-navigation/native";
+
 // const {navigation,route} = this.props;
 //var subtotal=0;
 
 const CartScreen = ({ navigation }) => {
 
+	const isFocused = useIsFocused();
+	const [token_id, setToken] = React.useState(null);
 	const [totalprice, setTotalprice] = React.useState(0);
 	const [username, setUsername] = React.useState(null);
+
+	useEffect(() => { 
+	
+		AsyncStorage.getItem('token')  
+		.then((val) => {
+			setToken(val);
+		    // token_id = val;
+			console.log("?????token check cart screen??????",val);
+			console.log("did we set TOKEN ID by SETTOKEN?",token_id);
+		}); 
+
+	}, []);
+
 	useEffect(() => {
 
 		AsyncStorage.getItem('userName')
 			.then((val) => {
-				//   console.log("CHECK OUTTOOOOOOO!!!!",val);
+				console.log("CHECK OUTT- username in async -cart!!!!",val);
 				setUsername(val);
+				console.log("AFTERRRCHECK OUTT- username in async -cart!!!!",username);
 			});
-		// console.log('user token: ', userToken);
-		//   dispatch({ type: 'RETRIEVE_TOKEN', token: userToken });
 
 	}, []);
 
@@ -29,24 +45,32 @@ const CartScreen = ({ navigation }) => {
 
 	const [basketlist, setBasketList] = useState([]);
 	useEffect(() => {
-		getBasket();
+		getBasket(username, token_id);
 	}, []);
 
-	const getBasket = async () => {
+	const getBasket = async() => {
+
+		console.log("cart screen- TOKEN id that we sent to backend::!!!", token_id);
+		console.log("cart screen- USERNAME that we sent to backend::!!!", username);
 
 		const response2 = await fetch('http://localhost:5000/basket', {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
+				user:username,
+				token:token_id,
 			},
 		})
 
 		let json = await response2.json();
-		console.log("basket products::!!!", json);
+		//console.log("basket products::!!!", json);
+
 		setBasketList(json.products);
 		totalcalculate(json.products);
 	}
+
+
     function  totalcalculate(products)
 	{
 		let total=0;
@@ -54,7 +78,6 @@ const CartScreen = ({ navigation }) => {
 			total+=product.price*product.quantity;
 		}
 	setTotalprice(total);
-
 	}
 
 
@@ -69,6 +92,8 @@ const CartScreen = ({ navigation }) => {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
+				user:username,
+				token:token_id,
 			},
 			body: JSON.stringify({
 
@@ -100,6 +125,8 @@ const CartScreen = ({ navigation }) => {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
+				user:username,
+				token:token_id,
 			},
 			body: JSON.stringify({
 				product_name: item_name,

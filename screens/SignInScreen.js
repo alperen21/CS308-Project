@@ -23,6 +23,7 @@ import { AuthContext } from '../components/context';
 const SignInScreen = ({navigation}) => {
 
     const [data, setData] = React.useState({
+        token:'',
         username: '',
         password: '',
         check_textInputChange: false,
@@ -43,16 +44,22 @@ const SignInScreen = ({navigation}) => {
             
                 username: data.username,
                 password:data.password,
-
+        
             })
         })
 
         let json= await response.json();
-        console.log(json);
+
+        data.token = json.token;
+        // setData({
+        //     ...data,
+        //     token: json.token,
+        // });
+      
     
         if(json.status_code == 200){
-
-            signIn(data.username);
+            console.log("HEYY CHECK IT OUTTTTT - signinScnreen!!!!",data.token);
+            signIn(data.username, data.token);
             // ProfileScreen();
 
             navigation.navigate('Products',{

@@ -3,32 +3,6 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Fla
 import { Button } from './Button';
 import PropTypes from 'prop-types';
 
-
-
-// const Product = ({product}) => {
-//   console.log("PPEEEPEEEE",product);
-//   return (
-//     <View style={{flexDirection:'row',marginVertical:100,paddingHorizontal:100}}>
-//       <Image style={{height:10, width:10}}
-//       source={{
-//         uri:product.image_path 
-//       }} />
-//       <View>
-//       <Text style={{fontSize:100}}>{product.product_id} </Text>
-//       <Text style={{fontSize:100}}>{product.name} </Text>
-//       <Text style={{fontSize:100}}> {product.model }</Text>
-//       <Text style={{fontSize:100}}> {product.rating }</Text>
-//       </View>
-//       <View>
-//       <Text style={{fontSize:100}}>{product.price} </Text>
-
-//       </View>
-//     </View>
-//   )
-//     }; 
-
-
-
 const FilterCoffeeScreen = ({ navigation }) => {
   const [productlist, setProductList] = useState([]);
 

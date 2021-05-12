@@ -109,18 +109,28 @@ const App = ({navigation}) => {
  
 
   const authContext = React.useMemo(() => ({
-    signIn: async(uname) => {
+    signIn: async(uname,token) => {
       // setUserToken('fgkj');
       // setIsLoading(false);
       // const userToken = String(foundUser[0].userToken);
       const userName = uname;
-      
+      const token_id = token;
       try {
         // await AsyncStorage.setItem('userToken', userToken);
         await AsyncStorage.setItem('userName', userName);
       } catch(e) {
         console.log(e);
       }
+
+      try {
+        // await AsyncStorage.setItem('userToken', userToken);
+        await AsyncStorage.setItem('token', token_id);
+      } catch(e) {
+        console.log(e);
+      }
+      console.log("does token id comes to app js?",token_id);
+
+
     //console.log('user tokennn: ', foundUser[0].password);
     //console.log('user passw: ', foundUser[0].password);
       // dispatch({ type: 'LOGIN', id: userName, token: userToken });
@@ -136,6 +146,15 @@ const App = ({navigation}) => {
       } catch(e) {
         console.log(e);
       }
+
+      try {
+        await AsyncStorage.removeItem('token');
+      } catch(e) {
+        console.log(e);
+      }
+
+
+
       dispatch({ type: 'LOGOUT' });
     },
 

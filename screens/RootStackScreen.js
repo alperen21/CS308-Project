@@ -13,7 +13,7 @@ import HotchocolateScreen from './Products/HotchocolateScreen';
 import CoffeeMachineScreen from './Products/CoffeeMachineScreen';
 import CartScreen from './CartScreen';
 import ProductDetailsScreen from './Products/ProductDetailsScreen';
-
+import CheckoutScreen from './CheckoutScreen';
 const RootStack = createStackNavigator();
 
 const RootStackScreen = ({navigation}) => (
@@ -29,6 +29,7 @@ const RootStackScreen = ({navigation}) => (
         <RootStack.Screen name="CoffeeMachineScreen" component={CoffeeMachineScreen}/>
         <RootStack.Screen name="CartScreen" component={CartScreen}/>
         <RootStack.Screen name="ProductDetailsScreen" component={ProductDetailsScreen}/>
+        <RootStack.Screen name="CheckoutScreen" component={CheckoutScreen}/>
     </RootStack.Navigator>
 );
 

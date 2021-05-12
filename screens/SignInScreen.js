@@ -53,12 +53,11 @@ const SignInScreen = ({navigation}) => {
         if(json.status_code == 200){
 
             signIn(data.username);
-
-            //PROFILE I RENDER ETTTİRRRRRRRR!!!!! but, how?
-
             // ProfileScreen();
 
-            navigation.replace('Home'); //card a gidince log out yapıyor?
+            navigation.navigate('Products',{
+                username:data.username,
+              }); 
             // navigation.navigate('Products');
 
         }

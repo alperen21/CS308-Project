@@ -71,7 +71,7 @@ import PropTypes from 'prop-types';
       <View style={styles.together}>
       <Button 
           title="Add to Cart"
-          onPress={() =>{ addToBasket(item.name)}}
+          onPress={() =>{ {item.stock!==0 ?( addToBasket(item.name)):(alert("Item is out of stock!"))}}}
           
         />
           <Button

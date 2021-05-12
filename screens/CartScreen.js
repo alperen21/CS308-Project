@@ -102,7 +102,6 @@ const CartScreen = ({ navigation }) => {
 				Accept: 'application/json',
 			},
 			body: JSON.stringify({
-
 				product_name: item_name,
 				quantity: item_quantity,
 
@@ -211,6 +210,7 @@ const CartScreen = ({ navigation }) => {
 		
 		<Text style={{marginLeft:10,fontWeight:"500",fontSize:20,color:'black'}}> <AntDesign name="shoppingcart" size={24} color="black"/>  SUBTOTAL:  ${totalprice}</Text>
 		<View style={{marginHorizontal:90}}>
+			
 			<Button style={{marginBottom:12}}
 			 icon={
 				<Icon
@@ -224,7 +224,10 @@ const CartScreen = ({ navigation }) => {
 			  }}
 			  
 			title='Checkout'
-			onPress={() => { alert("does not exist") }}
+			onPress={() =>  {totalprice===0 ? (alert("Cart is empty!")):(navigation.navigate('Checkout',{
+                total:totalprice
+			  }) )}
+			}
 			/>
 			</View>	
 			

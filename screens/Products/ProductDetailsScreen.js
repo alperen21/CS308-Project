@@ -92,17 +92,22 @@ const ProductDetailsScreen = ({ route, navigation }) => {
           }} />
         <Text style={styles.title}>{itemName}</Text>
         <Text style={{ fontSize: 15 }}>Model:{itemModel}</Text>
-        <Text style={{ fontSize: 15 }}>InStock: {itemStock}</Text>
+        { itemStock!==0 ? (
+           <Text style={{ fontSize: 15 }}>InStock: {itemStock}</Text>
+        ):(<Text></Text>)}
+       
         <Star score={itemRating} style={starStyle} />
         {/* <Text style={{fontSize:18}}>Rating: {itemRating}</Text> */}
         <View>
           <Text style={{ marginTop: 20, fontSize: 25 }}>${itemPrice}</Text>
 
         </View>
+        
         <View style={{ marginTop: 20 }}>
-          <Button
+        { itemStock!==0 ? (<Button
             title="Add to Cart"
-            onPress={() => addToBasket(itemName)} />
+            onPress={() => addToBasket(itemName)} />):( <Text style={{ marginTop: 8, fontSize: 18 }}> OUT OF STOCK!</Text>)}
+          
         </View>
         <View></View>
       </View>

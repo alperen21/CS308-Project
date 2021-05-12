@@ -18,7 +18,7 @@ import { Feather } from '@expo/vector-icons';
 import HotchocolateScreen from './Products/HotchocolateScreen';
 import CoffeeMachineScreen from './Products/CoffeeMachineScreen';
 import CartScreen from './CartScreen';
-
+import CheckoutScreen from './CheckoutScreen';
 import ProductDetailsScreen from './Products/ProductDetailsScreen';
 
 
@@ -117,6 +117,13 @@ const HomeStackScreen = ({ navigation }) => (
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),
+      headerLeft:() => null
+    }} />
+       <HomeStack.Screen name="Checkout" component={CheckoutScreen} options={{
+      title: 'Checkout',
+      // headerRight: () => (
+      //   <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+      // ),
       headerLeft:() => null
     }} />
 

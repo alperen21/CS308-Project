@@ -803,7 +803,7 @@ class basket(Resource):
         products = list()
 
         for id, quantity in product_ids:
-            query = "SELECT name, model, price, image_path FROM PRODUCT WHERE product_id = (%s)"
+            query = "SELECT name, model, price, image_path, stock FROM PRODUCT WHERE product_id = (%s)"
             cursor.execute(query, (id,))
             product_info = cursor.fetchone()
             products.append({
@@ -811,7 +811,8 @@ class basket(Resource):
                 "model": product_info[1],
                 "price": product_info[2],
                 "image_path": product_info[3],
-                "quantity": quantity
+                "quantity": quantity,
+                "stock": product_info[4]
             })
 
         return jsonify({
@@ -903,6 +904,23 @@ api.add_resource(basket, "/basket")
 
 
 class order(Resource):
+    def isStockAdequate(self, product_id, quantity):
+        cursor = mysql.get_db().cursor()
+        query = "SELECT stock FROM `PRODUCT` WHERE product_id=(%s)"
+        cursor.execute(query, (product_id,))
+        stock = cursor.fetchone()[0]
+        if (quantity <= stock):
+            return True
+        else:
+            return False
+
+    def getStock(self, product_id):
+        cursor = mysql.get_db().cursor()
+        query = "SELECT stock FROM `PRODUCT` WHERE product_id=(%s)"
+        cursor.execute(query, (product_id,))
+        stock = cursor.fetchone()[0]
+        return stock
+
     @private
     @cross_origin(origins="http://localhost:3000*")
     def post(self):  # order everything on basket
@@ -915,13 +933,23 @@ class order(Resource):
 
         cursor.execute(query, (customer_id,))
         elements = cursor.fetchall()
-        print(elements)
         for element in elements:
+            quantity = element[1]
+            product_id = element[2]
+            if (self.isStockAdequate(product_id, quantity) == False):
+                return jsonify({
+                    "message": "not adequate stock for at least one item",
+                    "status_code": 403
+                })
+
+            # update the stock
+            query = "UPDATE `PRODUCT` SET `stock`=(%s) WHERE product_id=(%s)"
+            new_stock = self.getStock(product_id)-quantity
+            cursor.execute(query, (new_stock, product_id))
+            mysql.get_db().commit()
 
             query = "INSERT INTO `CART`(`customer_id`,`product_id`, `total_cost`, `quantity`) VALUES ((%s),(%s),(%s),(%s))"
-            quantity = element[1]
             total_cost = int(element[0])*int(quantity)
-            product_id = element[2]
             cursor.execute(
                 query, (customer_id, product_id, total_cost, quantity))
             mysql.get_db().commit()

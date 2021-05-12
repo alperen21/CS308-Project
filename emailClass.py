@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import smtplib
 import ssl
@@ -53,3 +54,8 @@ class SMTPemail():
             print("")
         except Exception:
             print("")
+
+
+now = datetime.now()
+dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+print(dt_string)

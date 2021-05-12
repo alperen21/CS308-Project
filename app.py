@@ -5,9 +5,9 @@ from passlib.hash import sha256_crypt
 import os
 import jwt
 from functools import wraps
-import datetime
 from flask_cors import CORS, cross_origin
 from emailClass import SMTPemail
+from datetime import datetime
 import datetime
 import threading
 
@@ -27,10 +27,53 @@ mysql.init_app(app)
 api = Api(app)
 
 
+def username_to_id(username):
+    cursor = mysql.get_db().cursor()
+    query = "SELECT user_id FROM USERS WHERE username = (%s)"
+    cursor.execute(query, (username,))
+    data = cursor.fetchone()
+    user_id = data[0]
+
+    return user_id
+
+
+def get_from_jwt(token, param):  # assumes jwt token is valid
+    data = jwt.decode(token, os.environ.get("SECRET_KEY"), algorithms="HS256")
+    return data[param]
+
+
+def add_customer(username, phone, address, email):
+    cursor = mysql.get_db().cursor()
+    query = "SELECT user_id FROM USERS WHERE username = (%s)"
+    cursor.execute(query, (username,))
+    data = cursor.fetchone()
+    user_id = data[0]  # id of the newly created user
+    query = 'INSERT INTO `CUSTOMER` (customer_id, phone, address, email) VALUES (%s, %s, %s, %s)'
+    cursor.execute(query, (str(user_id), str(phone), str(address), str(email)))
+    mysql.get_db().commit()
+
+
 def send_mail(first_name, email):
     message = f"Hello {first_name}, \nWelcome to our website! \n"
     mail = SMTPemail(email, message, "Hello and welcome!")
     mail.send()
+
+
+def add_user(first_name, last_name, username, password, email):
+    cursor = mysql.get_db().cursor()
+    query = "INSERT INTO `USERS` (`first_name`, `last_name`, `username`, `password`, `email`) VALUES ((%s), (%s), (%s), (%s), (%s))"
+    cursor.execute(query, (first_name, last_name, username, password, email))
+    mysql.get_db().commit()
+
+
+def find_user(username):
+    cursor = mysql.get_db().cursor()
+
+    query = "SELECT * FROM USERS WHERE username=(%s)"
+    cursor.execute(query, (username,))
+    data = cursor.fetchone()
+
+    return data
 
 
 def check_posted_data(posted_data, function_name):
@@ -252,10 +295,6 @@ class Auth(Resource):
 
             cursor = mysql.get_db().cursor()
 
-            query = "DELETE FROM BASKET"
-            cursor.execute(query)
-            mysql.get_db().commit()
-
             query = "SELECT * FROM USERS WHERE username=(%s) and password=(%s)"
             cursor.execute(query, (username, password))
             data = cursor.fetchone()
@@ -301,49 +340,26 @@ class Users(Resource):
     @cross_origin(origins="http://localhost:3000*")
     def post(self):  # registration
         posted_data = request.get_json()
-        #status_code = check_posted_data(posted_data, "users")
 
         status_code = check_posted_data(posted_data, "users")
 
         if (status_code == 200):
-            first_name = posted_data["first_name"]
-            email = posted_data["email"]
-            mail_thread = threading.Thread(
-                target=send_mail, args=(first_name, email))
             last_name = posted_data["last_name"]
             username = posted_data["username"]
             password = posted_data["password"]
             phone = posted_data["phone"]
             address = posted_data["address"]
-            mail_thread.start()
 
-            cursor = mysql.get_db().cursor()
-
-            query = "SELECT * FROM USERS WHERE username=(%s)"
-            cursor.execute(query, (username,))
-            data = cursor.fetchone()
+            data = find_user(username)
 
             if (data == None):
-
-                # adding the new user to the user relation
-                query = "INSERT INTO `USERS` (`first_name`, `last_name`, `username`, `password`, `email`) VALUES ((%s), (%s), (%s), (%s), (%s))"
-                cursor.execute(query, (first_name, last_name,
-                                       username, password, email))
-                mysql.get_db().commit()
-
-                # adding the new user to customer relation
-
-                query = "SELECT user_id FROM USERS WHERE username = (%s)"
-                cursor.execute(query, (username,))
-                data = cursor.fetchone()
-
-                user_id = data[0]  # id of the newly created user
-
-                query = 'INSERT INTO `CUSTOMER` (customer_id, phone, address, email) VALUES (%s, %s, %s, %s)'
-
-                cursor.execute(query, (str(user_id), str(
-                    phone), str(address), str(email)))
-                mysql.get_db().commit()
+                first_name = posted_data["first_name"]
+                email = posted_data["email"]
+                mail_thread = threading.Thread(
+                    target=send_mail, args=(first_name, email))
+                mail_thread.start()
+                add_user(first_name, last_name, username, password, email)
+                add_customer(username, phone, address, email)
 
                 retJson = {
                     "message": "Registration completed.",
@@ -460,7 +476,7 @@ class addStock(Resource):
         data = cursor.fetchone()
 
         if (data != None):
-            #query = "INSERT INTO `PRODUCT` (`name`, `rating`, `model`, `price`, `image_path`) VALUES ((%s), (%s), (%s), (%s), (%s))"
+            # query = "INSERT INTO `PRODUCT` (`name`, `rating`, `model`, `price`, `image_path`) VALUES ((%s), (%s), (%s), (%s), (%s))"
             query = "UPDATE PRODUCT SET stock=(%s) WHERE product_id=(%s)"
             cursor.execute(query, (int(data[7] + quantity), product_id))
             mysql.get_db().commit()
@@ -705,15 +721,20 @@ api.add_resource(products, "/products")
 
 class basket(Resource):
     @cross_origin(origins="http://localhost:3000*")
+    @private
     def post(self):  # add items to basket
+        token = request.headers["token"]
+        user = request.headers["user"]
+
         posted_data = request.get_json()
         return_code = check_posted_data(posted_data, "basket_post")
+
+        customer_id = username_to_id(user)
+
         if (return_code == 200):
             product_name = posted_data["product_name"]
             quantity = posted_data["quantity"]
             cursor = mysql.get_db().cursor()
-
-            customer_id = -1
 
             # get product id
             query = "SELECT product_id, price FROM PRODUCT WHERE name = (%s)"
@@ -722,12 +743,22 @@ class basket(Resource):
             product_id = product_data[0]
             cost = product_data[1]
 
-            # add to basket
-            query = "INSERT INTO `BASKET`(`cost`, `quantity`, `product_name`, `product_id`, `customer_id`) VALUES ((%s),(%s),(%s),(%s),(%s))"
-            cursor.execute(
-                query, (cost, quantity, product_name, product_id, customer_id))
-            mysql.get_db().commit()
+            # check if product is already in basket
+            query = "SELECT quantity FROM `BASKET` WHERE product_id = (%s) AND customer_id = (%s)"
+            cursor.execute(query, (product_id, customer_id))
+            data = cursor.fetchone()
+            if (data is None):
 
+                # add to basket
+                query = "INSERT INTO `BASKET`(`cost`, `quantity`, `product_name`, `product_id`, `customer_id`) VALUES ((%s),(%s),(%s),(%s),(%s))"
+                cursor.execute(
+                    query, (cost, quantity, product_name, product_id, customer_id))
+                mysql.get_db().commit()
+            else:
+                quantity = int(data[0])+1
+                query = "UPDATE `BASKET` SET quantity=(%s) WHERE product_id=(%s) AND customer_id=(%s)"
+                cursor.execute(query, (quantity, product_id, customer_id))
+                mysql.get_db().commit()
             retJson = {
                 "message": "item added",
                 "status_code": 200
@@ -742,10 +773,10 @@ class basket(Resource):
             })
 
     @cross_origin(origins="http://localhost:3000*")
+    @private
     def get(self):
         cursor = mysql.get_db().cursor()
-
-        customer_id = -1
+        customer_id = customer_id = username_to_id(request.headers["user"])
 
         # fetch all product_id's
         query = "SELECT product_id, quantity FROM BASKET WHERE customer_id = (%s)"
@@ -772,18 +803,30 @@ class basket(Resource):
         })
 
     @cross_origin(origins="http://localhost:3000*")
+    @private
     def delete(self):  # delete an item from basket
         cursor = mysql.get_db().cursor()
         posted_data = request.get_json()
         if (check_posted_data(posted_data, "basket_delete") == 200):
             product_name = posted_data["product_name"]
 
-            customer_id = -1
+            customer_id = customer_id = username_to_id(request.headers["user"])
 
             # get product_id
             query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"
             cursor.execute(query, (product_name,))
             product_id = cursor.fetchone()[0]
+
+            # check if product exists in basket
+            query = "SELECT * FROM BASKET WHERE product_id = (%s) AND customer_id = (%s)"
+            cursor.execute(query, (product_id, customer_id))
+            data = cursor.fetchone()
+
+            if (data is None):
+                return({
+                    "message": "product not found",
+                    "status_code": 404
+                })
 
             query = "DELETE FROM BASKET WHERE customer_id = (%s) AND product_id = (%s)"
             cursor.execute(query, (customer_id, product_id))
@@ -834,7 +877,8 @@ class order(Resource):
     @cross_origin(origins="http://localhost:3000*")
     def post(self):  # order everything on basket
         cursor = mysql.get_db().cursor()
-        customer_id = -1
+        customer_id = username_to_id(
+            request.headers["user"])
         # add each product to cart
 
         query = "SELECT cost, quantity, product_id FROM BASKET WHERE customer_id = (%s)"
@@ -862,9 +906,11 @@ class order(Resource):
             mysql.get_db().commit()
 
             # add to orders
-            query = "INSERT INTO `ORDERS`(`amount`,`status`,`cart_id`,`customer_id`,`sm_id`) VALUES ((%s),(%s),(%s),(%s),(%s))"
+            query = "INSERT INTO `ORDERS`(`amount`,`status`,`cart_id`,`customer_id`,`sm_id`, `time`) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))"
+            now = datetime.now()
+            dt_string = now.strftime("%H:%M:%S")
             cursor.execute(
-                query, (quantity, "Preparing", cart_id, customer_id, 5))
+                query, (quantity, "Preparing", cart_id, customer_id, 5, str(dt_string)))
             mysql.get_db().commit()
 
             # remove from basket

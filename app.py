@@ -923,6 +923,28 @@ class order(Resource):
 
     @private
     @cross_origin(origins="http://localhost:3000*")
+    def get(self):
+        cursor = mysql.get_db().cursor()
+        customer_id = username_to_id(
+            request.headers["user"])
+        query = "SELECT time, amount, status FROM `ORDERS` WHERE customer_id = (%s)"
+        cursor.execute(query, (customer_id,))
+        past_orders = cursor.fetchall()
+        print(past_orders)
+        return jsonify({
+            "past_orders": [
+                {
+                    "time": str(past_order[0]),
+                    "amount": past_order[1],
+                    "status": past_order[2]
+                }
+                for past_order in past_orders
+            ],
+            "status_code": 200
+        })
+
+    @private
+    @cross_origin(origins="http://localhost:3000*")
     def post(self):  # order everything on basket
         cursor = mysql.get_db().cursor()
         customer_id = username_to_id(

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, FlatList,TouchableHighlight,TouchableOpacity, SafeAreaView, ScrollView, Image, ActivityIndicator, TextInput, Alert } from 'react-native';
+import { StyleSheet, Text, View, FlatList, TouchableHighlight, TouchableOpacity, SafeAreaView, ScrollView, Image, ActivityIndicator, TextInput, Alert } from 'react-native';
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 import NumericInput from 'react-native-numeric-input'
 // import { Button } from './Products/Button';
@@ -8,47 +8,38 @@ import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useIsFocused } from "@react-navigation/native";
 
-// const {navigation,route} = this.props;
-//var subtotal=0;
 
 const CartScreen = ({ navigation }) => {
 
 	const isFocused = useIsFocused();
-	const [token_id, setToken] = React.useState(null);
 	const [totalprice, setTotalprice] = React.useState(0);
-	const [username, setUsername] = React.useState(null);
-
-	useEffect(() => { 
-	
-		AsyncStorage.getItem('token')  
-		.then((val) => {
-			setToken(val);
-		    // token_id = val;
-			console.log("?????token check cart screen??????",val);
-			console.log("did we set TOKEN ID by SETTOKEN?",token_id);
-		}); 
-
-	}, []);
-
-	useEffect(() => {
-
-		AsyncStorage.getItem('userName')
-			.then((val) => {
-				console.log("CHECK OUTT- username in async -cart!!!!",val);
-				setUsername(val);
-				console.log("AFTERRRCHECK OUTT- username in async -cart!!!!",username);
-			});
-
-	}, []);
-
 	const [quantity, setQuantity] = React.useState("");
-
 	const [basketlist, setBasketList] = useState([]);
-	useEffect(() => {
-		getBasket(username, token_id);
-	}, []);
 
-	const getBasket = async() => {
+	useEffect(() => {
+		getBasket();
+	}, [isFocused]);
+
+
+	const getBasket = async () => {
+
+		let token_id = 0;
+		let username = 0;
+
+		try {
+			token_id = await AsyncStorage.getItem('token');
+			// setToken(token_id);
+		} catch (e) {
+			console.log(e);
+		}
+
+		try {
+			// await AsyncStorage.setItem('userToken', userToken);
+			username = await AsyncStorage.getItem('userName');
+			// setUsername(username);
+		} catch (e) {
+			console.log(e);
+		}
 
 		console.log("cart screen- TOKEN id that we sent to backend::!!!", token_id);
 		console.log("cart screen- USERNAME that we sent to backend::!!!", username);
@@ -56,10 +47,12 @@ const CartScreen = ({ navigation }) => {
 		const response2 = await fetch('http://localhost:5000/basket', {
 			method: 'GET',
 			headers: {
+				//'Authorization': 'Bearer ' + token_id,
 				'Content-Type': 'application/json',
-				Accept: 'application/json',
-				user:username,
-				token:token_id,
+				"Accept": 'application/json',
+				"user": username,
+				"token": token_id,
+
 			},
 		})
 
@@ -71,13 +64,12 @@ const CartScreen = ({ navigation }) => {
 	}
 
 
-    function  totalcalculate(products)
-	{
-		let total=0;
-		for (const product of products){
-			total+=product.price*product.quantity;
+	function totalcalculate(products) {
+		let total = 0;
+		for (const product of products) {
+			total += product.price * product.quantity;
 		}
-	setTotalprice(total);
+		setTotalprice(total);
 	}
 
 
@@ -87,13 +79,32 @@ const CartScreen = ({ navigation }) => {
 
 	const deleteBasket = async (item_name) => {
 
+
+		let token_id = 0;
+		let username = 0;
+
+		try {
+			token_id = await AsyncStorage.getItem('token');
+			// setToken(token_id);
+		} catch (e) {
+			console.log(e);
+		}
+
+		try {
+			// await AsyncStorage.setItem('userToken', userToken);
+			username = await AsyncStorage.getItem('userName');
+			// setUsername(username);
+		} catch (e) {
+			console.log(e);
+		}
+
 		const response3 = await fetch('http://localhost:5000/basket', {
 			method: 'DELETE',
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				user:username,
-				token:token_id,
+				user: username,
+				token: token_id,
 			},
 			body: JSON.stringify({
 
@@ -114,6 +125,25 @@ const CartScreen = ({ navigation }) => {
 	// }, []);
 	const changeQuantity = async (item_name, item_quantity) => {
 
+
+		let token_id = 0;
+		let username = 0;
+
+		try {
+			token_id = await AsyncStorage.getItem('token');
+			// setToken(token_id);
+		} catch (e) {
+			console.log(e);
+		}
+
+		try {
+			// await AsyncStorage.setItem('userToken', userToken);
+			username = await AsyncStorage.getItem('userName');
+			// setUsername(username);
+		} catch (e) {
+			console.log(e);
+		}
+
 		if (item_quantity >= 1) {
 			//do nothing
 		} else {
@@ -125,8 +155,8 @@ const CartScreen = ({ navigation }) => {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				user:username,
-				token:token_id,
+				user: username,
+				token: token_id,
 			},
 			body: JSON.stringify({
 				product_name: item_name,
@@ -136,7 +166,7 @@ const CartScreen = ({ navigation }) => {
 		})
 
 		let json = await response4.json();
-		console.log("basket products after quantity change!!", json);
+		//console.log("basket products after quantity change!!", json);
 
 		getBasket();
 
@@ -150,7 +180,7 @@ const CartScreen = ({ navigation }) => {
 		var total_price = 0;
 		// setQuantity(item.quantity);
 		total_price = total_price + item.quantity * item.price;
-       // subtotal=subtotal+total_price;
+		// subtotal=subtotal+total_price;
 		//console.log("again",prices);
 		return (
 
@@ -168,22 +198,22 @@ const CartScreen = ({ navigation }) => {
 
 						<View style={{ flexDirection: 'row' }}>
 
-							<View style={{}}><Text style={{ fontSize: 18, color:'#000000bf' }}> ${item.price} </Text></View>
-							<View style={{ marginTop:7,marginLeft: 38 }} >
-								
-								<MaterialIcons name="remove"  size={21} color="#000000bf" onPress={() => { changeQuantity(item.name, item.quantity - 1) }} />
-								</View>
-							
+							<View style={{}}><Text style={{ fontSize: 18, color: '#000000bf' }}> ${item.price} </Text></View>
+							<View style={{ marginTop: 7, marginLeft: 38 }} >
+
+								<MaterialIcons name="remove" size={21} color="#000000bf" onPress={() => { changeQuantity(item.name, item.quantity - 1) }} />
+							</View>
+
 							<View style={{ marginLeft: 0 }}><TextInput style={styles.input}>{item.quantity} </TextInput></View>
-							<View style={{ marginTop:7,marginLeft: 0 }} >
-								
-							<MaterialIcons name="add" size={21} color="#000000bf" onPress={() => { changeQuantity(item.name, item.quantity + 1) }} />
+							<View style={{ marginTop: 7, marginLeft: 0 }} >
+
+								<MaterialIcons name="add" size={21} color="#000000bf" onPress={() => { changeQuantity(item.name, item.quantity + 1) }} />
 							</View>
 
 							<View style={{ marginLeft: 30 }}>
-								<MaterialIcons name="delete" size={28} color="#DF0101" onPress={() => { alert("Item deleted from basket"),deleteBasket(item.name) }} />
+								<MaterialIcons name="delete" size={28} color="#DF0101" onPress={() => { alert("Item deleted from basket"), deleteBasket(item.name) }} />
 							</View>
-							<View ><Text style={{ fontWeight: '600', marginLeft: 25, fontSize: 20 ,color:'#000000bf'}}>${total_price}</Text></View>
+							<View ><Text style={{ fontWeight: '600', marginLeft: 25, fontSize: 20, color: '#000000bf' }}>${total_price}</Text></View>
 						</View>
 
 					</View>
@@ -202,17 +232,17 @@ const CartScreen = ({ navigation }) => {
 	};
 
 	return (
-		<View style={{flex: 1}}>
-		<ScrollView>
+		<View style={{ flex: 1 }}>
+			<ScrollView>
 
-			<FlatList
-				data={basketlist}
-				renderItem={renderItem}
-				keyExtractor={(item) => item.name.toString()}
-			/>
-			
-			
-			{/* if (basketlist !== null) {
+				<FlatList
+					data={basketlist}
+					renderItem={renderItem}
+					keyExtractor={(item) => item.name.toString()}
+				/>
+
+
+				{/* if (basketlist !== null) {
 				<Button 			
 				title="Checkout"
 				onPress={() =>{ alert("does not exist")}}
@@ -223,42 +253,44 @@ const CartScreen = ({ navigation }) => {
 			}
 			 */}
 
-		</ScrollView>
-		<View
+			</ScrollView>
+			<View
 				style={{
 					//borderBottomColor: '#BFA38F',
 					borderColor: '#000000bf',
 					borderBottomWidth: 5,
 					borderEndWidth: 1000,
-					marginBottom:15
+					marginBottom: 15
 				}}
 			/>
-		<View style={{ flexDirection:'row'}}>
-		
-		<Text style={{marginLeft:10,fontWeight:"500",fontSize:20,color:'black'}}> <AntDesign name="shoppingcart" size={24} color="black"/>  SUBTOTAL:  ${totalprice}</Text>
-		<View style={{marginHorizontal:90}}>
-			
-			<Button style={{marginBottom:12}}
-			 icon={
-				<Icon
-				  name="arrow-right"
-				  size={15}
-				  color="white"
-				/>
-			  }
-			  buttonStyle={{
-				backgroundColor:'#04B45F'
-			  }}
-			  
-			title='Checkout'
-			onPress={() =>  {totalprice===0 ? (alert("Cart is empty!")):(navigation.navigate('Checkout',{
-                total:totalprice
-			  }) )}
-			}
-			/>
-			</View>	
-			
-		</View>
+			<View style={{ flexDirection: 'row' }}>
+
+				<Text style={{ marginLeft: 10, fontWeight: "500", fontSize: 20, color: 'black' }}> <AntDesign name="shoppingcart" size={24} color="black" />  SUBTOTAL:  ${totalprice}</Text>
+				<View style={{ marginHorizontal: 90 }}>
+
+					<Button style={{ marginBottom: 12 }}
+						icon={
+							<Icon
+								name="arrow-right"
+								size={15}
+								color="white"
+							/>
+						}
+						buttonStyle={{
+							backgroundColor: '#04B45F'
+						}}
+
+						title='Checkout'
+						onPress={() => {
+							totalprice === 0 ? (alert("Cart is empty!")) : (navigation.navigate('Checkout', {
+								total: totalprice
+							}))
+						}
+						}
+					/>
+				</View>
+
+			</View>
 		</View>
 	);
 };
@@ -301,21 +333,21 @@ const styles = StyleSheet.create({
 		margin: 1,
 		borderWidth: 0.3,
 		fontSize: 15,
-		textAlign:'center'
+		textAlign: 'center'
 	},
 	button: {
 		backgroundColor: '#000000bf',
 		borderRadius: 20,
-		paddingHorizontal:13,
+		paddingHorizontal: 13,
 		paddingVertical: 12,
-		marginTop:20
-	  },
-	  buttontext: {
+		marginTop: 20
+	},
+	buttontext: {
 		color: '#ffffff',
 		textAlign: 'center',
 		fontSize: 15,
 		fontWeight: '500',
-	  },
+	},
 
 
 });

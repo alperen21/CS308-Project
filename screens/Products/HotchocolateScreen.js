@@ -2,32 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Image } from 'react-native';
 import { Button } from './Button';
 import PropTypes from 'prop-types';
-
-
-
-// const Product = ({product}) => {
-//   console.log("PPEEEPEEEE",product);
-//   return (
-//     <View style={{flexDirection:'row',marginVertical:100,paddingHorizontal:100}}>
-//       <Image style={{height:10, width:10}}
-//       source={{
-//         uri:product.image_path 
-//       }} />
-//       <View>
-//       <Text style={{fontSize:100}}>{product.product_id} </Text>
-//       <Text style={{fontSize:100}}>{product.name} </Text>
-//       <Text style={{fontSize:100}}> {product.model }</Text>
-//       <Text style={{fontSize:100}}> {product.rating }</Text>
-//       </View>
-//       <View>
-//       <Text style={{fontSize:100}}>{product.price} </Text>
-
-//       </View>
-//     </View>
-//   )
-//     }; 
-
-
+import AsyncStorage from '@react-native-community/async-storage';
 
 const HotchocolateScreen = ({ navigation }) => {
   const [productlist, setProductList] = useState([]);
@@ -57,11 +32,32 @@ const HotchocolateScreen = ({ navigation }) => {
 
   const addToBasket = async (itemname) => {
 
+    let token_id = 0;
+    let username = 0;
+
+    try {
+      token_id = await AsyncStorage.getItem('token');
+      // setToken(token_id);
+    } catch (e) {
+      console.log(e);
+    }
+
+    try {
+      // await AsyncStorage.setItem('userToken', userToken);
+      username = await AsyncStorage.getItem('userName');
+      // setUsername(username);
+    } catch (e) {
+      console.log(e);
+    }
+
+
     const response2 = await fetch('http://localhost:5000/basket', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        user: username,
+        token: token_id,
       },
       body: JSON.stringify({
         //category_name:'Coffee Machines'

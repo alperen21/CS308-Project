@@ -6,6 +6,7 @@ import { Rating } from 'react-native-elements';
 import { Button } from './Button';
 
 import Star from 'react-native-star-view';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 const ProductDetailsScreen = ({ route, navigation }) => {
@@ -43,11 +44,32 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
   const addToBasket = async (itemname) => {
 
+    let token_id = 0;
+    let username = 0;
+
+    try {
+      token_id = await AsyncStorage.getItem('token');
+      // setToken(token_id);
+    } catch (e) {
+      console.log(e);
+    }
+
+    try {
+      // await AsyncStorage.setItem('userToken', userToken);
+      username = await AsyncStorage.getItem('userName');
+      // setUsername(username);
+    } catch (e) {
+      console.log(e);
+    }
+
+
     const response2 = await fetch('http://localhost:5000/basket', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        user: username,
+        token: token_id,
       },
       body: JSON.stringify({
         //category_name:'Coffee Machines'
@@ -92,22 +114,22 @@ const ProductDetailsScreen = ({ route, navigation }) => {
           }} />
         <Text style={styles.title}>{itemName}</Text>
         <Text style={{ fontSize: 15 }}>Model:{itemModel}</Text>
-        { itemStock!==0 ? (
-           <Text style={{ fontSize: 15 }}>InStock: {itemStock}</Text>
-        ):(<Text></Text>)}
-       
+        {itemStock !== 0 ? (
+          <Text style={{ fontSize: 15 }}>InStock: {itemStock}</Text>
+        ) : (<Text></Text>)}
+
         <Star score={itemRating} style={starStyle} />
         {/* <Text style={{fontSize:18}}>Rating: {itemRating}</Text> */}
         <View>
           <Text style={{ marginTop: 20, fontSize: 25 }}>${itemPrice}</Text>
 
         </View>
-        
+
         <View style={{ marginTop: 20 }}>
-        { itemStock!==0 ? (<Button
+          {itemStock !== 0 ? (<Button
             title="Add to Cart"
-            onPress={() => addToBasket(itemName)} />):( <Text style={{ marginTop: 8, fontSize: 18 }}> OUT OF STOCK!</Text>)}
-          
+            onPress={() => addToBasket(itemName)} />) : (<Text style={{ marginTop: 8, fontSize: 18 }}> OUT OF STOCK!</Text>)}
+
         </View>
         <View></View>
       </View>

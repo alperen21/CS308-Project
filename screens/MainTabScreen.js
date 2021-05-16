@@ -102,7 +102,7 @@ const HomeStackScreen = ({ navigation }) => (
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),
-      headerLeft:() => null
+      headerLeft: () => null
 
     }} />
     <HomeStack.Screen name="Cart" component={CartScreen} options={{
@@ -110,21 +110,21 @@ const HomeStackScreen = ({ navigation }) => (
       // headerRight: () => (
       //     <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('CartScreen')}></Icon.Button>
       // )
-      headerLeft:() => null
+      headerLeft: () => null
     }} />
     <HomeStack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{
       title: 'Product Details',
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),
-      headerLeft:() => null
+      headerLeft: () => null
     }} />
-       <HomeStack.Screen name="Checkout" component={CheckoutScreen} options={{
+    <HomeStack.Screen name="Checkout" component={CheckoutScreen} options={{
       title: 'Checkout',
       // headerRight: () => (
       //   <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       // ),
-      headerLeft:() => null
+      headerLeft: () => null
     }} />
 
 
@@ -146,42 +146,42 @@ const CategoryStackScreen = ({ navigation }) => (
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),
-      headerLeft:() => null
+      headerLeft: () => null
     }} />
     <CategoryStack.Screen name="Espresso" component={EspressoScreen} options={{
       title: 'Espresso Coffee',
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),
-      headerLeft:() => null
+      headerLeft: () => null
     }} />
     <CategoryStack.Screen name="FilterCoffee" component={FilterCoffeeScreen} options={{
       title: 'Filter Coffee ',
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),
-      headerLeft:() => null
+      headerLeft: () => null
     }} />
     <CategoryStack.Screen name="TurkishCoffee" component={TurkishCoffeeScreen} options={{
       title: 'Turkish Coffee ',
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),
-      headerLeft:() => null
+      headerLeft: () => null
     }} />
     <CategoryStack.Screen name="Hotchocolate" component={HotchocolateScreen} options={{
       title: ' Hot Chocolate ',
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),
-      headerLeft:() => null
+      headerLeft: () => null
     }} />
     <CategoryStack.Screen name="CoffeeMachine" component={CoffeeMachineScreen} options={{
       title: 'Coffee Machines',
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),
-      headerLeft:() => null
+      headerLeft: () => null
     }} />
     {/* <CategoryStack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{
       title: 'Product Details',
@@ -216,7 +216,7 @@ const ProfileStackScreen = ({ navigation }) => (
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),
-      headerLeft:() => null
+      headerLeft: () => null
     }} />
     {/* <ProfileStack.Screen name="Cart" component={CartScreen} options={{
         title:'Cart',
@@ -242,7 +242,7 @@ const ExploreStackScreen = ({ navigation }) => (
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),
-      headerLeft:() => null
+      headerLeft: () => null
     }} />
     {/* <ExploreStack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{
       title: 'Product Details',

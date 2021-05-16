@@ -3,12 +3,12 @@ import { Button } from './Products/Button';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Image } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 
-const ExploreScreen = ({navigation}) => {
+const ExploreScreen = ({ navigation }) => {
 
   // const sleep = (milliseconds) => {
   //   return new Promise(resolve => setTimeout(resolve, milliseconds))
   // }
-  
+
   const [searchQuery, setSearchQuery] = React.useState('');
   const [productlist, setProductList] = useState([]);
 
@@ -45,23 +45,23 @@ const ExploreScreen = ({navigation}) => {
     }
   }
 
-  const addToBasket = async(itemname) => {
-        
-    const response2 = await  fetch('http://localhost:5000/basket', {
+  const addToBasket = async (itemname) => {
+
+    const response2 = await fetch('http://localhost:5000/basket', {
       method: 'POST',
       headers: {
-          'Content-Type' : 'application/json',
-           Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
       body: JSON.stringify({
         //category_name:'Coffee Machines'
         product_name: itemname,
-        quantity:1
+        quantity: 1
       })
-      
+
     })
-  //  console.log("item geldi mi",itemname);
-    let json= await response2.json();
+    //  console.log("item geldi mi",itemname);
+    let json = await response2.json();
     //console.log("mesajımız: ", json.message)
     //console.log("code: ", json.status_code)
     //setBasket(json.category_elements);  
@@ -110,11 +110,11 @@ const ExploreScreen = ({navigation}) => {
   const onIconPressed = () => {
     getProducts();
     //must wait here a few second...!!! --- wait for database
-//     sleep(500).then(() => {
-//     console.log("on icon pressed debug: ",productlist);
-// })
-  
-};
+    //     sleep(500).then(() => {
+    //     console.log("on icon pressed debug: ",productlist);
+    // })
+
+  };
 
   return (
     <SafeAreaView>
@@ -124,12 +124,12 @@ const ExploreScreen = ({navigation}) => {
         onChangeText={onChangeSearch}
         value={searchQuery}
         onIconPress={onIconPressed}
-      /> 
-       <FlatList
-      data={productlist}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.model.toString()}
-    /> 
+      />
+      <FlatList
+        data={productlist}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.model.toString()}
+      />
 
     </SafeAreaView>
   );

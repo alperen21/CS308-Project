@@ -341,6 +341,100 @@ class Auth(Resource):
 
                 return retJson
 
+    @cross_origin(origins="http://localhost:63342*")
+    @private
+    def get(self):
+        cursor = mysql.get_db().cursor()
+        user = request.headers["user"]
+        uid = username_to_id(user)
+
+        query = """
+        SELECT username, first_name,last_name,USERS.email,phone,address
+        FROM USERS, CUSTOMER
+        WHERE USERS.user_id = (%s) AND user_id = customer_id
+        """
+        cursor.execute(query, (uid,))
+        data = cursor.fetchone()
+
+        return jsonify({
+            "username": data[0],
+            "first_name": data[1],
+            "last_name": data[2],
+            "email": data[3],
+            "phone": data[4],
+            "address": data[5]
+        })
+
+    @cross_origin(origins="http://localhost:63342*")
+    @private
+    def put(self):
+        posted_data = request.get_json()
+        cursor = mysql.get_db().cursor()
+        user = request.headers["user"]
+        uid = username_to_id(user)
+        query = """
+        SELECT username, first_name,last_name,USERS.email,phone,address, password
+        FROM USERS, CUSTOMER
+        WHERE USERS.user_id = (%s) AND user_id = customer_id
+        """
+        cursor.execute(query, (uid,))
+        data = cursor.fetchone()
+
+        username = data[0]
+
+        if("username" not in posted_data):
+            username = data[0]
+        else:
+            username = posted_data["username"]
+
+        if("first_name" not in posted_data):
+            first_name = data[1]
+        else:
+            first_name = posted_data["first_name"]
+
+        if("last_name" not in posted_data):
+            last_name = data[2]
+        else:
+            last_name = posted_data["last_name"]
+
+        if("email" not in posted_data):
+            email = data[3]
+        else:
+            email = posted_data["email"]
+
+        if("phone" not in posted_data):
+            phone = data[4]
+        else:
+            phone = posted_data["phone"]
+
+        if("address" not in posted_data):
+            address = data[5]
+        else:
+            address = posted_data["address"]
+
+        if("password" not in posted_data):
+            password = data[6]
+        else:
+            password = posted_data["password"]
+
+        query = """ 
+        UPDATE `USERS` 
+        SET `username`=(%s),`password`=(%s),`first_name`=(%s),`last_name`=(%s),`email`=(%s)
+        WHERE user_id = (%s)"""
+
+        cursor.execute(query, (username, password,
+                               first_name, last_name, email, uid))
+
+        query = """UPDATE `CUSTOMER` SET `phone`=(%s),`address`=(%s),`email`=(%s) WHERE customer_id=(%s)"""
+
+        cursor.execute(query, (phone, address,
+                               email, uid))
+        mysql.get_db().commit()
+        return jsonify({
+            "status_code": 201,
+            "message": "ok"
+        })
+
 
 api.add_resource(Auth, "/auth")
 
@@ -929,6 +1023,7 @@ class order(Resource):
         return jsonify({
             "past_orders": [
                 {
+                    "index": i,
                     "time": str(past_order[0]),
                     "amount": past_order[1],
                     "status": past_order[2],
@@ -938,7 +1033,7 @@ class order(Resource):
                     "price": past_order[6],
                     "image_path": past_order[7],
                 }
-                for past_order in past_orders
+                for i, past_order in enumerate(past_orders)
             ],
             "status_code": 200
         })

@@ -74,7 +74,7 @@ const ProfileScreen = ({ navigation }) => {
                             <View style={styles.button}>
                                 <Text style={{ marginTop: 20, fontSize: 20, marginRight: 30 }}>  <Icon2 name='user' size={30}> </Icon2> {username}</Text>
                                 <TouchableOpacity
-                                    onPress={() => alert('does not exist')}
+                                    onPress={() => navigation.navigate('PreviousOrders')}
                                     style={[styles.signIn, {
                                         borderColor: '#BFA38F',
                                         borderWidth: 1,

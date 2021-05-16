@@ -20,7 +20,7 @@ import CoffeeMachineScreen from './Products/CoffeeMachineScreen';
 import CartScreen from './CartScreen';
 import CheckoutScreen from './CheckoutScreen';
 import ProductDetailsScreen from './Products/ProductDetailsScreen';
-
+import PreviousOrdersScreen from './PreviousOrdersScreen';
 
 const HomeStack = createStackNavigator();
 const CategoryStack = createStackNavigator();
@@ -224,6 +224,14 @@ const ProfileStackScreen = ({ navigation }) => (
         //     <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('CartScreen')}></Icon.Button>
         // )
         }} /> */}
+         <ProfileStack.Screen name="PreviousOrders" component={PreviousOrdersScreen} options={{
+      title: 'Previous Orders',
+      headerRight: () => (
+        <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+      ),
+      headerLeft: () => null
+    }} />
+
   </ProfileStack.Navigator>
 );
 

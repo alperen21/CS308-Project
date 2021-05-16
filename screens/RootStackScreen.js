@@ -14,6 +14,7 @@ import CoffeeMachineScreen from './Products/CoffeeMachineScreen';
 import CartScreen from './CartScreen';
 import ProductDetailsScreen from './Products/ProductDetailsScreen';
 import CheckoutScreen from './CheckoutScreen';
+import PreviousOrdersScreen from './PreviousOrdersScreen';
 const RootStack = createStackNavigator();
 
 const RootStackScreen = ({navigation}) => (
@@ -30,6 +31,7 @@ const RootStackScreen = ({navigation}) => (
         <RootStack.Screen name="CartScreen" component={CartScreen}/>
         <RootStack.Screen name="ProductDetailsScreen" component={ProductDetailsScreen}/>
         <RootStack.Screen name="CheckoutScreen" component={CheckoutScreen}/>
+        <RootStack.Screen name="PreviousOrdersScreen" component={PreviousOrdersScreen}/>
     </RootStack.Navigator>
 );
 

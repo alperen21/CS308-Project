@@ -293,14 +293,6 @@ const CartScreen = ({ navigation }) => {
 						}
 
 
-						// title='Checkout'
-						// onPress={() => {
-						// 	totalprice === 0 ? (alert("Cart is empty!")) : (navigation.navigate('Checkout', {
-						// 		total: totalprice
-						// 	}))
-						// }
-
-
 						}
 					/>
 				</View>

@@ -1,20 +1,114 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, FlatList, Image } from 'react-native';
+import { View ,Text, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, FlatList, Image } from 'react-native';
 
 import { Button } from './Products/Button';
 import PropTypes from 'prop-types';
 import CreditCard from 'react-native-credit-card-form-ui';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-community/async-storage';
+import { useIsFocused } from "@react-navigation/native";
+import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 
 
-const CheckoutScreen = ({ route }) => {
 
-  // const [data, setData] = React.useState({
+const CheckoutScreen = ({ route, navigation }) => {
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+		getBasket();
+	}, [isFocused]);
+
+  const [basketlist, setBasketList] = useState([]);
+
+  const getBasket = async () => {
+
+		let token_id = 0;
+		let username = 0;
+
+		try {
+			token_id = await AsyncStorage.getItem('token');
+		} catch (e) {
+			console.log(e);
+		}
+
+		try {
+			// await AsyncStorage.setItem('userToken', userToken);
+			username = await AsyncStorage.getItem('userName');
+			// setUsername(username);
+		} catch (e) {
+			console.log(e);
+		}
+
+		console.log("checkout screen- TOKEN id that we sent to backend::!!!", token_id);
+		console.log("checkout screen- USERNAME that we sent to backend::!!!", username);
+
+		const response2 = await fetch('http://localhost:5000/basket', {
+			method: 'GET',
+			headers: {
+				//'Authorization': 'Bearer ' + token_id,
+				'Content-Type': 'application/json',
+				"Accept": 'application/json',
+				"user": username,
+				"token": token_id,
+
+			},
+		})
+
+		let json = await response2.json();
+		console.log("basket products::!!!", json);
+
+		setBasketList(json.products);
+	}
+
+  const renderItem = ({ item }) => {
+
+		return (
+
+			<View>
+				<View style={{ flexDirection: 'row' }}>
+					<Image style={styles.image}
+						source={{
+							uri: item.image_path
+						}} />
+					<View>
+						<Text style={{ width: 300, marginTop: 10, fontSize: 14, fontWeight: 'bold' }}>{item.name} </Text>
+						<Text style={{ fontSize: 15 }}> Model: {item.model}</Text>
+						{/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
+						<Text > </Text>
+
+						<View style={{ flexDirection: 'row' }}>
+
+							<View style={{}}><Text style={{ fontSize: 18, color: '#000000bf' }}> ${item.price} </Text></View>
+						
+							<View style={{ marginLeft: 200 , marginRight:50}}><Text style={{ fontSize: 18}}>{item.quantity}</Text></View>
+
+						</View>
+
+					</View>
+				</View>
+				<View
+					style={{
+						//borderBottomColor: '#BFA38F',
+						borderColor: '#BFA38F',
+						borderBottomWidth: 2,
+						borderEndWidth: 1000,
+					}}
+				/>
+			</View>
+		)
+
+	};
+//-------------------------------------------------------------------------------------------
+
+   // const [data, setData] = React.useState({
 
   //   username: '',
   //   address: '',
 
 
   // });
+
   const checkoutHandle = async () => {
 
     let token_id = 0;
@@ -22,15 +116,14 @@ const CheckoutScreen = ({ route }) => {
 
     try {
       token_id = await AsyncStorage.getItem('token');
-      // setToken(token_id);
+      
     } catch (e) {
       console.log(e);
     }
 
     try {
-      // await AsyncStorage.setItem('userToken', userToken);
       username = await AsyncStorage.getItem('userName');
-      // setUsername(username);
+     
     } catch (e) {
       console.log(e);
     }
@@ -48,42 +141,17 @@ const CheckoutScreen = ({ route }) => {
     })
 
     let json = await response.json();
+    console.log("json after checkout?!?!?!!?",json);
+    
 
-    data.token = json.token;
-    // setData({
-    //     ...data,
-    //     token: json.token,
-    // });
-
-
-    if (json.status_code == 200) {
-      //console.log("HEYY CHECK IT OUTTTTT - signinScnreen!!!!",data.token);
-      signIn(data.username, data.token);
-      // ProfileScreen();
-
-      navigation.navigate('Products', {
-        username: data.username,
-      });
-      // navigation.navigate('Products');
-
-    }
-    else if (json.status_code == 400) {
-
-      alert('missing field')
-      //missing field
-    }
-    else {
-      alert('user not found')
-      //user not found
-    }
+    alert("We received your order! Here is your order number 23814281.")
+    navigation.navigate('Products')
   }
-
 
   const [text, onChangeText] = React.useState("");
 
   const { total } = route.params;
   const creditCardRef = React.useRef();
-
 
 
   const handleSubmit = React.useCallback(() => {
@@ -98,19 +166,21 @@ const CheckoutScreen = ({ route }) => {
   return (
 
 
-    <SafeAreaView>
+    <View >
+      	<ScrollView>
+
+        <FlatList
+          data={basketlist}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.name.toString()}
+        />
+
+        </ScrollView>
 
 
-      <TextInput
-        style={styles.input}
-        onChangeText={onChangeText}
-        value={text}
-        placeholder={"Your address"}
-      />
+      <View><Text style={{ marginTop: 20, marginLeft: 20, fontWeight: "500", fontSize: 20, color: 'black' }}>Total Payment: ${total}</Text></View>
 
-      <View><Text style={{ marginTop: 100, marginLeft: 40, fontWeight: "500", fontSize: 20, color: 'black' }}>TOTAL: ${total}</Text></View>
-
-      <View style={{ marginTop: 100, marginLeft: 40 }}>
+      {/* <View style={{ marginTop: 100, marginLeft: 40 }}>
         <CreditCard
           ref={creditCardRef}
           placeholders={{ number: '0000 0000 0000 0000', holder: 'Card Holder', expiration: 'MM/YY', cvv: '000' }}
@@ -120,12 +190,33 @@ const CheckoutScreen = ({ route }) => {
           textColor={'#FFFFFF'}
           placeholderTextColor={'#FFFFFF'}
         />
-        
-      </View>
+      </View> */}
 
-      <Button title="Submit" onPress={handleSubmit} />
+      <View style={{ marginHorizontal: 90 }}>
 
-    </SafeAreaView>
+					<Button style={{ marginBottom: 12 }}
+						icon={
+							<Icon
+								name="arrow-right"
+								size={15}
+								color="white"
+							/>
+						}
+						buttonStyle={{
+							backgroundColor: '#04B45F'
+						}}
+
+						title='Confirm'
+						onPress={() => {{
+                checkoutHandle();
+              }
+						}
+
+						}
+					/>
+				</View>
+      
+    </View>
 
   );
 
@@ -146,4 +237,54 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: '#BFA38F'
   },
+  container: {
+		shadowColor: '#cdcdcd',
+		shadowOffset: { width: 5, height: 5 },
+		shadowOpacity: 0.5,
+		shadowRadius: 10,
+		elevation: 5,
+		marginBottom: 30,
+	},
+	image: { width: 100, height: 100, marginTop: 10 },
+	rowContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		marginBottom: 10,
+	},
+	title: { fontSize: 23, fontWeight: 'bold' },
+	description: { color: '#b1b1b1', marginBottom: 10 },
+	price: {
+		color: '#7de3bb',
+		fontSize: 18,
+		fontWeight: 'bold',
+	},
+	notInStock: { textAlign: 'center' },
+
+	together: {
+
+		flexDirection: 'row',
+		justifyContent: 'space-evenly',
+
+	},
+	input: {
+		height: 30,
+		width: 25,
+		margin: 1,
+		borderWidth: 0.3,
+		fontSize: 15,
+		textAlign: 'center'
+	},
+	button: {
+		backgroundColor: '#000000bf',
+		borderRadius: 20,
+		paddingHorizontal: 13,
+		paddingVertical: 12,
+		marginTop: 20
+	},
+	buttontext: {
+		color: '#ffffff',
+		textAlign: 'center',
+		fontSize: 15,
+		fontWeight: '500',
+	},
 });

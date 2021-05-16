@@ -101,13 +101,14 @@ const CheckoutScreen = ({ route, navigation }) => {
 	};
 //-------------------------------------------------------------------------------------------
 
-   // const [data, setData] = React.useState({
+   const [data, setData] = React.useState({
 
-  //   username: '',
-  //   address: '',
+    card_no: false,
+    card_name: false,
+    exp_date: false,
+    cvv_no: false,
 
-
-  // });
+  });
 
   const checkoutHandle = async () => {
 
@@ -148,25 +149,83 @@ const CheckoutScreen = ({ route, navigation }) => {
     navigation.navigate('Products')
   }
 
-  const [text, onChangeText] = React.useState("");
+ 
 
   const { total } = route.params;
-  const creditCardRef = React.useRef();
+  // const creditCardRef = React.useRef();
 
 
-  const handleSubmit = React.useCallback(() => {
-    if (creditCardRef.current) {
-      const { error, data } = creditCardRef.current.submit();
-      console.log('ERROR: ', error);
-      console.log('CARD DATA: ', data);
-    }
-  }, []);
+  // const handleSubmit = React.useCallback(() => {
+  //   if (creditCardRef.current) {
+  //     const { error, data } = creditCardRef.current.submit();
+  //     console.log('ERROR: ', error);
+  //     console.log('CARD DATA: ', data);
+  //   }
+  // }, []);
+
+  const card_no_Change = (val) => {
+    if( val.length === 0 ) {
+      setData({
+        ...data,
+        card_no: false,
+    });
+  } else {
+    setData({
+      ...data,
+      card_no: true,
+  }); 
+  }
+}
+
+const name_Change = (val) => {
+  if( val.length === 0 ) {
+    setData({
+      ...data,
+      card_name: false,
+  });
+} else {
+  setData({
+    ...data,
+    card_name: true,
+}); 
+}
+}
+const exp_Change = (val) => {
+  if( val.length === 0 ) {
+    setData({
+      ...data,
+      exp_date: false,
+  });
+} else {
+  setData({
+    ...data,
+    exp_date: true,
+}); 
+}
+}
+const cvv_Change = (val) => {
+  if( val.length === 0 ) {
+    setData({
+      ...data,
+      cvv_no: false,
+  });
+} else {
+  setData({
+    ...data,
+    cvv_no: true,
+}); 
+}
+}
+
 
 
   return (
 
 
-    <View >
+    <View style = {{flex:1}}>
+
+    <View><Text style={{ marginTop: 20, marginLeft: 20, fontWeight: "500", fontSize: 20, color: 'black' }}>Order details:</Text></View>
+
       	<ScrollView>
 
         <FlatList
@@ -176,6 +235,38 @@ const CheckoutScreen = ({ route, navigation }) => {
         />
 
         </ScrollView>
+
+
+        <View><Text style={{ marginTop: 20, marginLeft: 10, fontWeight: "500", fontSize: 20, color: 'black' }}>Credit Card Details:</Text></View>
+      <View style={styles.action}>
+        <TextInput 
+                    placeholder="Enter Credit Card Number"
+                    style={styles.textInput}   
+                    onChangeText={(val) => card_no_Change(val)}         
+        />
+      </View>
+      <View style={styles.action}>
+        <TextInput 
+                    placeholder="Enter Name of Credit Card Owner"
+                    style={styles.textInput}   
+                    onChangeText={(val) => name_Change(val)}          
+        />
+      </View>
+      <View style={styles.action}>
+        <TextInput 
+                    placeholder="Enter Credit Card Expiration Date"
+                    style={styles.textInput}   
+                    onChangeText={(val) => exp_Change(val)}          
+        />
+      </View>
+      <View style={styles.action}>
+        <TextInput 
+                    placeholder="Enter CVV"
+                    style={styles.textInput} 
+                    onChangeText={(val) => cvv_Change(val)}            
+        />
+      </View>
+        
 
 
       <View><Text style={{ marginTop: 20, marginLeft: 20, fontWeight: "500", fontSize: 20, color: 'black' }}>Total Payment: ${total}</Text></View>
@@ -190,7 +281,8 @@ const CheckoutScreen = ({ route, navigation }) => {
           textColor={'#FFFFFF'}
           placeholderTextColor={'#FFFFFF'}
         />
-      </View> */}
+        </View> */}
+        
 
       <View style={{ marginHorizontal: 90 }}>
 
@@ -208,7 +300,12 @@ const CheckoutScreen = ({ route, navigation }) => {
 
 						title='Confirm'
 						onPress={() => {{
+              if (data.cvv_no===false || data.card_name===false || data.card_no === false || data.exp_date === false  ) {
+                alert("Fill out credit card information!")
+              } else {
                 checkoutHandle();
+              }
+
               }
 						}
 
@@ -266,6 +363,13 @@ const styles = StyleSheet.create({
 		justifyContent: 'space-evenly',
 
 	},
+  action: {
+    flexDirection: 'row',
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+    paddingBottom: 5
+},
 	input: {
 		height: 30,
 		width: 25,
@@ -287,4 +391,10 @@ const styles = StyleSheet.create({
 		fontSize: 15,
 		fontWeight: '500',
 	},
+  textInput: {
+    flex: 1,
+    marginTop: Platform.OS === 'ios' ? 0 : -12,
+    paddingLeft: 10,
+    color: '#05375a',
+},
 });

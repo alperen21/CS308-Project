@@ -265,7 +265,7 @@ const CartScreen = ({ navigation }) => {
 			<View style={{ flexDirection: 'row' }}>
 
 				<Text style={{ marginLeft: 10, fontWeight: "500", fontSize: 20, color: 'black' }}> <AntDesign name="shoppingcart" size={24} color="black" />  SUBTOTAL:  ${totalprice}</Text>
-				<View style={{ marginHorizontal: 90 }}>
+				<View style={{ marginHorizontal: 60  }}>
 
 					<Button style={{ marginBottom: 12 }}
 						icon={
@@ -276,6 +276,7 @@ const CartScreen = ({ navigation }) => {
 							/>
 						}
 						buttonStyle={{
+						
 							backgroundColor: '#04B45F'
 						}}
 

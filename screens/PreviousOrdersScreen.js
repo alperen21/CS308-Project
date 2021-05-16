@@ -53,7 +53,7 @@ const [orderslist, setOrdersList] = useState([]);
     //console.log("start4",item.name);
     return (
 <View>
-      <View style={{ flexDirection: 'row', marginVertical: 40, paddingHorizontal: 15 }}>
+      <View style={{ flexDirection: 'row', marginVertical: 40, paddingHorizontal: 20 }}>
         
         <View>
           <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Order Time: {item.time} </Text>
@@ -65,12 +65,14 @@ const [orderslist, setOrdersList] = useState([]);
               title="View Details"
               onPress={() => alert()} //navigate
             />
-            <View style={{ marginLeft:130}}>
+            {(item.status !== 'Preparing' && item.status !== 'Cancelled') && <View style={{ marginLeft:130}}>
             <Button
               title="Rate | Comment"
               onPress={() => alert()} //navigate
             />
-            </View>
+            </View> }
+           
+            
           </View>
 
 
@@ -90,7 +92,7 @@ const [orderslist, setOrdersList] = useState([]);
       }
       {
         item.status == 'Preparing'&&
-        <View style={{ flexDirection: 'row',  marginLeft:-50}}><Image style={styles.image}
+        <View style={{ flexDirection: 'row',  marginLeft:140}}><Image style={styles.image}
             source={{
               uri: 'https://static.thenounproject.com/png/598271-200.png'
             }}/></View>
@@ -105,7 +107,7 @@ const [orderslist, setOrdersList] = useState([]);
       }
       {
         item.status == 'Cancelled'&&
-         <View style={{ flexDirection: 'row',  marginLeft:-50}}><Image style={styles.image}
+         <View style={{ flexDirection: 'row',  marginLeft:140}}><Image style={{width: 45, height: 45, marginBottom: 10 }}
          source={{
            uri: 'https://static.thenounproject.com/png/581276-200.png'
          }}/></View>
@@ -113,7 +115,7 @@ const [orderslist, setOrdersList] = useState([]);
       }
       {
         item.status == 'Returned'&&
-        <View style={{ flexDirection: 'row', marginLeft:-50}}><Image style={styles.image}
+        <View style={{ flexDirection: 'row', marginLeft:-50}}><Image style={{width: 40, height: 40, marginBottom: 10 }}
         source={{
           uri: 'https://static.thenounproject.com/png/598350-200.png'
         }}/></View>

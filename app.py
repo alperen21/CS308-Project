@@ -341,15 +341,6 @@ class Auth(Resource):
 
                 return retJson
 
-    @cross_origin(origins="http://localhost:63342*")
-    @private
-    def get(self):
-        posted_data = request.get_json()
-        return jsonify({
-            "message": True,
-            "status_code": 200
-        })
-
 
 api.add_resource(Auth, "/auth")
 
@@ -927,7 +918,11 @@ class order(Resource):
         cursor = mysql.get_db().cursor()
         customer_id = username_to_id(
             request.headers["user"])
-        query = "SELECT time, amount, status FROM `ORDERS` WHERE customer_id = (%s)"
+        query = """
+        SELECT time, amount, status, name, rating, model, price, image_path
+        FROM ORDERS NATURAL JOIN CART NATURAL JOIN CART_PRODUCT NATURAL JOIN PRODUCT
+        WHERE customer_id = (%s)
+        """
         cursor.execute(query, (customer_id,))
         past_orders = cursor.fetchall()
         print(past_orders)
@@ -936,7 +931,12 @@ class order(Resource):
                 {
                     "time": str(past_order[0]),
                     "amount": past_order[1],
-                    "status": past_order[2]
+                    "status": past_order[2],
+                    "name": past_order[3],
+                    "rating": past_order[4],
+                    "model": past_order[5],
+                    "price": past_order[6],
+                    "image_path": past_order[7],
                 }
                 for past_order in past_orders
             ],

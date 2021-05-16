@@ -87,7 +87,7 @@ const ProfileScreen = ({ navigation }) => {
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
-                                    onPress={() => alert('does not exist')}
+                                    onPress={() => navigation.navigate('AccountInformation')}
                                     style={[styles.signIn, {
                                         borderColor: '#BFA38F',
                                         borderWidth: 1,

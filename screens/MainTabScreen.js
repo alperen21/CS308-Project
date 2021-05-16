@@ -21,6 +21,7 @@ import CartScreen from './CartScreen';
 import CheckoutScreen from './CheckoutScreen';
 import ProductDetailsScreen from './Products/ProductDetailsScreen';
 import PreviousOrdersScreen from './PreviousOrdersScreen';
+import AccountInformationScreen from './AccountInformationScreen';
 
 const HomeStack = createStackNavigator();
 const CategoryStack = createStackNavigator();
@@ -224,8 +225,15 @@ const ProfileStackScreen = ({ navigation }) => (
         //     <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('CartScreen')}></Icon.Button>
         // )
         }} /> */}
-         <ProfileStack.Screen name="PreviousOrders" component={PreviousOrdersScreen} options={{
+    <ProfileStack.Screen name="PreviousOrders" component={PreviousOrdersScreen} options={{
       title: 'Previous Orders',
+      headerRight: () => (
+        <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+      ),
+      headerLeft: () => null
+    }} />
+      <ProfileStack.Screen name="AccountInformation" component={AccountInformationScreen} options={{
+      title: 'Account Information',
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),

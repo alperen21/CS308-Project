@@ -63,8 +63,13 @@ const [orderslist, setOrdersList] = useState([]);
           <View style={styles.together}>
           <Button
               title="View Details"
-              onPress={() => alert()} //navigate
+              onPress={() => navigation.navigate('RateCommentScreen', {
+                itemImage: item.image_path,
+                itemName: item.name,
+                itemModel: item.model,
+              })}  //navigate
             />
+            
             {(item.status !== 'Preparing' && item.status !== 'Cancelled') && <View style={{ marginLeft:130}}>
             <Button
               title="Rate | Comment"
@@ -144,7 +149,7 @@ const [orderslist, setOrdersList] = useState([]);
       <FlatList style={{ flex: 1 }}
         data={orderslist}
         renderItem={renderItem}
-        keyExtractor={(item) => item.time.toString()}
+        keyExtractor={(item) => item.amount.toString()}
       />
 
     </SafeAreaView>

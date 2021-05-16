@@ -341,7 +341,7 @@ class Auth(Resource):
 
                 return retJson
 
-    @cross_origin(origins="http://localhost:63342*")
+    @cross_origin(origins="http://localhost:3000*")
     @private
     def get(self):
         cursor = mysql.get_db().cursor()
@@ -362,10 +362,11 @@ class Auth(Resource):
             "last_name": data[2],
             "email": data[3],
             "phone": data[4],
-            "address": data[5]
+            "address": data[5],
+            "status_code": 200
         })
 
-    @cross_origin(origins="http://localhost:63342*")
+    @cross_origin(origins="http://localhost:3000*")
     @private
     def put(self):
         posted_data = request.get_json()

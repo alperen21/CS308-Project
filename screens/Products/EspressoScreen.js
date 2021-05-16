@@ -19,8 +19,6 @@ const EspressoScreen = ({ navigation }) => {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
-        user: username,
-        token: token_id,
         //'category_name':'Espresso'
       },
       body: JSON.stringify({
@@ -59,6 +57,8 @@ const EspressoScreen = ({ navigation }) => {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        user: username,
+        token: token_id,
       },
       body: JSON.stringify({
         //category_name:'Coffee Machines'

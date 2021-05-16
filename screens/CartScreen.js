@@ -21,6 +21,16 @@ const CartScreen = ({ navigation }) => {
 	}, [isFocused]);
 
 
+	const [loggedIn, setloggedIn] = React.useState(null);
+	useEffect(() => {
+		AsyncStorage.getItem('userName')
+			.then((val) => {
+				setloggedIn(val);
+				console.log("am i logged in ????????????", loggedIn);
+			});
+	}, [isFocused]);
+
+
 	const getBasket = async () => {
 
 		let token_id = 0;
@@ -242,17 +252,6 @@ const CartScreen = ({ navigation }) => {
 				/>
 
 
-				{/* if (basketlist !== null) {
-				<Button 			
-				title="Checkout"
-				onPress={() =>{ alert("does not exist")}}
-				 />
-			}
-			else{
-				<Text>There is no product in your basket</Text>
-			}
-			 */}
-
 			</ScrollView>
 			<View
 				style={{
@@ -282,10 +281,26 @@ const CartScreen = ({ navigation }) => {
 
 						title='Checkout'
 						onPress={() => {
-							totalprice === 0 ? (alert("Cart is empty!")) : (navigation.navigate('Checkout', {
-								total: totalprice
-							}))
+							if (totalprice === 0) {
+								alert("Cart is empty!");
+								
+							} else if(loggedIn === null){
+								alert("You need to sign up/sign in in order to checkout!");
+								// navigation.navigate('SignUpScreen')
+							} else{
+								navigation.navigate('Checkout', {total: totalprice})
+							}
 						}
+
+
+						// title='Checkout'
+						// onPress={() => {
+						// 	totalprice === 0 ? (alert("Cart is empty!")) : (navigation.navigate('Checkout', {
+						// 		total: totalprice
+						// 	}))
+						// }
+
+
 						}
 					/>
 				</View>

@@ -83,7 +83,7 @@ const ProfileScreen = ({ navigation }) => {
                                 >
                                     <Text style={[styles.textSign, {
                                         color: '#BFA38F',
-                                    }]}>Previous Purchases </Text>
+                                    }]}>Previous Orders </Text>
                                 </TouchableOpacity>
 
                                 <TouchableOpacity

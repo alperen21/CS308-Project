@@ -313,20 +313,20 @@ class Auth(Resource):
 
             cursor = mysql.get_db().cursor()
 
-            query = "SELECT * FROM USERS WHERE username=(%s) and password=(%s)"
+            query = "SELECT username, first_name, last_name FROM USERS WHERE username=(%s) and password=(%s)"
             cursor.execute(query, (username, password))
             data = cursor.fetchone()
             if (data != None):
                 token = jwt.encode({
-                    'user': data[1],
+                    'user': data[0],
                     'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=1800)
                 },
                     app.config['SECRET_KEY'], algorithm='HS256')
 
                 retJson = {
-                    "username": data[1],
-                    "name": data[3],
-                    "surname": data[4],
+                    "username": data[0],
+                    "name": data[1],
+                    "surname": data[2],
                     "token": token,
                     "status_code": 200
                 }
@@ -496,7 +496,7 @@ class findProduct(Resource):
         productName = "%"+productName+"%"
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT * FROM PRODUCT WHERE name like (%s)"
+        query = "SELECT name, rating, model, price, image_path, stock FROM PRODUCT WHERE name like (%s)"
         cursor.execute(query, (productName,))
         data = cursor.fetchall()
 
@@ -505,12 +505,12 @@ class findProduct(Resource):
         if (data != None):
             for element in data:
                 product = {
-                    "name": element[2],
-                    "rating": element[3],
-                    "model": element[4],
-                    "price": element[5],
-                    "image_path": element[6],
-                    "stock": element[7]
+                    "name": element[0],
+                    "rating": element[1],
+                    "model": element[2],
+                    "price": element[3],
+                    "image_path": element[4],
+                    "stock": element[5]
                 }
                 data_list.append(product)
             return jsonify({
@@ -731,7 +731,7 @@ class productsOfCategory(Resource):
         category_name = posted_data["category_name"]
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT * FROM PRODUCT P, CATEGORY C WHERE P.category_id = C.category_id AND C.category_name = (%s)"
+        query = "SELECT category_id, product_id, name, rating, model, price, image_path, stock, category_id, pm_id, category_name FROM PRODUCT P, CATEGORY C WHERE P.category_id = C.category_id AND C.category_name = (%s)"
 
         if ("lowest_rating" in posted_data):
             query = query + \
@@ -782,7 +782,7 @@ class products(Resource):
         posted_data = request.get_json()
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT * FROM PRODUCT"
+        query = "SELECT category_id, product_id, name, rating, model, price; image_path, stock FROM PRODUCT"
 
         if ("lowest_rating" in posted_data or "highest_rating" in posted_data or "lowest_price" in posted_data or "highest_price" in posted_data):
             query = query + " WHERE"

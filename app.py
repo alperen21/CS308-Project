@@ -431,6 +431,7 @@ class Auth(Resource):
         cursor.execute(query, (phone, address,
                                email, uid))
         mysql.get_db().commit()
+        print(posted_data)
         return jsonify({
             "status_code": 201,
             "message": "ok"
@@ -656,13 +657,22 @@ class orderBy(Resource):
 
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT * FROM PRODUCT ORDER BY {} {}".format(
+        query = "SELECT product_id, name, rating, model, price, image_path, stock FROM PRODUCT ORDER BY {} {}".format(
             criteria, orderType)
         cursor.execute(query)
 
-        data = cursor.fetchall()
+        datas = cursor.fetchall()
         retJson = {
-            "name": data[0],
+            "product": [
+                {
+                    "product_id": data[0],
+                    "name":data[1],
+                    "rating":data[2],
+                    "model":data[3],
+                    "price":data[4],
+                    "image_path":data[5],
+                    "stock":data[6]
+                }for data in datas],
             "status_code": 200
         }
         return retJson

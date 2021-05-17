@@ -1023,30 +1023,36 @@ class order(Resource):
         cursor = mysql.get_db().cursor()
         customer_id = username_to_id(
             request.headers["user"])
-        query = """
-        SELECT time, amount, status, name, rating, model, price, image_path
-        FROM ORDERS NATURAL JOIN CART NATURAL JOIN CART_PRODUCT NATURAL JOIN PRODUCT
-        WHERE customer_id = (%s)
-        """
+        query = "SELECT cart_id FROM `ORDERS` WHERE customer_id = (%s)"
         cursor.execute(query, (customer_id,))
-        past_orders = cursor.fetchall()
-        print(past_orders)
-        return jsonify({
-            "past_orders": [
+
+        # get all cart ids from the corresponding user
+        order_ids = [order[0] for order in cursor.fetchall()]
+
+        return_list = list()
+        for id in order_ids:
+            # to get product information
+            query = "SELECT name, rating, model, price, image_path, stock FROM CART_PRODUCT NATURAL JOIN PRODUCT WHERE cart_id = (%s)"
+            cursor.execute(query, (id,))
+            # products that the corresponding user bought in this particular order
+            products = cursor.fetchall()
+
+            return_list.append(
                 {
-                    "index": i,
-                    "time": str(past_order[0]),
-                    "amount": past_order[1],
-                    "status": past_order[2],
-                    "name": past_order[3],
-                    "rating": past_order[4],
-                    "model": past_order[5],
-                    "price": past_order[6],
-                    "image_path": past_order[7],
+                    "order_id": id,
+                    "products": [{
+                        "name": product[0],
+                        "rating": product[1],
+                        "model": product[2],
+                        "price": product[3],
+                        "image_path": product[4],
+                        "stock": product[5]
+                    } for product in products]
                 }
-                for i, past_order in enumerate(past_orders)
-            ],
-            "status_code": 200
+            )
+        return jsonify({
+            "status_code": 200,
+            "orders": return_list
         })
 
     @private
@@ -1076,10 +1082,10 @@ class order(Resource):
             cursor.execute(query, (new_stock, product_id))
             mysql.get_db().commit()
 
-            query = "INSERT INTO `CART`(`customer_id`,`product_id`, `total_cost`, `quantity`) VALUES ((%s),(%s),(%s),(%s))"
+            query = "INSERT INTO `CART`(`customer_id`, `product_id`, `total_cost`, `quantity`) VALUES ((%s),(%s),(%s),(%s))"
             total_cost = int(element[0])*int(quantity)
             cursor.execute(
-                query, (customer_id, product_id, total_cost, quantity))
+                query, (customer_id, 1, 2, 3))
             mysql.get_db().commit()
 
             # get cart id

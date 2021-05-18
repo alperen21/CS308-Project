@@ -82,9 +82,14 @@ class OAuthMail():
         )
 
     def send(self):
-        self.start_service()
 
-        raw_string = base64.urlsafe_b64encode(self.mail.as_bytes()).decode()
-        message = self.service.users().messages().send(
-            userId='alperenbot086@gmail.com', body={'raw': raw_string}).execute()
-        print("email successfully sent")
+        try:
+            self.start_service()
+
+            raw_string = base64.urlsafe_b64encode(
+                self.mail.as_bytes()).decode()
+            message = self.service.users().messages().send(
+                userId='alperenbot086@gmail.com', body={'raw': raw_string}).execute()
+            print("email successfully sent")
+        except Exception:
+            print("email could not be sent")

@@ -27,6 +27,28 @@ mysql.init_app(app)
 api = Api(app)
 
 
+def increase_stock(product_id, amount):
+    cursor = mysql.get_db().cursor()
+    query = "SELECT stock FROM PRODUCT WHERE product_id =(%s)"
+    cursor.execute(query, (product_id,))
+    stock = cursor.fetchone()[0]
+    stock += amount[0]
+
+    query = "UPDATE PRODUCT SET stock = (%s) WHERE product_id = (%s)"
+    cursor.execute(query, (stock, product_id))
+
+
+def decrease_stock(product_id, amount):
+    cursor = mysql.get_db().cursor()
+    query = "SELECT stock FROM PRODUCT WHERE product_id =(%s)"
+    cursor.execute(query, (product_id,))
+    stock = cursor.fetchone()[0]
+    stock -= amount[0]
+
+    query = "UPDATE PRODUCT SET stock = (%s) WHERE product_id = (%s)"
+    cursor.execute(query, (stock, product_id))
+
+
 def is_product_manager(user_id):
     cursor = mysql.get_db().cursor()
     query = """ SELECT *
@@ -1368,9 +1390,16 @@ class refund(Resource):
 
         elif (decision == "accept"):
             query = "SELECT amount FROM `refund_request` WHERE product_id = (%s) AND customer_id = (%s)"
-            cursor.execute(query)
+            cursor.execute(query, (product_id, customer_id))
             amount = cursor.fetchone()
 
+            # increase stock
+            increase_stock(product_id, amount)
+
+            # delete refund request
+            query = "DELETE FROM `refund_request` WHERE product_id = (%s) AND customer_id = (%s)"
+            cursor.execute(query, (product_id, customer_id))
+            mysql.get_db().commit()
             return jsonify({
                 "amount": amount
             })

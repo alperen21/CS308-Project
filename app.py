@@ -920,7 +920,7 @@ class productsOfCategory(Resource):
         category_name = posted_data["category_name"]
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT category_id, product_id, name, rating, model, price, image_path, stock, category_id, pm_id, category_name FROM PRODUCT P, CATEGORY C WHERE P.category_id = C.category_id AND C.category_name = (%s)"
+        query = "SELECT * FROM PRODUCT P, CATEGORY C WHERE P.category_id = C.category_id AND C.category_name = (%s)"
 
         if ("lowest_rating" in posted_data):
             query = query + \
@@ -971,7 +971,7 @@ class products(Resource):
         posted_data = request.get_json()
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT category_id, product_id, name, rating, model, price; image_path, stock FROM PRODUCT"
+        query = "SELECT category_id, product_id, name, rating, model, price, image_path, stock FROM PRODUCT"
 
         if ("lowest_rating" in posted_data or "highest_rating" in posted_data or "lowest_price" in posted_data or "highest_price" in posted_data):
             query = query + " WHERE"

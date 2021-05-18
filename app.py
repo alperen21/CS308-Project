@@ -10,6 +10,7 @@ from emailClass import SMTPemail
 from datetime import datetime
 import datetime
 import threading
+import bcrypt
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -456,10 +457,18 @@ class Auth(Resource):
 
             cursor = mysql.get_db().cursor()
 
-            query = "SELECT username, first_name, last_name FROM USERS WHERE username=(%s) and password=(%s)"
-            cursor.execute(query, (username, password))
+            query = "SELECT username, first_name, last_name, password FROM USERS WHERE username=(%s)"
+            cursor.execute(query, (username, ))
             data = cursor.fetchone()
+
             if (data != None):
+
+                if (not bcrypt.checkpw(password.encode('utf-8'), data[3].encode('utf-8'))):
+                    return jsonify({
+                        "message": "user not found",
+                        "status_code": 404
+                    })
+
                 uid = username_to_id(username)
                 if (is_product_manager(uid)):
                     token = jwt.encode({
@@ -592,6 +601,8 @@ class Auth(Resource):
             password = data[6]
         else:
             password = posted_data["password"]
+            password = bcrypt.hashpw(
+                password.encode('utf-8'), bcrypt.gensalt())
 
         query = """
         UPDATE `USERS`
@@ -638,7 +649,9 @@ class Users(Resource):
                 mail_thread = threading.Thread(
                     target=send_mail, args=(first_name, email))
                 mail_thread.start()
-                add_user(first_name, last_name, username, password, email)
+                hashed = bcrypt.hashpw(
+                    password.encode('utf-8'), bcrypt.gensalt())
+                add_user(first_name, last_name, username, hashed, email)
                 add_customer(username, phone, address, email)
 
                 retJson = {
@@ -1407,6 +1420,7 @@ class refund(Resource):
 
 api.add_resource(order, "/order")
 api.add_resource(refund, "/refund")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

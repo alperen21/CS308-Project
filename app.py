@@ -1274,16 +1274,43 @@ class refund(Resource):
     @private
     def post(self):  # ask for a refund
         posted_data = request.get_json()
-        if check_posted_data(posted_data, "refund/post") == 200:
+        if True:
             cursor = mysql.get_db().cursor()
             customer_id = username_to_id(
                 request.headers["user"])
-            product = posted_data["product_name"]
+            product_name = posted_data["product_name"]
+            amount = posted_data["amount"]
+            cart_id = posted_data["cart_id"]
 
-            product_id = product_to_id(product)
+            # check if refund request amount is <= than ordered
+            query = """ SELECT amount
+                        FROM ORDERS, CART, CART_PRODUCT, PRODUCT
+                        WHERE 
+                        ORDERS.cart_id = CART.cart_id AND 
+                        CART_PRODUCT.cart_id = CART.cart_id AND 
+                        name = (%s) AND 
+                        ORDERS.customer_id = (%s) AND 
+                        ORDERS.cart_id = (%s) """
 
-            query = "INSERT INTO `refund_request`(`product_id`, `customer_id`) VALUES ((%s),(%s))"
-            cursor.execute(query, (product_id, customer_id))
+            cursor.execute(query, (str(product_name),
+                                   str(customer_id), str(cart_id)))
+            amount_ordered = cursor.fetchone()
+            amount_ordered = amount_ordered[0]
+
+            if (int(amount) > int(amount_ordered)):
+                return jsonify({
+                    "message": "we can't refund you more than you originally ordered",
+                    "status_code": 403
+                })
+
+            query = "SELECT * FROM ORDERS WHERE customer_id = (%s)"
+            cursor.execute(query, (customer_id,))
+            refund_requests = cursor.fetchall()
+
+            product_id = product_to_id(product_name)
+
+            query = "INSERT INTO `refund_request`(`product_id`, `customer_id`,`amount`,`cart_id`) VALUES ((%s),(%s),(%s),(%s))"
+            cursor.execute(query, (product_id, customer_id, amount, cart_id))
             mysql.get_db().commit()
 
             return jsonify({
@@ -1298,7 +1325,7 @@ class refund(Resource):
     @product_manager_only
     def get(self):  # evaluate refund
         cursor = mysql.get_db().cursor()
-        query = """ SELECT username, name
+        query = """ SELECT username, name, cart_id, refund_request.amount
                     FROM refund_request, USERS, PRODUCT
                     WHERE refund_request.customer_id = USERS.user_id AND PRODUCT.product_id = refund_request.product_id
                 """
@@ -1309,11 +1336,40 @@ class refund(Resource):
             "refunds": [
                 {
                     "customer": refund_request[0],
-                    "product":refund_request[1]
+                    "product":refund_request[1],
+                    "cart_id":refund_request[2],
+                    "amount":refund_request[3]
                 } for refund_request in refund_requests
             ],
             "status_code": 200
         })
+
+    @product_manager_only
+    def put(self):
+        cursor = mysql.get_db().cursor()
+        product_name = request["product_name"]
+        customer_name = request["customer_name"]
+        decision = request["decision"]
+
+        if (decision == "reject"):
+
+            query = "DELETE FROM `refund_request` WHERE product_id = (%s) AND customer_id = (%s)"
+            cursor.execute(query)
+            mysql.get_db().commit()
+
+            return jsonify({
+                "message": "refund request has been rejected",
+                "status_code": 201
+            })
+
+        elif (decision == "accept"):
+            query = "SELECT amount FROM `refund_request` WHERE product_id = (%s) AND customer_id = (%s)"
+            cursor.execute(query)
+            amount = cursor.fetchone()
+
+            return jsonify({
+                "amount": amount
+            })
 
 
 api.add_resource(order, "/order")

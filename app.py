@@ -1345,16 +1345,20 @@ class refund(Resource):
         })
 
     @product_manager_only
-    def put(self):
+    def put(self):  # evaluate refund
         cursor = mysql.get_db().cursor()
-        product_name = request["product_name"]
-        customer_name = request["customer_name"]
-        decision = request["decision"]
+        posted_data = request.get_json()
+        product_name = posted_data["product_name"]
+        customer_name = posted_data["customer_name"]
+        decision = posted_data["decision"]
+
+        product_id = product_to_id(product_name)
+        customer_id = username_to_id(customer_name)
 
         if (decision == "reject"):
 
             query = "DELETE FROM `refund_request` WHERE product_id = (%s) AND customer_id = (%s)"
-            cursor.execute(query)
+            cursor.execute(query, (product_id, customer_id))
             mysql.get_db().commit()
 
             return jsonify({

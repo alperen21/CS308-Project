@@ -6,11 +6,12 @@ import os
 import jwt
 from functools import wraps
 from flask_cors import CORS, cross_origin
-from emailClass import SMTPemail
+from emailClass import SMTPemail, OAuthMail
 from datetime import datetime
 import datetime
 import threading
 import bcrypt
+
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -118,7 +119,7 @@ def add_customer(username, phone, address, email):
 
 def send_mail(first_name, email):
     message = f"Hello {first_name}, \nWelcome to our website! \n"
-    mail = SMTPemail(email, message, "Hello and welcome!")
+    mail = OAuthMail(email, message, "Hello and welcome!")
     mail.send()
 
 

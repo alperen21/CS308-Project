@@ -4,6 +4,8 @@ import smtplib
 import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from Google import Create_Service
+import base64
 
 
 class SMTPemail():
@@ -56,6 +58,33 @@ class SMTPemail():
             print("")
 
 
-now = datetime.now()
-dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-print(dt_string)
+class OAuthMail():
+    def __init__(self, TO, MSG, TITLE):
+
+        # init this instance of this object
+        self.TO = TO
+        self.MSG = MSG
+        self.TITLE = TITLE
+        self.mail = MIMEMultipart()
+
+        self.mail["To"] = self.TO
+        self.mail["Subject"] = self.TITLE
+
+        body = MIMEText(self.MSG, "plain")
+        self.mail.attach(body)
+
+    def start_service(self):
+        self.service = Create_Service(
+            "client_secret.json",
+            "gmail",
+            "v1",
+            ["https://mail.google.com/"]
+        )
+
+    def send(self):
+        self.start_service()
+
+        raw_string = base64.urlsafe_b64encode(self.mail.as_bytes()).decode()
+        message = self.service.users().messages().send(
+            userId='alperenbot086@gmail.com', body={'raw': raw_string}).execute()
+        print("email successfully sent")

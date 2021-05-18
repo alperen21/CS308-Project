@@ -27,6 +27,38 @@ mysql.init_app(app)
 api = Api(app)
 
 
+def is_product_manager(user_id):
+    cursor = mysql.get_db().cursor()
+    query = """ SELECT *
+                FROM PRODUCT_MANAGER, USERS
+                WHERE pm_id = user_id and user_id = (%s)
+            """
+
+    cursor.execute(query, (user_id,))
+    data = cursor.fetchone()
+
+    if (data != None):
+        return True
+    else:
+        return False
+
+
+def is_sales_manager(user_id):
+    cursor = mysql.get_db().cursor()
+    query = """ SELECT *
+                FROM SALES_MANAGER, USERS
+                WHERE sm_id = user_id and user_id = (%s)
+            """
+
+    cursor.execute(query, (user_id,))
+    data = cursor.fetchone()
+
+    if (data != None):
+        return True
+    else:
+        return False
+
+
 def username_to_id(username):
     cursor = mysql.get_db().cursor()
     query = "SELECT user_id FROM USERS WHERE username = (%s)"
@@ -35,6 +67,14 @@ def username_to_id(username):
     user_id = data[0]
 
     return user_id
+
+
+def product_to_id(product):
+    cursor = mysql.get_db().cursor()
+    query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"
+    cursor.execute(query, (product,))
+    data = cursor.fetchone()
+    return data[0]
 
 
 def get_from_jwt(token, param):  # assumes jwt token is valid
@@ -77,7 +117,12 @@ def find_user(username):
 
 
 def check_posted_data(posted_data, function_name):
-    if (function_name == "private_wrapper"):
+    if (function_name == "refund/post"):
+        if ("product_name" not in posted_data):
+            return 403
+        else:
+            return 200
+    elif (function_name == "private_wrapper"):
         if ("token" not in posted_data or "user" not in posted_data):
             return 403
         else:
@@ -146,6 +191,82 @@ def check_if_user(request):  # to check if logged in or guest
                 return True
         except Exception:
             return False
+
+
+def product_manager_only(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        if check_headers(request, "private_wrapper") == False:
+            return jsonify({
+                "message": "Forbidden",
+                "status_code": 403
+            })
+        else:
+            token = request.headers["token"]
+            user = request.headers["user"]
+            try:
+                data = jwt.decode(
+                    token, app.config['SECRET_KEY'], algorithms="HS256")
+                if (user != data["user"]):
+                    return jsonify({
+                        "message": "token does not match the user",
+                        "status_code": 403
+                    })
+                elif (data["user_type"] != "product_manager"):
+                    return jsonify({
+                        "message": "user is not a product manager",
+                        "status_code": 403
+                    })
+            except jwt.ExpiredSignatureError:
+                return jsonify({
+                    "message": "token expired",
+                    "status_code": 403
+                })
+            except Exception:
+                return jsonify({
+                    "message": "invalid token",
+                    "status_code": 403
+                })
+        return func(*args, **kwargs)
+    return wrapped
+
+
+def sales_manager_only(func):
+    @wraps(func)
+    def wrapped(*args, **kwargs):
+        if check_headers(request, "private_wrapper") == False:
+            return jsonify({
+                "message": "Forbidden",
+                "status_code": 403
+            })
+        else:
+            token = request.headers["token"]
+            user = request.headers["user"]
+            try:
+                data = jwt.decode(
+                    token, app.config['SECRET_KEY'], algorithms="HS256")
+                if (user != data["user"]):
+                    return jsonify({
+                        "message": "token does not match the user",
+                        "status_code": 403
+                    })
+                elif ("sales_manager" not in request.headers):
+                    return jsonify({
+                        "message": "user is not a product manager",
+                        "status_code": 403
+                    })
+            except jwt.ExpiredSignatureError:
+                return jsonify({
+                    "message": "token expired",
+                    "status_code": 403
+                })
+            except Exception:
+                return jsonify({
+                    "message": "invalid token",
+                    "status_code": 403
+                })
+        return func(*args, **kwargs)
+    return wrapped
 
 
 def private(func):
@@ -317,19 +438,51 @@ class Auth(Resource):
             cursor.execute(query, (username, password))
             data = cursor.fetchone()
             if (data != None):
-                token = jwt.encode({
-                    'user': data[0],
-                    'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=1800)
-                },
-                    app.config['SECRET_KEY'], algorithm='HS256')
+                uid = username_to_id(username)
+                if (is_product_manager(uid)):
+                    token = jwt.encode({
+                        'user': data[0],
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=1800),
+                        'user_type': 'product_manager'
+                    }, app.config['SECRET_KEY'], algorithm='HS256')
+                    retJson = {
+                        "username": data[0],
+                        "name": data[1],
+                        "surname": data[2],
+                        "token": token,
+                        "user_type": "product manager",
+                        "status_code": 200
+                    }
+                elif (is_sales_manager(uid)):
+                    token = jwt.encode({
+                        'user': data[0],
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=1800),
+                        'user_type': 'sales_manager'
+                    }, app.config['SECRET_KEY'], algorithm='HS256')
+                    retJson = {
+                        "username": data[0],
+                        "name": data[1],
+                        "surname": data[2],
+                        "token": token,
+                        "user type": "sales manager",
+                        "status_code": 200
+                    }
+                else:
+                    token = jwt.encode({
+                        'user': data[0],
+                        'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=1800),
+                        'user_type': 'customer'
+                    },
+                        app.config['SECRET_KEY'], algorithm='HS256')
 
-                retJson = {
-                    "username": data[0],
-                    "name": data[1],
-                    "surname": data[2],
-                    "token": token,
-                    "status_code": 200
-                }
+                    retJson = {
+                        "username": data[0],
+                        "name": data[1],
+                        "surname": data[2],
+                        "token": token,
+                        "user type": "customer",
+                        "status_code": 200
+                    }
 
                 return jsonify(retJson)
 
@@ -418,8 +571,8 @@ class Auth(Resource):
         else:
             password = posted_data["password"]
 
-        query = """ 
-        UPDATE `USERS` 
+        query = """
+        UPDATE `USERS`
         SET `username`=(%s),`password`=(%s),`first_name`=(%s),`last_name`=(%s),`email`=(%s)
         WHERE user_id = (%s)"""
 
@@ -1089,8 +1242,8 @@ class order(Resource):
             mysql.get_db().commit()
 
             # get cart id
-            query = "SELECT cart_id FROM CART WHERE customer_id = (%s) and product_id = (%s)"
-            cursor.execute(query, (customer_id, product_id))
+            query = "SELECT cart_id FROM CART WHERE customer_id = (%s)"
+            cursor.execute(query, (customer_id))
             cart_id = cursor.fetchone()[0]
 
             # add to cart_product
@@ -1117,7 +1270,55 @@ class order(Resource):
         })
 
 
+class refund(Resource):
+    @private
+    def post(self):  # ask for a refund
+        posted_data = request.get_json()
+        if check_posted_data(posted_data, "refund/post") == 200:
+            cursor = mysql.get_db().cursor()
+            customer_id = username_to_id(
+                request.headers["user"])
+            product = posted_data["product_name"]
+
+            product_id = product_to_id(product)
+
+            query = "INSERT INTO `refund_request`(`product_id`, `customer_id`) VALUES ((%s),(%s))"
+            cursor.execute(query, (product_id, customer_id))
+            mysql.get_db().commit()
+
+            return jsonify({
+                "status_code": check_posted_data(posted_data, "refund/post"),
+                "message": "ok"
+            })
+        else:
+            return jsonify({
+                "message": "bad request",
+                "status_code": check_posted_data(posted_data, "refund/post")})
+
+    @product_manager_only
+    def get(self):  # evaluate refund
+        cursor = mysql.get_db().cursor()
+        query = """ SELECT username, name
+                    FROM refund_request, USERS, PRODUCT
+                    WHERE refund_request.customer_id = USERS.user_id AND PRODUCT.product_id = refund_request.product_id
+                """
+        cursor.execute(query)
+        refund_requests = cursor.fetchall()
+
+        return jsonify({
+            "refunds": [
+                {
+                    "customer": refund_request[0],
+                    "product":refund_request[1]
+                } for refund_request in refund_requests
+            ],
+            "status_code": 200
+        })
+
+
 api.add_resource(order, "/order")
+api.add_resource(refund, "/refund")
+
 if __name__ == "__main__":
     app.run(debug=True)
 # with app.app_context():

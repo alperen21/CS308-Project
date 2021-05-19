@@ -1,17 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, TextInput,FlatList, Image } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Button } from './Products/Button';
 import PropTypes from 'prop-types';
 import { useIsFocused } from "@react-navigation/native";
+import ModalDropdown from 'react-native-modal-dropdown';
+import {Dimensions} from "react-native";
+var {height, width} = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
 
-
   const [productlist, setProductList] = useState([]);
+  const [choice, setChoice] = useState();
+  const isFocused = useIsFocused();
+
+  const [lowest_price_FilterNumber, lowest_price_setFilterNumber] = useState();
+  const [lowest_rating_FilterNumber, lowest_rating_setFilterNumber] = useState();
+  const [highest_price_FilterNumber, highest_price_setFilterNumber] = useState();
+  const [highest_rating_FilterNumber, highest_rating_setFilterNumber] = useState();
+
+
+
+
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [isFocused]);
+
+  // useEffect(() => {
+  //   filterProducts();
+  // }, [isFocused]);
+
+
 
   const getProducts = async () => {
 
@@ -22,7 +41,10 @@ const HomeScreen = ({ navigation }) => {
         Accept: 'application/json',
       },
       body: JSON.stringify({
-        //category_name:'Coffee Machines'
+        "lowest_price": lowest_price_FilterNumber,
+        "highest_price": highest_price_FilterNumber,
+        "lowest_rating": lowest_rating_FilterNumber,
+        "highest_rating": highest_rating_FilterNumber
       })
 
     })
@@ -81,6 +103,27 @@ const HomeScreen = ({ navigation }) => {
 
 
 
+  const SortProducts = async (option,sort) => {
+    console.log("sorrtt hereee", option,sort)
+    const response = await fetch('http://localhost:5000/orderBy', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        'criteria': option ,
+        'orderType': sort,
+      })
+
+    })
+    let json = await response.json();
+    console.log("sorrtt hereee", json)
+    setProductList(json.product);
+  }
+
+
+
   const renderItem = ({ item }) => {
     //console.log("start4",item.name);
     return (
@@ -97,6 +140,7 @@ const HomeScreen = ({ navigation }) => {
           {/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
           <Text > </Text>
           <Text style={{ fontSize: 20 }}> ${item.price} </Text>
+          <Text style={{ fontSize: 18 }}> Rating: {item.rating} </Text>
           <View style={styles.together}>
             <Button
               title="Add to Cart"
@@ -116,7 +160,6 @@ const HomeScreen = ({ navigation }) => {
             />
           </View>
 
-
         </View>
         <View>
 
@@ -129,15 +172,92 @@ const HomeScreen = ({ navigation }) => {
 
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+   
+    <ScrollView style={{ flex: 1 }}>
+       {/* <ModalDropdown onSelect={{choice}} textStyle={{fontSize:18, color:'white'}} style={{ backgroundColor: '#000000bf',
+    borderRadius: 10,
+    paddingHorizontal:13,
+    paddingVertical: 12,
+    marginTop:20}}
+    options={['Price Lowest-Highest', 'Price Highest-Lowest','Rating Highest-Lowest' , 'Rating Lowest-Highest']}>
+       
+        </ModalDropdown> */}
 
+
+<View>
+
+<View style={styles.action}>
+
+  <TextInput
+    fontSize={12}
+    placeholder="Lowest Price"
+    placeholderTextColor='#000000bf'
+    style={styles.textInput}
+    onChangeText={(val) => lowest_price_setFilterNumber(val)}
+  />
+
+  <TextInput
+    fontSize={12}
+    placeholder="Highest Price"
+    placeholderTextColor='#000000bf'
+    style={styles.textInput}
+    onChangeText={(val) => highest_price_setFilterNumber(val)}
+  />
+
+  <TextInput
+    fontSize={12}
+    placeholder="Lowest Rating"
+    placeholderTextColor='#000000bf'
+    style={styles.textInput}
+    onChangeText={(val) => lowest_rating_setFilterNumber(val)}
+  />
+
+  <TextInput
+    fontSize={12}
+    placeholder="Highest Rating"
+    placeholderTextColor='#000000bf'
+    style={styles.textInput}
+    onChangeText={(val) => highest_rating_setFilterNumber(val)}
+  />
+
+</View>
+
+<Button
+  title="Filter"
+  onPress={() => { getProducts() }}
+/>
+
+</View>
+ 
+        <View style={{ flexDirection: 'row', marginVertical: 25, paddingHorizontal: 10 }}>
+             <TouchableOpacity
+              onPress={() => { SortProducts('price','ASC') }}>
+             <Text style={{marginHorizontal:20 ,width: 90,fontWeight:'600', color:'#BFA38F'}} >Price Lowest-Highest</Text>
+             </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={() => { SortProducts('price','DESC') }}>
+             <Text style={{width: 90, fontWeight:'600',color:'#BFA38F'}} >Price Highest-Lowest</Text>
+             </TouchableOpacity>
+             
+             <TouchableOpacity 
+              onPress={() => { SortProducts('rating','DESC') }}>
+             <Text style={{ width: 100, fontWeight:'600',color:'#BFA38F'}}>Rating Highest-Lowest</Text>
+             </TouchableOpacity>
+             
+             <TouchableOpacity 
+              onPress={() => { SortProducts('rating','ASC') }}>
+             <Text style={{width: 100, fontWeight:'600',color:'#BFA38F'}}>Rating Lowest-Highest</Text>
+             </TouchableOpacity>
+        </View>
+        
+      
       <FlatList style={{ flex: 1 }}
         data={productlist}
         renderItem={renderItem}
         keyExtractor={(item) => item.product_id.toString()}
       />
 
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 
@@ -152,6 +272,10 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
     marginBottom: 30,
+  },
+  container2: {
+    justifyContent: "center",
+    paddingHorizontal: 10
   },
   image: { width: 140, height: 200, marginBottom: 10 },
   rowContainer: {
@@ -169,11 +293,42 @@ const styles = StyleSheet.create({
   notInStock: { textAlign: 'center' },
 
   together: {
-
     flexDirection: 'row',
     justifyContent: 'space-between',
+  
 
   },
+  textInput: {
+    flex: 1,
+    marginTop: Platform.OS === 'ios' ? 0 : -12,
+    paddingLeft: 10,
+    color: '#05375a',
+  },
+  action: {
+    flexDirection: 'row',
+    marginTop: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+    paddingBottom: 5
+},
 
+button: {
+  flexDirection: 'column',
+  alignItems: "center",
+  backgroundColor: "#DDDDDD",
+  padding: 10,
+  justifyContent: 'space-between',
+},
+
+button3: {
+backgroundColor: '#000000bf',
+borderRadius: 30,
+alignItems: 'center',
+justifyContent: 'space-around',
+width: width/5,
+height: height / 20,
+flexDirection: 'row',
+
+},
 
 });

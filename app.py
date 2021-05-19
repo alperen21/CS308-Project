@@ -1257,6 +1257,23 @@ class order(Resource):
 
         cursor.execute(query, (customer_id,))
         elements = cursor.fetchall()
+
+        query = "INSERT INTO `CART`(`customer_id`, `product_id`, `total_cost`, `quantity`) VALUES ((%s),(%s),(%s),(%s))"
+        cursor.execute(
+            query, (customer_id, 1, 2, 3))
+        mysql.get_db().commit()
+        # get cart id
+        query = "SELECT cart_id FROM CART WHERE customer_id = (%s)"
+        cursor.execute(query, (customer_id))
+        cart_id = cursor.fetchall()[-1]
+
+        # add to orders
+        query = "INSERT INTO `ORDERS`(`amount`,`status`,`cart_id`,`customer_id`,`sm_id`, `time`) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))"
+        now = datetime.datetime.now()
+        dt_string = now.strftime("%H:%M:%S")
+        cursor.execute(
+            query, (0, "Preparing", cart_id, customer_id, 5, str(dt_string)))
+        mysql.get_db().commit()
         for element in elements:
             quantity = element[1]
             product_id = element[2]
@@ -1272,28 +1289,9 @@ class order(Resource):
             cursor.execute(query, (new_stock, product_id))
             mysql.get_db().commit()
 
-            query = "INSERT INTO `CART`(`customer_id`, `product_id`, `total_cost`, `quantity`) VALUES ((%s),(%s),(%s),(%s))"
-            total_cost = int(element[0])*int(quantity)
-            cursor.execute(
-                query, (customer_id, 1, 2, 3))
-            mysql.get_db().commit()
-
-            # get cart id
-            query = "SELECT cart_id FROM CART WHERE customer_id = (%s)"
-            cursor.execute(query, (customer_id))
-            cart_id = cursor.fetchone()[0]
-
             # add to cart_product
             query = "INSERT INTO `CART_PRODUCT`(`cart_id`,`product_id`) VALUES ((%s),(%s))"
             cursor.execute(query, (cart_id, product_id))
-            mysql.get_db().commit()
-
-            # add to orders
-            query = "INSERT INTO `ORDERS`(`amount`,`status`,`cart_id`,`customer_id`,`sm_id`, `time`) VALUES ((%s),(%s),(%s),(%s),(%s),(%s))"
-            now = datetime.datetime.now()
-            dt_string = now.strftime("%H:%M:%S")
-            cursor.execute(
-                query, (quantity, "Preparing", cart_id, customer_id, 5, str(dt_string)))
             mysql.get_db().commit()
 
             # remove from basket

@@ -260,22 +260,43 @@ const HomeScreen = ({ navigation }) => {
  
         <View style={{ flexDirection: 'row', marginVertical: 25, paddingHorizontal: 10 }}>
              <TouchableOpacity
-              onPress={() => { SortProducts('price','ASC') }}>
-             <Text style={{marginHorizontal:20 ,width: 90,fontWeight:'600', color:'#BFA38F'}} >Price Lowest-Highest</Text>
+              onPress={() => { SortProducts('price','ASC') }}
+              style={[styles.signIn, {
+                borderColor: '#BFA38F',
+                borderWidth: 1,
+               
+            }]}>
+             <Text style={{marginLeft:15,marginHorizontal:20 ,width: 90,fontWeight:'800', color:'#BFA38F'}} >Price Lowest-Highest</Text>
              </TouchableOpacity>
             <TouchableOpacity 
-              onPress={() => { SortProducts('price','DESC') }}>
-             <Text style={{width: 90, fontWeight:'600',color:'#BFA38F'}} >Price Highest-Lowest</Text>
+              onPress={() => { SortProducts('price','DESC') }}
+              style={[styles.signIn, {
+                borderColor: '#BFA38F',
+                borderWidth: 1,
+               
+            }]}>
+             <Text style={{marginLeft:15,width: 90, fontWeight:'800',color:'#BFA38F'}} >Price Highest-Lowest</Text>
              </TouchableOpacity>
              
              <TouchableOpacity 
-              onPress={() => { SortProducts('rating','DESC') }}>
-             <Text style={{ width: 100, fontWeight:'600',color:'#BFA38F'}}>Rating Highest-Lowest</Text>
+              onPress={() => { SortProducts('rating','DESC') }}
+              style={[styles.signIn, {
+                borderColor: '#BFA38F',
+                borderWidth: 1,
+               
+            }]}>
+             <Text style={{ marginLeft:15, width: 100, fontWeight:'800',color:'#BFA38F'}}>Rating Highest-Lowest</Text>
              </TouchableOpacity>
              
              <TouchableOpacity 
-              onPress={() => { SortProducts('rating','ASC') }}>
-             <Text style={{width: 100, fontWeight:'600',color:'#BFA38F'}}>Rating Lowest-Highest</Text>
+              onPress={() => { SortProducts('rating','ASC') }}
+              style={[styles.signIn, {
+                borderColor: '#BFA38F',
+                borderWidth: 1,
+               
+            }]}
+              >
+             <Text style={{marginLeft:15,width: 100, fontWeight:'800',color:'#BFA38F'}}>Rating Lowest-Highest</Text>
              </TouchableOpacity>
         </View>
         
@@ -359,5 +380,14 @@ height: height / 20,
 flexDirection: 'row',
 
 },
+signIn: {
+   width: 85,
+  // height: 50,
+  // justifyContent: 'center',
+  // alignItems: 'center',
+ borderRadius: 10,
+ marginLeft:15
+},
+
 
 });

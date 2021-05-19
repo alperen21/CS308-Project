@@ -4,12 +4,16 @@ import { Button } from './Products/Button';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon2 from 'react-native-vector-icons/Feather';
+import { useIsFocused } from "@react-navigation/native";
+
 const PreviousOrdersScreen = ({ navigation }) => {
 const [orderslist, setOrdersList] = useState([]);
 
-  useEffect(() => {
+const isFocused = useIsFocused();
+
+useEffect(() => {
     getOrders();
-  }, []);
+  }, [isFocused]);
 
   const getOrders = async () => {
     
@@ -43,8 +47,8 @@ const [orderslist, setOrdersList] = useState([]);
 
     })
     let json = await response.json();
-    console.log(" orders::!!!", json);
-    setOrdersList(json.products);
+    console.log(" orders::!!!", json.orders);
+    setOrdersList(json.orders);
   }
 
   
@@ -56,6 +60,7 @@ const [orderslist, setOrdersList] = useState([]);
       <View style={{ flexDirection: 'row', marginVertical: 40, paddingHorizontal: 20 }}>
         
         <View>
+         
           <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Order Time: {item.time} </Text>
           <Text style={{ fontSize: 17 }}>Order Status :{item.status} </Text>
           {/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
@@ -63,19 +68,13 @@ const [orderslist, setOrdersList] = useState([]);
           <View style={styles.together}>
           <Button
               title="View Details"
-              onPress={() => navigation.navigate('RateCommentScreen', {
-                itemImage: item.image_path,
-                itemName: item.name,
-                itemModel: item.model,
+              onPress={() => navigation.navigate('PrevOrderDetail', {
+              itemlist:item.products,
+              order_time:item.time
+
               })}  //navigate
             />
-            
-            {(item.status !== 'Preparing' && item.status !== 'Cancelled') && <View style={{ marginLeft:130}}>
-            <Button
-              title="Rate | Comment"
-              onPress={() => alert()} //navigate
-            />
-            </View> }
+           
            
             
           </View>
@@ -84,7 +83,7 @@ const [orderslist, setOrdersList] = useState([]);
         </View>
         {/* if (item.status == 'Shipped') */}
         { item.status == 'Delivered'&&
-        <View style={{ flexDirection: 'row',  marginLeft:-50}}><Image style={styles.image}
+        <View style={{ flexDirection: 'row',  marginLeft:140}}><Image style={{width: 45, height: 45, marginBottom: 10 }}
             source={{
               uri: 'https://static.thenounproject.com/png/581279-200.png'
               
@@ -97,7 +96,7 @@ const [orderslist, setOrdersList] = useState([]);
       }
       {
         item.status == 'Preparing'&&
-        <View style={{ flexDirection: 'row',  marginLeft:140}}><Image style={styles.image}
+        <View style={{ flexDirection: 'row',  marginLeft:140}}><Image style={{width: 45, height: 45, marginBottom: 10 }}
             source={{
               uri: 'https://static.thenounproject.com/png/598271-200.png'
             }}/></View>
@@ -105,7 +104,7 @@ const [orderslist, setOrdersList] = useState([]);
       }
       {
         item.status == 'Shipped'&&
-        <View style={{ flexDirection: 'row',  marginLeft:-50}}><Image style={styles.image}
+        <View style={{ flexDirection: 'row',  marginLeft:140}}><Image style={{width: 45, height: 45, marginBottom: 10 }}
             source={{
               uri: 'https://static.thenounproject.com/png/581278-200.png'
             }}/></View>
@@ -120,7 +119,7 @@ const [orderslist, setOrdersList] = useState([]);
       }
       {
         item.status == 'Returned'&&
-        <View style={{ flexDirection: 'row', marginLeft:-50}}><Image style={{width: 40, height: 40, marginBottom: 10 }}
+        <View style={{ flexDirection: 'row', marginLeft:140}}><Image style={{width: 40, height: 40, marginBottom: 10 }}
         source={{
           uri: 'https://static.thenounproject.com/png/598350-200.png'
         }}/></View>
@@ -149,7 +148,7 @@ const [orderslist, setOrdersList] = useState([]);
       <FlatList style={{ flex: 1 }}
         data={orderslist}
         renderItem={renderItem}
-        keyExtractor={(item) => item.amount.toString()}
+        keyExtractor={(item) => item.time.toString()}
       />
 
     </SafeAreaView>

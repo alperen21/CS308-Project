@@ -22,6 +22,7 @@ import CheckoutScreen from './CheckoutScreen';
 import ProductDetailsScreen from './Products/ProductDetailsScreen';
 import PreviousOrdersScreen from './PreviousOrdersScreen';
 import AccountInformationScreen from './AccountInformationScreen';
+import PrevOrderDetailScreen from './PrevOrderDetailScreen';
 
 const HomeStack = createStackNavigator();
 const CategoryStack = createStackNavigator();
@@ -234,6 +235,13 @@ const ProfileStackScreen = ({ navigation }) => (
     }} />
       <ProfileStack.Screen name="AccountInformation" component={AccountInformationScreen} options={{
       title: 'Account Information',
+      headerRight: () => (
+        <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+      ),
+      headerLeft: () => null
+    }} />
+    <ProfileStack.Screen name="PrevOrderDetail" component={PrevOrderDetailScreen} options={{
+      title: 'Order Details',
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),

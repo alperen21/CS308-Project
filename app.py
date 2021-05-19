@@ -1443,6 +1443,33 @@ class rate(Resource):
 
 api.add_resource(rate, "/rate")
 
+class avgRate(Resource):
+    #Calculating average rate for given product id.
+    @cross_origin(origins="http://localhost:3000*")
+    def post(self):
+        posted_data = request.get_json()
+        product_id = posted_data["product_id"]
+
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT * FROM RATES WHERE product_id=(%s)"
+        cursor.execute(query, (product_id,))
+        rates = cursor.fetchall()
+        product_rates = list()
+        total = 0
+        count = 0
+        for rate in rates:
+            total += rate[0]
+            count += 1
+        AVG = total / count
+        return jsonify({
+            "status_code": 200,
+            "rate": AVG
+        })
+
+api.add_resource(avgRate, "/avgRate")
+
+
 api.add_resource(order, "/order")
 api.add_resource(refund, "/refund")
 

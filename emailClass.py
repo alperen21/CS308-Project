@@ -59,9 +59,10 @@ class SMTPemail():
 
 
 class OAuthMail():
-    def __init__(self, TO, MSG, TITLE):
+    def __init__(self, TO, TITLE, MSG=None, html=None):
 
         # init this instance of this object
+        self.html = html
         self.TO = TO
         self.MSG = MSG
         self.TITLE = TITLE
@@ -70,8 +71,14 @@ class OAuthMail():
         self.mail["To"] = self.TO
         self.mail["Subject"] = self.TITLE
 
-        body = MIMEText(self.MSG, "plain")
-        self.mail.attach(body)
+        if (html is None):
+            body = MIMEText(self.MSG, "plain")
+            self.mail.attach(body)
+        else:
+            with open(self.html, "r") as file:
+                message = file.read()
+                body = MIMEText(message, 'html')
+                self.mail.attach(body)
 
     def start_service(self):
         self.service = Create_Service(
@@ -85,7 +92,6 @@ class OAuthMail():
 
         try:
             self.start_service()
-
             raw_string = base64.urlsafe_b64encode(
                 self.mail.as_bytes()).decode()
             message = self.service.users().messages().send(
@@ -93,3 +99,9 @@ class OAuthMail():
             print("email successfully sent")
         except Exception:
             print("email could not be sent")
+
+
+# OAuthMail("alperenyildiz@sabanciuniv.edu",
+#          "html email", html="mails/welcome.html").send()
+# with open("index.html", "r") as file:
+#    print(file.read())

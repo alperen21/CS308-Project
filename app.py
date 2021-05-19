@@ -119,7 +119,8 @@ def add_customer(username, phone, address, email):
 
 def send_mail(first_name, email):
     message = f"Hello {first_name}, \nWelcome to our website! \n"
-    mail = OAuthMail(email, message, "Hello and welcome!")
+    mail = OAuthMail(email, "Hello and welcome {}!".format(
+        first_name), html="mails/welcome.html")
     mail.send()
 
 

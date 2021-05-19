@@ -10,7 +10,6 @@ import { useIsFocused } from "@react-navigation/native";
 import { MaterialIcons, AntDesign, Ionicons } from '@expo/vector-icons';
 
 
-
 const CheckoutScreen = ({ route, navigation }) => {
 
   const isFocused = useIsFocused();
@@ -51,7 +50,7 @@ const CheckoutScreen = ({ route, navigation }) => {
 				"Accept": 'application/json',
 				"user": username,
 				"token": token_id,
-
+        
 			},
 		})
 

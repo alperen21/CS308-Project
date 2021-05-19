@@ -3,7 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Fla
 import { Button } from './Products/Button';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-community/async-storage';
-import Icon2 from 'react-native-vector-icons/Feather';
+import Icon2 from 'react-native-vector-icons/FontAwesome';
+
+import { Rating, AirbnbRating } from 'react-native-ratings';
+import { color } from 'react-native-reanimated';
 
 const RateCommentScreen = ({ navigation,route }) => {
 const [Informationlist, setInformationList] = useState([]);
@@ -82,7 +85,8 @@ const [data, setData] = React.useState({
   return (
       <View style={{ paddingHorizontal:5 ,paddingVertical:20 ,marginBottom:15, flex: 1 }}>
     <ScrollView >
-        <Text style={{ marginTop: 25,fontSize: 20, marginRight: 30,fontWeight: 'bold', color: '#BFA38F'  }}> Give Comment for {itemName} </Text>
+    
+    <Text style={{ marginTop: 25,fontSize: 20, marginRight: 30,fontWeight: 'bold', color: '#000000bf'  }}> Give Comment for {itemName} </Text>
         <Image style={styles.image}
           source={{
             uri: itemImage
@@ -93,14 +97,8 @@ const [data, setData] = React.useState({
         <Text></Text>
           
           <View style={{ flex: 1 }} >
-          <View style={{
-            //borderBottomColor: '#BFA38F',
-            borderColor: '#BFA38F',
-						borderBottomWidth: 5,
-						borderEndWidth: 1000,
-					}}
-				/> 
-        <Text></Text>
+ 
+        <Icon2 name='comment-o' size={40} color= '#000000bf'> </Icon2>
         <View style={styles.action}>
         <TextInput 
                     placeholder="Enter Your Comment for this product" 
@@ -118,7 +116,26 @@ const [data, setData] = React.useState({
               onPress={() => { giveComment(data.comment)
               alert("Your comment is sent for approval!")} }
             />
-        
+                <View style={{
+            //borderBottomColor: '#BFA38F',
+            marginTop:20,
+            borderColor: '#BFA38F',
+						borderBottomWidth: 5,
+						borderEndWidth: 1000,
+					}}
+				/> 
+    <Text style={{ marginTop: 25,fontSize: 20, marginRight: 30,fontWeight: 'bold', color: '#000000bf'  }}> Give Rating for {itemName} </Text>
+            <Rating
+            type='star'
+            ratingCount={5}
+            imageSize={35}
+            showRating
+            ratingTextColor={'#000000bf'}
+            //onFinishRating={this.ratingCompleted}
+            //onFinishRating={setData(data.rate)}
+            />
+            
+        {console.log("HEY RATEE",data.rate)}
   
       </ScrollView>
      

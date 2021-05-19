@@ -1420,6 +1420,28 @@ class refund(Resource):
                 "amount": amount
             })
 
+class rate(Resource):
+    #Adding given rate to database with customer and product id.
+    @cross_origin(origins="http://localhost:3000*")
+    def post(self):
+        posted_data = request.get_json()
+        product_id = posted_data["product_id"]
+        customer_id = posted_data["customer_id"]
+        rate = posted_data["rate"]
+
+        cursor = mysql.get_db().cursor()
+
+        query = "INSERT INTO `RATES` (`rate`, `customer_id`, `product_id`) VALUES ((%s), (%s), (%s))"
+        cursor.execute(query, (rate, customer_id, product_id))
+        mysql.get_db().commit()
+
+        retJson = {
+                "message": "Rate successfully added to database.",
+                "status_code": 200
+        }
+        return retJson
+
+api.add_resource(rate, "/rate")
 
 api.add_resource(order, "/order")
 api.add_resource(refund, "/refund")

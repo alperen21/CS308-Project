@@ -64,13 +64,14 @@ useEffect(() => {
           <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Order Time: {item.time} </Text>
           <Text style={{ fontSize: 17 }}>Order Status :{item.status} </Text>
           {/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
-          <Text style={{ fontSize: 15 }}> Quantity: {item.amount} </Text>
+          {/* <Text style={{ fontSize: 15 }}> Quantity: {item.amount} </Text> */}
           <View style={styles.together}>
           <Button
               title="View Details"
               onPress={() => navigation.navigate('PrevOrderDetail', {
               itemlist:item.products,
-              order_time:item.time
+              order_time:item.time,
+              order_status:item.status,
 
               })}  //navigate
             />

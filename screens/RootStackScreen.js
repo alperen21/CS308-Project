@@ -17,6 +17,7 @@ import CheckoutScreen from './CheckoutScreen';
 import PreviousOrdersScreen from './PreviousOrdersScreen';
 import AccountInformationScreen from './AccountInformationScreen';
 import PrevOrderDetailScreen from './PrevOrderDetailScreen';
+import RateCommentScreen from './RateCommentScreen';
 
 const RootStack = createStackNavigator();
 
@@ -37,6 +38,7 @@ const RootStackScreen = ({navigation}) => (
         <RootStack.Screen name="PreviousOrdersScreen" component={PreviousOrdersScreen}/>
         <RootStack.Screen name="AccountInformationScreen" component={AccountInformationScreen}/>
         <RootStack.Screen name="PrevOrderDetailScreen" component={PrevOrderDetailScreen}/>
+        <RootStack.Screen name="RateCommentScreen" component={RateCommentScreen}/>
     </RootStack.Navigator>
 );
 

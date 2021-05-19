@@ -23,6 +23,7 @@ import ProductDetailsScreen from './Products/ProductDetailsScreen';
 import PreviousOrdersScreen from './PreviousOrdersScreen';
 import AccountInformationScreen from './AccountInformationScreen';
 import PrevOrderDetailScreen from './PrevOrderDetailScreen';
+import RateCommentScreen from './RateCommentScreen';
 
 const HomeStack = createStackNavigator();
 const CategoryStack = createStackNavigator();
@@ -242,6 +243,13 @@ const ProfileStackScreen = ({ navigation }) => (
     }} />
     <ProfileStack.Screen name="PrevOrderDetail" component={PrevOrderDetailScreen} options={{
       title: 'Order Details',
+      headerRight: () => (
+        <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+      ),
+      headerLeft: () => null
+    }} />
+    <ProfileStack.Screen name="RateComment" component={RateCommentScreen} options={{
+      title: 'Rate | Comment',
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       ),

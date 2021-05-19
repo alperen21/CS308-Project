@@ -16,7 +16,7 @@ const PrevOrderDetailScreen = ({ route, navigation }) => {
     marginBottom: 20,
   };
   /* 2. Get the param */
-  const { itemlist,order_time } = route.params;
+  const { itemlist,order_time,order_status } = route.params;
 
 console.log("DID LIST COME",itemlist)
 
@@ -25,13 +25,13 @@ const renderItem = ({ item }) => {
    
     return (
         
-      <View style={{ flexDirection: 'row', marginVertical: 20, paddingHorizontal: 10 }}>
+      <View style={{ flexDirection: 'row', marginVertical: 20}}>
         <Image style={styles.image}
           source={{
             uri: item.image_path
           }} />
         <View>
-          <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{item.name} </Text>
+          <Text style={{ fontSize: 13, fontWeight: 'bold' }}>{item.name} </Text>
           <Text style={{ fontSize: 15 }}> Model: {item.model}</Text>
           <Text > </Text>
           <Text style={{ fontSize: 20 }}> ${item.price} </Text>
@@ -41,11 +41,16 @@ const renderItem = ({ item }) => {
 
 
         </View>
-        <View style={{paddingHorizontal:10}}>
+        <View style={{}}>
+        {order_status !== 'Preparing' && order_status !=='Cancelled' && order_status !== 'Shipped' &&
         <Button
               title="Rate|Comment"
-              onPress={() => alert()} //navigate
+              onPress={() => navigation.navigate('RateComment', {
+                itemName: item.name,
+                itemImage:item.image_path
+              })} //navigate
             />
+        }
 
         </View>
       </View>

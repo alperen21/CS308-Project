@@ -77,15 +77,17 @@ const ExploreScreen = ({ navigation }) => {
             uri: item.image_path
           }} />
         <View>
-          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>{item.name} </Text>
+       
+          <Text style={{  width: 260,fontSize: 18, fontWeight: 'bold' }}>{item.name} </Text>
           <Text style={{ fontSize: 15 }}> Model: {item.model}</Text>
           {/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
           <Text > </Text>
           <Text style={{ fontSize: 20 }}> ${item.price} </Text>
           <View style={styles.together}>
-            <Button
+          <Button
               title="Add to Cart"
-              onPress={() => addToBasket(item.name)}
+              onPress={() => { { item.stock !== 0 ? (addToBasket(item.name)) : (alert("Item is out of stock!")) } }}
+
             />
             <Button
               title="View Details"
@@ -148,7 +150,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 30,
   },
-  image: { width: 140, height: 200, marginBottom: 10 },
+  image: { width: 140, height: 150, marginBottom: 10 },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

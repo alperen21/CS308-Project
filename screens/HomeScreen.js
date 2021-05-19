@@ -33,6 +33,25 @@ const HomeScreen = ({ navigation }) => {
 
 
   const getProducts = async () => {
+    console.log("CCHECK",lowest_price_FilterNumber," staticccc");
+    // if(lowest_price_FilterNumber===" ")
+    // {
+    //   lowest_price_setFilterNumber(0);
+    // }
+    // if(highest_price_FilterNumber===" ")
+    // {
+    //   highest_price_setFilterNumber(500000);
+    // }
+    // if(lowest_rating_FilterNumber===" ")
+    // {
+    //   lowest_rating_setFilterNumber(0);
+    // }
+    // if(highest_price_FilterNumber===" ")
+    // {
+    //   highest_rating_setFilterNumber(5);
+    // }
+    
+    
 
     const response = await fetch('http://localhost:5000/products', {
       method: 'POST',
@@ -50,6 +69,16 @@ const HomeScreen = ({ navigation }) => {
     })
     let json = await response.json();
     setProductList(json.category_elements);
+    
+
+    // lowest_price_setFilterNumber(0);
+   
+    //   highest_price_setFilterNumber(500000);
+  
+    //   lowest_rating_setFilterNumber(0);
+   
+    //   highest_rating_setFilterNumber(5);
+    
   }
 
 
@@ -193,7 +222,7 @@ const HomeScreen = ({ navigation }) => {
     placeholder="Lowest Price"
     placeholderTextColor='#000000bf'
     style={styles.textInput}
-    onChangeText={(val) => lowest_price_setFilterNumber(val)}
+    onChangeText={(val) =>  {if(val===""){val=0;lowest_price_setFilterNumber(val);}else{lowest_price_setFilterNumber(val)}}}
   />
 
   <TextInput
@@ -201,7 +230,7 @@ const HomeScreen = ({ navigation }) => {
     placeholder="Highest Price"
     placeholderTextColor='#000000bf'
     style={styles.textInput}
-    onChangeText={(val) => highest_price_setFilterNumber(val)}
+    onChangeText={(val) => {if(val===""){val=999999;highest_price_setFilterNumber(val);}else{highest_price_setFilterNumber(val)}}}
   />
 
   <TextInput
@@ -209,7 +238,7 @@ const HomeScreen = ({ navigation }) => {
     placeholder="Lowest Rating"
     placeholderTextColor='#000000bf'
     style={styles.textInput}
-    onChangeText={(val) => lowest_rating_setFilterNumber(val)}
+    onChangeText={(val) => {if(val===""){val=0;lowest_rating_setFilterNumber(val);}else{lowest_rating_setFilterNumber(val)}}}
   />
 
   <TextInput
@@ -217,7 +246,7 @@ const HomeScreen = ({ navigation }) => {
     placeholder="Highest Rating"
     placeholderTextColor='#000000bf'
     style={styles.textInput}
-    onChangeText={(val) => highest_rating_setFilterNumber(val)}
+    onChangeText={(val) => {console.log("VALU HERE", val);if(val===""){val=5;highest_rating_setFilterNumber(val);}else{highest_rating_setFilterNumber(val)}}}
   />
 
 </View>

@@ -1213,23 +1213,26 @@ class order(Resource):
         cursor = mysql.get_db().cursor()
         customer_id = username_to_id(
             request.headers["user"])
-        query = "SELECT cart_id FROM `ORDERS` WHERE customer_id = (%s)"
+        query = "SELECT cart_id, time, amount, status FROM `ORDERS` WHERE customer_id = (%s)"
         cursor.execute(query, (customer_id,))
 
         # get all cart ids from the corresponding user
-        order_ids = [order[0] for order in cursor.fetchall()]
+        orders = cursor.fetchall()
 
         return_list = list()
-        for id in order_ids:
+        for order in orders:
             # to get product information
             query = "SELECT name, rating, model, price, image_path, stock FROM CART_PRODUCT NATURAL JOIN PRODUCT WHERE cart_id = (%s)"
-            cursor.execute(query, (id,))
+            cursor.execute(query, (order[0],))
             # products that the corresponding user bought in this particular order
             products = cursor.fetchall()
 
             return_list.append(
                 {
-                    "order_id": id,
+                    "cart_id": order[0],
+                    "time": str(order[1]),
+                    "amount": order[2],
+                    "status": order[3],
                     "products": [{
                         "name": product[0],
                         "rating": product[1],

@@ -1530,6 +1530,33 @@ class changePhone(Resource):
 
 api.add_resource(changePhone, "/changePhone")
 
+class changeAddress(Resource):
+    #Changing address of the customer from customer table. Takes username and new address as inputs.
+    @cross_origin(origins="http://localhost:3000*")
+    def post(self):
+        posted_data = request.get_json()
+        username = posted_data["username"]
+        newAddress = posted_data["newAddress"]
+
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT user_id FROM USERS WHERE username = (%s)"
+        cursor.execute(query, (username,))
+        userid_data = cursor.fetchone()
+        user_id = userid_data[0]
+
+        query = "UPDATE `CUSTOMER` SET address = (%s) WHERE customer_id = (%s)"
+        cursor.execute(query, (newAddress, user_id))
+        mysql.get_db().commit()
+
+        retJson = {
+                "message": "Address changed successfully.",
+                "status_code": 200
+        }
+        return retJson
+
+api.add_resource(changeAddress, "/changeAddress")
+
 
 
 api.add_resource(order, "/order")

@@ -84,7 +84,7 @@ class OAuthMail():
                 self.mail.attach(body)
         
         if (attach is not None):
-            self.attach = [r'./syllabus.pdf' ]
+            self.attach = attach
             for att in self.attach:
                 content_type, encoding = mimetypes.guess_type(att)
                 main_type, sub_type = content_type.split('/',1)
@@ -121,4 +121,4 @@ class OAuthMail():
 
 
 OAuthMail("alperenyildiz@sabanciuniv.edu",
-        "html email", html="mails/welcome.html", attach="").send()
+        "html email", html="mails/welcome.html", attach=[r'./syllabus.pdf' ]).send()

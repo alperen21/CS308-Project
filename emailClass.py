@@ -4,6 +4,9 @@ import smtplib
 import ssl
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
+import mimetypes
 from Google import Create_Service
 import base64
 
@@ -59,7 +62,7 @@ class SMTPemail():
 
 
 class OAuthMail():
-    def __init__(self, TO, TITLE, MSG=None, html=None):
+    def __init__(self, TO, TITLE, MSG=None, html=None, attach=None):
 
         # init this instance of this object
         self.html = html
@@ -79,6 +82,22 @@ class OAuthMail():
                 message = file.read()
                 body = MIMEText(message, 'html')
                 self.mail.attach(body)
+        
+        if (attach is not None):
+            self.attach = [r'./syllabus.pdf' ]
+            for att in self.attach:
+                content_type, encoding = mimetypes.guess_type(att)
+                main_type, sub_type = content_type.split('/',1)
+                file_name = os.path.basename(att)
+                f = open(att, 'rb')
+                myFile = MIMEBase(main_type, sub_type)
+                myFile.set_payload(f.read())
+                myFile.add_header('Content-Disposition','attachment',filename=file_name)
+                encoders.encode_base64(myFile)
+                f.close()
+
+                self.mail.attach(myFile)
+
 
     def start_service(self):
         self.service = Create_Service(
@@ -101,7 +120,5 @@ class OAuthMail():
             print("email could not be sent")
 
 
-# OAuthMail("alperenyildiz@sabanciuniv.edu",
-#          "html email", html="mails/welcome.html").send()
-# with open("index.html", "r") as file:
-#    print(file.read())
+OAuthMail("alperenyildiz@sabanciuniv.edu",
+        "html email", html="mails/welcome.html", attach="").send()

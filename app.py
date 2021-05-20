@@ -390,8 +390,11 @@ class Comment(Resource):
             cursor.execute(query, (product_name,))
             product_id = cursor.fetchone()[0]
 
-            query = "INSERT INTO `COMMENTS`(`product_id`, `customer_id`, `text`) VALUES ((%s),(%s),(%s))"
-            cursor.execute(query, (product_id, user_id, comment,))
+            now = datetime.datetime.now()
+            dt_string = now.strftime("%H:%M:%S")
+            
+            query = "INSERT INTO `COMMENTS`(`product_id`, `customer_id`, `text`, `time`) VALUES ((%s),(%s),(%s),(%s))"
+            cursor.execute(query, (product_id, user_id, comment,dt_string))
             mysql.get_db().commit()
 
             return jsonify({

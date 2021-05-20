@@ -1472,6 +1472,37 @@ class avgRate(Resource):
 
 api.add_resource(avgRate, "/avgRate")
 
+class changeMail(Resource):
+    #Changing mail of the user both from customer and users table. Takes username and new mail as input.
+    @cross_origin(origins="http://localhost:3000*")
+    def post(self):
+        posted_data = request.get_json()
+        username = posted_data["username"]
+        newMail = posted_data["newMail"]
+
+        cursor = mysql.get_db().cursor()
+
+        query = "UPDATE `USERS` SET email = (%s) WHERE username = (%s)"
+        cursor.execute(query, (newMail, username))
+        mysql.get_db().commit()
+
+        query = "SELECT user_id FROM USERS WHERE username = (%s)"
+        cursor.execute(query, (username,))
+        userid_data = cursor.fetchone()
+        user_id = userid_data[0]
+
+        query = "UPDATE `CUSTOMER` SET email = (%s) WHERE customer_id = (%s)"
+        cursor.execute(query, (newMail, user_id))
+        mysql.get_db().commit()
+
+        retJson = {
+                "message": "Email changed successfully.",
+                "status_code": 200
+        }
+        return retJson
+
+api.add_resource(changeMail, "/changeMail")
+
 
 api.add_resource(order, "/order")
 api.add_resource(refund, "/refund")

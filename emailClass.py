@@ -9,6 +9,8 @@ from email import encoders
 import mimetypes
 from Google import Create_Service
 import base64
+import pdfkit
+from pdf_writer import pdf_writer
 
 
 class SMTPemail():
@@ -119,6 +121,16 @@ class OAuthMail():
         except Exception:
             print("email could not be sent")
 
+#pdfkit.from_file("invoice.html", "syllabus2.pdf")
+#os.remove("syllabus.pdf")
+#OAuthMail("alperenyildiz@sabanciuniv.edu",
+#        "html email", html="mails/welcome.html", attach=[pdf]).send()
 
-OAuthMail("alperenyildiz@sabanciuniv.edu",
-        "html email", html="mails/welcome.html", attach=[r'./syllabus.pdf' ]).send()
+
+def send_invoice(username):
+    pdf = pdf_writer(username,"invoice.html")
+    pdf.ephemeral_write()
+    OAuthMail("alperenyildiz@sabanciuniv.edu","ephemeral html email", html="mails/welcome.html", attach=[pdf.filename]).send()
+
+
+send_invoice("alperen")

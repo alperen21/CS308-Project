@@ -52,6 +52,7 @@ def send_invoice(cart_id, items):
         mysql.get_db().commit()
     os.remove(render.filename)
     os.remove(pdf.filename)
+    return blob
 
 
 def increase_stock(product_id, amount):
@@ -1352,11 +1353,12 @@ class order(Resource):
             products_dict[product_name+"({})".format(str(quantity))] = str(quantity*get_price(product_id))
         
         #send invoice
-        send_invoice(cart_id, products_dict)
+        blob = send_invoice(cart_id, products_dict)
         mysql.get_db().commit()
 
         return jsonify({
             "message": "successful",
+            "invoice": blob.decode(),
             "status_code": 200
         })
 

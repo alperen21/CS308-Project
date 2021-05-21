@@ -1474,7 +1474,7 @@ class rate(Resource):
     def post(self):
         posted_data = request.get_json()
         product_name = posted_data["product_name"]
-        customer_id = posted_data["customer_id"]
+        username = posted_data["username"]
         rate = posted_data["rate"]
 
         cursor = mysql.get_db().cursor()
@@ -1484,9 +1484,14 @@ class rate(Resource):
         data = cursor.fetchone()
         product_id = data[0]
 
+        query = "SELECT user_id FROM USERS WHERE username = (%s)"
+        cursor.execute(query, (username,))
+        data = cursor.fetchone()
+        user_id = data[0]
+
 
         query = "INSERT INTO `RATES` (`rate`, `customer_id`, `product_id`) VALUES ((%s), (%s), (%s))"
-        cursor.execute(query, (rate, customer_id, product_id))
+        cursor.execute(query, (rate, user_id, product_id))
         mysql.get_db().commit()
 
         retJson = {

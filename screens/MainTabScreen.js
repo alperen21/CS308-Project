@@ -24,6 +24,7 @@ import PreviousOrdersScreen from './PreviousOrdersScreen';
 import AccountInformationScreen from './AccountInformationScreen';
 import PrevOrderDetailScreen from './PrevOrderDetailScreen';
 import RateCommentScreen from './RateCommentScreen';
+import InvoiceScreen from './InvoiceScreen';
 
 const HomeStack = createStackNavigator();
 const CategoryStack = createStackNavigator();
@@ -130,6 +131,13 @@ const HomeStackScreen = ({ navigation }) => (
       headerLeft: () => null
     }} />
 
+    <HomeStack.Screen name="Invoice" component={InvoiceScreen} options={{
+      title: 'Invoice',
+      // headerRight: () => (
+      //   <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
+      // ),
+      headerLeft: () => null
+    }} />    
 
   </HomeStack.Navigator>
 );

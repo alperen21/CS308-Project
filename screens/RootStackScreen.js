@@ -18,6 +18,8 @@ import PreviousOrdersScreen from './PreviousOrdersScreen';
 import AccountInformationScreen from './AccountInformationScreen';
 import PrevOrderDetailScreen from './PrevOrderDetailScreen';
 import RateCommentScreen from './RateCommentScreen';
+import InvoiceScreen from './InvoiceScreen';
+
 
 const RootStack = createStackNavigator();
 
@@ -39,6 +41,7 @@ const RootStackScreen = ({navigation}) => (
         <RootStack.Screen name="AccountInformationScreen" component={AccountInformationScreen}/>
         <RootStack.Screen name="PrevOrderDetailScreen" component={PrevOrderDetailScreen}/>
         <RootStack.Screen name="RateCommentScreen" component={RateCommentScreen}/>
+        <RootStack.Screen name="InvoiceScreen" component={InvoiceScreen}/>
     </RootStack.Navigator>
 );
 

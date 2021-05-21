@@ -145,7 +145,7 @@ const CheckoutScreen = ({ route, navigation }) => {
     
 
     alert("We received your order! Here is your order number 23814281.")
-    navigation.navigate('Products')
+    navigation.navigate('Invoice')
   }
 
  

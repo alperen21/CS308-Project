@@ -43,7 +43,7 @@ def send_invoice(cart_id, items):
         except Exception:
             count += 1
             time.sleep(1)
-    OAuthMail("alperenyildiz@sabanciuniv.edu","ephemeral html email", html="mails/welcome.html", attach=[pdf.filename]).send()
+    OAuthMail("alperenyildiz@sabanciuniv.edu","ephemeral html email", html="mails/order.html", attach=[pdf.filename]).send()
     with open(pdf.filename, 'rb') as f:
         blob = base64.b64encode(f.read())
         cursor = mysql.get_db().cursor()
@@ -59,10 +59,11 @@ def increase_stock(product_id, amount):
     query = "SELECT stock FROM PRODUCT WHERE product_id =(%s)"
     cursor.execute(query, (product_id,))
     stock = cursor.fetchone()[0]
-    stock += amount[0]
+    stock += amount
 
     query = "UPDATE PRODUCT SET stock = (%s) WHERE product_id = (%s)"
     cursor.execute(query, (stock, product_id))
+    mysql.get_db().commit()
 
 
 def decrease_stock(product_id, amount):
@@ -70,10 +71,11 @@ def decrease_stock(product_id, amount):
     query = "SELECT stock FROM PRODUCT WHERE product_id =(%s)"
     cursor.execute(query, (product_id,))
     stock = cursor.fetchone()[0]
-    stock -= amount[0]
+    stock -= amount
 
     query = "UPDATE PRODUCT SET stock = (%s) WHERE product_id = (%s)"
     cursor.execute(query, (stock, product_id))
+    mysql.get_db().commit()
 
 def get_price(product_id):
     cursor = mysql.get_db().cursor()
@@ -1356,6 +1358,10 @@ class order(Resource):
             "status_code": 200
         })
 
+
+    
+
+
 class refund(Resource):
     @private
     def post(self):  # ask for a refund
@@ -1516,22 +1522,77 @@ class avgRate(Resource):
         })
 
 class stock(Resource):
-    @cross_origin(origins="http://localhost:3000*")
-    @product_manager_only
+    def isStockAdequate(self, product_id, quantity):
+        cursor = mysql.get_db().cursor()
+        query = "SELECT stock FROM `PRODUCT` WHERE product_id=(%s)"
+        cursor.execute(query, (product_id,))
+        stock = cursor.fetchone()[0]
+        if (quantity <= stock):
+            return True
+        else:
+            return False
     def put(self): #change stock
+        cursor = mysql.get_db().cursor()
         posted_data = request.get_json()
         product_name = posted_data["product_name"]
-        product_id  = product_to_id(product_name)
+        
 
+        query="SELECT * FROM PRODUCT WHERE name=(%s)"
+        cursor.execute(query, (product_name,))
+        product = cursor.fetchone()
+        
+        if ("add" in posted_data and product is None and posted_data["add"]):
+            print("hy")
+            query = """INSERT INTO `PRODUCT`
+            (`category_id`, `name`, `model`, `price`, `image_path`, `stock`, `discount`) 
+            VALUES ((%s),(%s),(%s),(%s),(%s),(%s),(%s))"""
 
-        if ("increase" in posted_data):
-            increase_stock(product_id, posted_data["increase"])
-        elif ("decrease" in posted_data):
-            decrease_stock(product_id, posted_data["increase"])
-            
-        return jsonify({
+            category_id = posted_data["category_id"]
+            model = posted_data["model"]
+            price = posted_data["price"]
+            image_path = posted_data["image_path"]
+            stock = posted_data["stock"]
+
+            cursor.execute(query, (category_id, product_name, model, price, image_path, stock,"0"))
+            mysql.get_db().commit()
+
+            return jsonify({
             "status_code": 201,
             "rate": "succeess"
+        })
+        elif ("remove" in posted_data and posted_data["remove"]):
+            query="SELECT * FROM PRODUCT WHERE name=(%s)"
+            cursor.execute(query, (product_name,))
+            data = cursor.fetchone()
+            if (data is None):
+                return jsonify({
+                    "message":"product does not exist",
+                    "status_code":404
+                })
+            product_id  = product_to_id(product_name)
+            
+            query = "DELETE FROM `PRODUCT` WHERE product_id = (%s)"
+            cursor.execute(query, (product_id))
+            mysql.get_db().commit()
+        elif ("increase" in posted_data):
+            product_id  = product_to_id(product_name)
+            increase_stock(product_id, posted_data["increase"])
+        elif ("decrease" in posted_data):
+            product_id  = product_to_id(product_name)
+            if (self.isStockAdequate(product_id, posted_data["decrease"])):
+                decrease_stock(product_id, posted_data["decrease"])
+                return jsonify({
+                    "status_code": 201,
+                    "message": "succeess"
+                })
+            else:
+                return jsonify({
+                    "status_code": 404,
+                    "message": "not enough stock"
+                    })
+        return jsonify({
+            "status_code": 201,
+            "message": "succeess"
         })
 
 class changeMail(Resource):
@@ -1617,11 +1678,60 @@ class changeAddress(Resource):
         }
         return retJson
 
+class pmview(Resource):
+    @cross_origin(origins="http://localhost:3000*")
+    @product_manager_only
+    def get(self):
+        cursor = mysql.get_db().cursor()
+        query = "SELECT time, status, cart_id, customer_id FROM `ORDERS`"
+        cursor.execute(query)
+        orders = cursor.fetchall()
+
+        return jsonify({
+            "orders":[
+                {
+                    "time":str(order[0]),
+                    "status":order[1],
+                    "cart_id":order[2],
+                    "customer_id":order[3],
+
+                } for order in orders
+            ],
+            "status_code":200
+        })
+    def post(self): #get invoice
+        cursor = mysql.get_db().cursor()
+        posted_data = request.get_json()
+        cart_id = posted_data["cart_id"]
+        query = "SELECT invoice FROM INVOICE WHERE cart_id = (%s)"
+        cursor.execute(query,(cart_id,))
+        invoice = cursor.fetchone()[0]
+        return jsonify({
+            "invoice":invoice.decode(),
+            "status_code":200
+        })
+
+    @cross_origin(origins="http://localhost:3000*")
+    @product_manager_only
+    def put(self): #change status of the order
+        cursor = mysql.get_db().cursor()
+        posted_data = request.get_json()
+        cart_id = posted_data["cart_id"]
+        new_status = posted_data["new_status"]
+
+        query = "UPDATE `ORDERS` SET status=(%s) WHERE cart_id = (%s)"
+        cursor.execute(query, (new_status, cart_id))
+        mysql.get_db().commit()
+
+        return jsonify({
+            "status_code":201,
+            "message":"success"
+        })
+
+        
+
+api.add_resource(pmview, "/pmview")
 api.add_resource(changeAddress, "/changeAddress")
-
-
-
-
 api.add_resource(stock, "/stock")
 api.add_resource(avgRate, "/avgRate")
 api.add_resource(order, "/order")

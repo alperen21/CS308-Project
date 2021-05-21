@@ -1523,6 +1523,7 @@ class stock(Resource):
         product_name = posted_data["product_name"]
         product_id  = product_to_id(product_name)
 
+
         if ("increase" in posted_data):
             increase_stock(product_id, posted_data["increase"])
         elif ("decrease" in posted_data):
@@ -1532,6 +1533,94 @@ class stock(Resource):
             "status_code": 201,
             "rate": "succeess"
         })
+
+class changeMail(Resource):
+    #Changing mail of the user both from customer and users table. Takes username and new mail as inputs.
+    @cross_origin(origins="http://localhost:3000*")
+    def post(self):
+        posted_data = request.get_json()
+        username = posted_data["username"]
+        newMail = posted_data["newMail"]
+
+        cursor = mysql.get_db().cursor()
+
+        query = "UPDATE `USERS` SET email = (%s) WHERE username = (%s)"
+        cursor.execute(query, (newMail, username))
+        mysql.get_db().commit()
+
+        query = "SELECT user_id FROM USERS WHERE username = (%s)"
+        cursor.execute(query, (username,))
+        userid_data = cursor.fetchone()
+        user_id = userid_data[0]
+
+        query = "UPDATE `CUSTOMER` SET email = (%s) WHERE customer_id = (%s)"
+        cursor.execute(query, (newMail, user_id))
+        mysql.get_db().commit()
+
+        retJson = {
+                "message": "Email changed successfully.",
+                "status_code": 200
+        }
+        return retJson
+
+api.add_resource(changeMail, "/changeMail")
+
+class changePhone(Resource):
+    #Changing phone number of the customer from customer table. Takes username and new phone number as inputs.
+    @cross_origin(origins="http://localhost:3000*")
+    def post(self):
+        posted_data = request.get_json()
+        username = posted_data["username"]
+        newPhone = posted_data["newPhone"]
+
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT user_id FROM USERS WHERE username = (%s)"
+        cursor.execute(query, (username,))
+        userid_data = cursor.fetchone()
+        user_id = userid_data[0]
+
+        query = "UPDATE `CUSTOMER` SET phone = (%s) WHERE customer_id = (%s)"
+        cursor.execute(query, (newPhone, user_id))
+        mysql.get_db().commit()
+
+        retJson = {
+                "message": "Phone number changed successfully.",
+                "status_code": 200
+        }
+        return retJson
+
+api.add_resource(changePhone, "/changePhone")
+
+class changeAddress(Resource):
+    #Changing address of the customer from customer table. Takes username and new address as inputs.
+    @cross_origin(origins="http://localhost:3000*")
+    def post(self):
+        posted_data = request.get_json()
+        username = posted_data["username"]
+        newAddress = posted_data["newAddress"]
+
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT user_id FROM USERS WHERE username = (%s)"
+        cursor.execute(query, (username,))
+        userid_data = cursor.fetchone()
+        user_id = userid_data[0]
+
+        query = "UPDATE `CUSTOMER` SET address = (%s) WHERE customer_id = (%s)"
+        cursor.execute(query, (newAddress, user_id))
+        mysql.get_db().commit()
+
+        retJson = {
+                "message": "Address changed successfully.",
+                "status_code": 200
+        }
+        return retJson
+
+api.add_resource(changeAddress, "/changeAddress")
+
+
+
 
 api.add_resource(stock, "/stock")
 api.add_resource(avgRate, "/avgRate")

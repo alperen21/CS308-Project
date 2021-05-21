@@ -1525,7 +1525,7 @@ class rate(Resource):
 api.add_resource(rate, "/rate")
 
 class avgRate(Resource):
-    #Calculating average rate for given product id.
+    #Calculating average rate for given product id
     @cross_origin(origins="http://localhost:3000*")
     def post(self):
         posted_data = request.get_json()

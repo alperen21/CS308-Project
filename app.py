@@ -1475,18 +1475,29 @@ class refund(Resource):
             })
 
 class rate(Resource):
-    #Adding given rate to database with customer and product id.
+    #Adding given rate to database with customer and product name.
     @cross_origin(origins="http://localhost:3000*")
     def post(self):
         posted_data = request.get_json()
-        product_id = posted_data["product_id"]
-        customer_id = posted_data["customer_id"]
+        product_name = posted_data["product_name"]
+        username = posted_data["username"]
         rate = posted_data["rate"]
 
         cursor = mysql.get_db().cursor()
 
+        query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"
+        cursor.execute(query, (product_name,))
+        data = cursor.fetchone()
+        product_id = data[0]
+
+        query = "SELECT user_id FROM USERS WHERE username = (%s)"
+        cursor.execute(query, (username,))
+        data = cursor.fetchone()
+        user_id = data[0]
+
+
         query = "INSERT INTO `RATES` (`rate`, `customer_id`, `product_id`) VALUES ((%s), (%s), (%s))"
-        cursor.execute(query, (rate, customer_id, product_id))
+        cursor.execute(query, (rate, user_id, product_id))
         mysql.get_db().commit()
 
         retJson = {

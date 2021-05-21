@@ -1474,7 +1474,7 @@ class rate(Resource):
     def post(self):
         posted_data = request.get_json()
         product_name = posted_data["product_name"]
-        username = posted_data["username"]
+        username = request.headers["user"]
         rate = posted_data["rate"]
 
         cursor = mysql.get_db().cursor()
@@ -1494,8 +1494,24 @@ class rate(Resource):
         cursor.execute(query, (rate, user_id, product_id))
         mysql.get_db().commit()
 
+        query = "SELECT * FROM RATES WHERE product_id=(%s)"
+        cursor.execute(query, (product_id,))
+        rates = cursor.fetchall()
+        product_rates = list()
+        total = 0
+        count = 0
+        for rate in rates:
+            total += rate[0]
+            count += 1
+        AVG = total / count
+
+        query = "UPDATE `PRODUCT` SET rating = (%s) WHERE product_id = (%s)"
+        cursor.execute(query, (AVG, product_id))
+        mysql.get_db().commit()
+
         retJson = {
                 "message": "Rate successfully added to database.",
+                "avgRate": AVG,
                 "status_code": 200
         }
         return retJson
@@ -1507,9 +1523,15 @@ class avgRate(Resource):
     @cross_origin(origins="http://localhost:3000*")
     def post(self):
         posted_data = request.get_json()
-        product_id = posted_data["product_id"]
+        product_name = posted_data["product_name"]
 
         cursor = mysql.get_db().cursor()
+
+        query = "SELECT product_id FROM PRODUCT WHERE name = (%s)"
+        cursor.execute(query, (product_name,))
+        data = cursor.fetchone()
+        product_id = data[0]
+
 
         query = "SELECT * FROM RATES WHERE product_id=(%s)"
         cursor.execute(query, (product_id,))
@@ -1521,6 +1543,11 @@ class avgRate(Resource):
             total += rate[0]
             count += 1
         AVG = total / count
+
+        query = "UPDATE `PRODUCT` SET rating = (%s) WHERE product_id = (%s)"
+        cursor.execute(query, (AVG, product_id))
+        mysql.get_db().commit()
+
         return jsonify({
             "status_code": 200,
             "rate": AVG

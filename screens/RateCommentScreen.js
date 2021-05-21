@@ -17,11 +17,12 @@ const [data, setData] = React.useState({
     rate:0,
   });
 
-  useEffect(() => {
-    giveComment();
-  }, []);
+  // useEffect(() => {
+  //   giveComment();
+  // }, []);
 
   let json =0;
+  let json2 = 0;
 
   const giveComment = async (user_comment) => {
     let token_id = 0;
@@ -58,7 +59,14 @@ const [data, setData] = React.useState({
 
     })
      json = await response.json();
-   // console.log(" orders::!!!", json);
+  //  console.log(" comment json::!!!", json);
+
+
+   if (json.status_code === 200) {
+    alert("Your comment is received!")
+  } else {
+    alert("You already gave review for this product!")
+  }
 
   }
 
@@ -81,7 +89,7 @@ const [data, setData] = React.useState({
 const giveRating = async (user_rating) => {
 
   let token_id = 0;
-  let username = 0;
+  let uname = 0;
   
   try {
     token_id = await AsyncStorage.getItem('token');
@@ -92,7 +100,7 @@ const giveRating = async (user_rating) => {
 
   try {
     // await AsyncStorage.setItem('userToken', userToken);
-    username = await AsyncStorage.getItem('userName');
+    uname = await AsyncStorage.getItem('userName');
     // setUsername(username);
   } catch (e) {
     console.log(e);
@@ -103,9 +111,8 @@ const giveRating = async (user_rating) => {
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      user: username,
+      user: uname,
       token: token_id,
-
     },
     body: JSON.stringify({
       rate: user_rating,
@@ -113,8 +120,14 @@ const giveRating = async (user_rating) => {
     })
 
   })
-   json = await response.json();
- // console.log(" orders::!!!", json);
+   json2 = await response.json();
+   console.log(" json- rating,??::!!!", json2);
+
+  if (json2.status_code === 200) {
+    alert("Your rating is received!")
+  } else {
+    alert("You already rated for this product!")
+  } 
 
 }
 
@@ -161,7 +174,7 @@ const giveRating = async (user_rating) => {
             <Button 
               title="Give Comment"
               onPress={() => { giveComment(data.comment)
-              alert("Your comment is sent for approval!")} }
+              } }
             />
                 <View style={{
             //borderBottomColor: '#BFA38F',
@@ -189,7 +202,7 @@ const giveRating = async (user_rating) => {
             <Button 
               title="Give Rating"
               onPress={() => { giveRating(data.rate)
-                alert("Your rating is received!")} }
+               } }
             />
             
         {console.log("HEY RATEE",data.rate)}

@@ -103,7 +103,7 @@ const [data, setData] = React.useState({
 
     })
     json = await response2.json();
-    console.log("CODEEEE",json.status_code);
+    // console.log("CODEEEE",json.status_code);
 
   }
 

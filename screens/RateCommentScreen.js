@@ -63,9 +63,6 @@ const [data, setData] = React.useState({
   }
 
 
-    
-   
-
   const comment_Change = (val) => {
     if( val.length === 0 ) {
       setData({
@@ -79,6 +76,56 @@ const [data, setData] = React.useState({
 
   }); 
   }
+}
+
+const giveRating = async (user_rating) => {
+
+  let token_id = 0;
+  let username = 0;
+  
+  try {
+    token_id = await AsyncStorage.getItem('token');
+    // setToken(token_id);
+  } catch (e) {
+    console.log(e);
+  }
+
+  try {
+    // await AsyncStorage.setItem('userToken', userToken);
+    username = await AsyncStorage.getItem('userName');
+    // setUsername(username);
+  } catch (e) {
+    console.log(e);
+  }
+
+  const response = await fetch('http://localhost:5000/rate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      user: username,
+      token: token_id,
+
+    },
+    body: JSON.stringify({
+      rate: user_rating,
+      product_name: itemName,
+    })
+
+  })
+   json = await response.json();
+ // console.log(" orders::!!!", json);
+
+}
+
+   const ratingCompleted = (rating) => {
+  console.log("Rating is: " + rating);
+  // alert("Your rating is received!");
+  setData({
+    ...data,
+    rate: rating,
+}); 
+
 }
 
 
@@ -125,14 +172,24 @@ const [data, setData] = React.useState({
 					}}
 				/> 
     <Text style={{ marginTop: 25,fontSize: 20, marginRight: 30,fontWeight: 'bold', color: '#000000bf'  }}> Give Rating for {itemName} </Text>
-            <Rating
+            <AirbnbRating
             type='star'
             ratingCount={5}
             imageSize={35}
+            minValue = {1}
             showRating
             ratingTextColor={'#000000bf'}
-            //onFinishRating={this.ratingCompleted}
-            //onFinishRating={setData(data.rate)}
+            // onFinishRating={this.ratingCompleted}
+
+            onFinishRating={(val) =>
+              ratingCompleted(val)              
+            }
+            />
+
+            <Button 
+              title="Give Rating"
+              onPress={() => { giveRating(data.rate)
+                alert("Your rating is received!")} }
             />
             
         {console.log("HEY RATEE",data.rate)}

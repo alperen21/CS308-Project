@@ -18,7 +18,7 @@ const PrevOrderDetailScreen = ({ route, navigation }) => {
   /* 2. Get the param */
   const { itemlist,order_time,order_status } = route.params;
 
-console.log("DID LIST COME",itemlist)
+// console.log("DID LIST COME",itemlist)
 
 
 const renderItem = ({ item }) => {

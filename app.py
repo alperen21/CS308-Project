@@ -905,7 +905,8 @@ class orderBy(Resource):
                     "model":data[3],
                     "price":data[4],
                     "image_path":data[5],
-                    "stock":data[6]
+                    "stock":data[6],
+                    "discount":data[7]
                 }for data in datas],
             "status_code": 200
         }
@@ -1083,11 +1084,15 @@ class basket(Resource):
             cursor = mysql.get_db().cursor()
 
             # get product id
-            query = "SELECT product_id, price FROM PRODUCT WHERE name = (%s)"
+            query = "SELECT product_id, price, discount FROM PRODUCT WHERE name = (%s)"
             cursor.execute(query, (product_name,))
             product_data = cursor.fetchone()
             product_id = product_data[0]
-            cost = product_data[1]
+            discount = product_data[2]
+            if (int(discount) != 0):
+                cost = int(product_data[1])*(int(discount)/100)
+            else:
+                cost = int(product_data[1])
 
             # check if product is already in basket
             query = "SELECT quantity FROM `BASKET` WHERE product_id = (%s) AND customer_id = (%s)"

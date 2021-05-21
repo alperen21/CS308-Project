@@ -994,7 +994,8 @@ class productsOfCategory(Resource):
                 "stock": info[7],
                 "category_id": info[8],
                 "pm_id": info[9],
-                "category_name": info[10]
+                "category_name": info[10],
+                "discount": info[11],
             })
 
         retJson = {
@@ -1014,7 +1015,7 @@ class products(Resource):
         posted_data = request.get_json()
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT category_id, product_id, name, rating, model, price, image_path, stock FROM PRODUCT"
+        query = "SELECT category_id, product_id, name, rating, model, price, image_path, stock, discount FROM PRODUCT"
 
         if ("lowest_rating" in posted_data or "highest_rating" in posted_data or "lowest_price" in posted_data or "highest_price" in posted_data):
             query = query + " WHERE"
@@ -1053,6 +1054,7 @@ class products(Resource):
                 "price": info[5],
                 "image_path": info[6],
                 "stock": info[7],
+                "discount": info[8],
             })
 
         retJson = {

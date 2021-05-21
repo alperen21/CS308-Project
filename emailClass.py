@@ -9,8 +9,9 @@ from email import encoders
 import mimetypes
 from Google import Create_Service
 import base64
+import time
 import pdfkit
-from pdf_writer import pdf_writer
+from pdf_writer import pdf_writer,invoice_html_render
 
 
 class SMTPemail():
@@ -127,10 +128,5 @@ class OAuthMail():
 #        "html email", html="mails/welcome.html", attach=[pdf]).send()
 
 
-def send_invoice(username):
-    pdf = pdf_writer(username,"invoice.html")
-    pdf.ephemeral_write()
-    OAuthMail("alperenyildiz@sabanciuniv.edu","ephemeral html email", html="mails/welcome.html", attach=[pdf.filename]).send()
 
 
-send_invoice("alperen")

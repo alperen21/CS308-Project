@@ -11,7 +11,8 @@ from datetime import datetime
 import datetime
 import threading
 import bcrypt
-
+import base64
+from pdf_writer import pdf_writer,invoice_html_render
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -27,6 +28,30 @@ app.config["MYSQL_DATABASE_CURSORCLASS"] = "DictCursor"
 mysql = MySQL(app)
 mysql.init_app(app)
 api = Api(app)
+
+
+def send_invoice(cart_id, items):
+    render = invoice_html_render(cart_id,"invoice.html",items)
+    render.solid_write()
+    pdf = pdf_writer(cart_id,render.filename)
+    count = 0
+    print(items)
+    while(count < 10):
+        try:
+            pdf.solid_write()
+            count = 10
+        except Exception:
+            count += 1
+            time.sleep(1)
+    OAuthMail("alperenyildiz@sabanciuniv.edu","ephemeral html email", html="mails/welcome.html", attach=[pdf.filename]).send()
+    with open(pdf.filename, 'rb') as f:
+        blob = base64.b64encode(f.read())
+        cursor = mysql.get_db().cursor()
+        query = "INSERT INTO `INVOICE`(`invoice`, `cart_id`) VALUES ((%s),(%s))"
+        cursor.execute(query, (blob, cart_id))
+        mysql.get_db().commit()
+    os.remove(render.filename)
+    os.remove(pdf.filename)
 
 
 def increase_stock(product_id, amount):
@@ -50,6 +75,12 @@ def decrease_stock(product_id, amount):
     query = "UPDATE PRODUCT SET stock = (%s) WHERE product_id = (%s)"
     cursor.execute(query, (stock, product_id))
 
+def get_price(product_id):
+    cursor = mysql.get_db().cursor()
+    query = "SELECT price FROM PRODUCT WHERE product_id =(%s)"
+    cursor.execute(query, (product_id,))
+    price = cursor.fetchone()[0]
+    return price
 
 def is_product_manager(user_id):
     cursor = mysql.get_db().cursor()
@@ -100,6 +131,12 @@ def product_to_id(product):
     data = cursor.fetchone()
     return data[0]
 
+def id_to_product(pID):
+    cursor = mysql.get_db().cursor()
+    query = "SELECT name FROM `PRODUCT` WHERE product_id=(%s)"
+    cursor.execute(query, (pID))
+    data = cursor.fetchone()
+    return data[0]
 
 def get_from_jwt(token, param):  # assumes jwt token is valid
     data = jwt.decode(token, os.environ.get("SECRET_KEY"), algorithms="HS256")
@@ -1267,7 +1304,6 @@ class order(Resource):
         query = "INSERT INTO `CART`(`customer_id`, `product_id`, `total_cost`, `quantity`) VALUES ((%s),(%s),(%s),(%s))"
         cursor.execute(
             query, (customer_id, 1, 2, 3))
-        mysql.get_db().commit()
         # get cart id
         query = "SELECT cart_id FROM CART WHERE customer_id = (%s)"
         cursor.execute(query, (customer_id))
@@ -1279,7 +1315,8 @@ class order(Resource):
         dt_string = now.strftime("%H:%M:%S")
         cursor.execute(
             query, (0, "Preparing", cart_id, customer_id, 5, str(dt_string)))
-        mysql.get_db().commit()
+
+        products_dict = dict() #will be used to send invoice
         for element in elements:
             quantity = element[1]
             product_id = element[2]
@@ -1293,23 +1330,31 @@ class order(Resource):
             query = "UPDATE `PRODUCT` SET `stock`=(%s) WHERE product_id=(%s)"
             new_stock = self.getStock(product_id)-quantity
             cursor.execute(query, (new_stock, product_id))
-            mysql.get_db().commit()
+            
 
             # add to cart_product
             query = "INSERT INTO `CART_PRODUCT`(`cart_id`,`product_id`) VALUES ((%s),(%s))"
             cursor.execute(query, (cart_id, product_id))
-            mysql.get_db().commit()
+            
 
             # remove from basket
             query = "DELETE FROM `BASKET` WHERE product_id = (%s) AND customer_id = (%s)"
             cursor.execute(query, (product_id, customer_id))
-            mysql.get_db().commit()
+            
+
+            #prepare invoice
+            product_name = id_to_product(product_id)
+
+            products_dict[product_name+"({})".format(str(quantity))] = str(quantity*get_price(product_id))
+        
+        #send invoice
+        send_invoice(cart_id, products_dict)
+        mysql.get_db().commit()
 
         return jsonify({
             "message": "successful",
             "status_code": 200
         })
-
 
 class refund(Resource):
     @private
@@ -1470,9 +1515,26 @@ class avgRate(Resource):
             "rate": AVG
         })
 
+class stock(Resource):
+    @cross_origin(origins="http://localhost:3000*")
+    @product_manager_only
+    def put(self): #change stock
+        posted_data = request.get_json()
+        product_name = posted_data["product_name"]
+        product_id  = product_to_id(product_name)
+
+        if ("increase" in posted_data):
+            increase_stock(product_id, posted_data["increase"])
+        elif ("decrease" in posted_data):
+            decrease_stock(product_id, posted_data["increase"])
+            
+        return jsonify({
+            "status_code": 201,
+            "rate": "succeess"
+        })
+
+api.add_resource(stock, "/stock")
 api.add_resource(avgRate, "/avgRate")
-
-
 api.add_resource(order, "/order")
 api.add_resource(refund, "/refund")
 

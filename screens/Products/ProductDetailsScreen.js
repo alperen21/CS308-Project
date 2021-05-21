@@ -9,6 +9,7 @@ import Star from 'react-native-star-view';
 import AsyncStorage from '@react-native-community/async-storage';
 
 
+import { Foundation } from '@expo/vector-icons';
 const ProductDetailsScreen = ({ route, navigation }) => {
 
   const [comment, setCommentList] = useState([]);
@@ -18,7 +19,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     marginBottom: 20,
   };
   /* 2. Get the param */
-  const { itemName, itemPrice, itemRating, itemModel, itemImage, itemStock } = route.params;
+  const { itemName, itemPrice, itemRating, itemModel, itemImage, itemStock,discountPrice,itemDiscount } = route.params;
 
   useEffect(() => {
     getComments();
@@ -108,10 +109,13 @@ const ProductDetailsScreen = ({ route, navigation }) => {
   return (
     <ScrollView>
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'row' }}>
+        
         <Image style={styles.image}
           source={{
             uri: itemImage
           }} />
+        { itemDiscount !==0 && <Foundation name="burst-sale" size={65} color="red" />} 
+        {itemDiscount !==0 && <Text style={{ fontSize: 18,color:'red' }}> %{itemDiscount} Off </Text>}
         <Text style={styles.title}>{itemName}</Text>
         <Text style={{ fontSize: 15 }}>Model:{itemModel}</Text>
         {itemStock !== 0 ? (
@@ -121,8 +125,11 @@ const ProductDetailsScreen = ({ route, navigation }) => {
         <Star score={itemRating} style={starStyle} />
         {/* <Text style={{fontSize:18}}>Rating: {itemRating}</Text> */}
         <View>
-          <Text style={{ marginTop: 20, fontSize: 25 }}>${itemPrice}</Text>
-
+        {itemDiscount ===0 &&   <Text style={{fontSize: 25, marginTop:15 }}>${itemPrice}</Text>}
+        {itemDiscount !==0 &&   <Text style={{ textDecorationLine: 'line-through',fontSize: 20, marginTop:15 }}>${itemPrice}</Text>}
+        
+        {itemDiscount !==0 && <Text style={{ marginTop: 20, fontSize: 25, color:'red' }}>${discountPrice}</Text>}
+         
         </View>
 
         <View style={{ marginTop: 20 }}>

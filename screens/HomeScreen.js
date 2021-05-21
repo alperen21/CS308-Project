@@ -7,7 +7,7 @@ import { useIsFocused } from "@react-navigation/native";
 import ModalDropdown from 'react-native-modal-dropdown';
 import {Dimensions} from "react-native";
 var {height, width} = Dimensions.get('window');
-
+import { Foundation } from '@expo/vector-icons';
 const HomeScreen = ({ navigation }) => {
 
   const [productlist, setProductList] = useState([]);
@@ -18,7 +18,6 @@ const HomeScreen = ({ navigation }) => {
   const [lowest_rating_FilterNumber, lowest_rating_setFilterNumber] = useState();
   const [highest_price_FilterNumber, highest_price_setFilterNumber] = useState();
   const [highest_rating_FilterNumber, highest_rating_setFilterNumber] = useState();
-
 
 
 
@@ -70,7 +69,7 @@ const HomeScreen = ({ navigation }) => {
     let json = await response.json();
     setProductList(json.category_elements);
     
-
+console.log("discoun",json)
     // lowest_price_setFilterNumber(0);
    
     //   highest_price_setFilterNumber(500000);
@@ -154,6 +153,10 @@ const HomeScreen = ({ navigation }) => {
 
 
   const renderItem = ({ item }) => {
+    let discount_price=0 ;
+    if (item.discount !==0) {(discount_price=item.price-(item.price*item.discount/100))}
+    else{discount_price= item.price}
+   
     //console.log("start4",item.name);
     return (
 
@@ -163,13 +166,17 @@ const HomeScreen = ({ navigation }) => {
             uri: item.image_path
           }} />
         <View>
-          <Text style={{ width: 260, fontSize: 18, fontWeight: 'bold' }}>{item.name} </Text>
+          <Text style={{ width: 250, fontSize: 18, fontWeight: 'bold' }}>{item.name}  </Text>
 
           <Text style={{ fontSize: 15 }}> Model: {item.model}</Text>
           {/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
           <Text > </Text>
-          <Text style={{ fontSize: 20 }}> ${item.price} </Text>
-          <Text style={{ fontSize: 18 }}> Rating: {item.rating} </Text>
+          {item.discount ===0 &&<Text style={{fontSize: 20 }}> ${item.price}  </Text>}
+          {item.discount !==0 &&<Text style={{ textDecorationLine: 'line-through',fontSize: 20 }}> ${item.price}  </Text>}
+
+          { item.discount !==0 && <Text style={{ fontSize: 20, color:'red' }}> ${ item.price-(item.price*item.discount/100)} </Text>} 
+
+          <Text style={{ fontSize: 18 }}> Rating: {item.rating.toFixed(1)} </Text>
           <View style={styles.together}>
             <Button
               title="Add to Cart"
@@ -182,16 +189,19 @@ const HomeScreen = ({ navigation }) => {
                 itemImage: item.image_path,
                 itemName: item.name,
                 itemModel: item.model,
-                itemPrice: item.price,
+                itemPrice:item.price,
+                discountPrice: discount_price,
                 itemRating: item.rating,
                 itemStock: item.stock,
+                itemDiscount: item.discount
               })} //navigate
             />
           </View>
 
         </View>
-        <View>
-
+        <View style={{marginLeft:-50}}>
+        { item.discount !==0 && <Foundation name="burst-sale" size={65} color="red" />} 
+        {item.discount !==0 && <Text style={{ fontSize: 15,color:'red' }}> %{item.discount} Off </Text>}
         </View>
       </View>
 

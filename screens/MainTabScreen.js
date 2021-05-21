@@ -194,12 +194,12 @@ const CategoryStackScreen = ({ navigation }) => (
       ),
       headerLeft: () => null
     }} />
-    {/* <CategoryStack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{
+    <CategoryStack.Screen name="ProductDetails" component={ProductDetailsScreen} options={{
       title: 'Product Details',
       headerRight: () => (
         <Icon.Button name="ios-cart" size={25} backgroundColor="#BFA38F" onPress={() => navigation.navigate('Cart')}></Icon.Button>
       )
-    }} /> */}
+    }} />
     {/* <CategoryStack.Screen name="Cart" component={CartScreen} options={{
         title:'Cart',
         // headerRight: () => (

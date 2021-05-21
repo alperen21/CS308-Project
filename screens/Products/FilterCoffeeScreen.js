@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Fla
 import { Button } from './Button';
 import AsyncStorage from '@react-native-community/async-storage';
 import PropTypes from 'prop-types';
+import { Foundation } from '@expo/vector-icons';
 
 const FilterCoffeeScreen = ({ navigation }) => {
   const [productlist, setProductList] = useState([]);
@@ -76,6 +77,9 @@ const FilterCoffeeScreen = ({ navigation }) => {
 
   const renderItem = ({ item }) => {
     //console.log("start4",item.name);
+    let discount_price=0 ;
+    if (item.discount !==0) {(discount_price=item.price-(item.price*item.discount/100))}
+    else{discount_price= item.price}
     return (
 
       <View style={{ flexDirection: 'row', marginVertical: 50, paddingHorizontal: 0 }}>
@@ -88,7 +92,13 @@ const FilterCoffeeScreen = ({ navigation }) => {
           <Text style={{ fontSize: 15 }}> Model: {item.model}</Text>
           {/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
           <Text > </Text>
-          <Text style={{ fontSize: 20 }}> ${item.price} </Text>
+          {item.discount ===0 &&<Text style={{fontSize: 20 }}> ${item.price}  </Text>}
+          {item.discount !==0 &&<Text style={{ textDecorationLine: 'line-through',fontSize: 20 }}> ${item.price}  </Text>}
+
+          { item.discount !==0 && <Text style={{ fontSize: 20, color:'red' }}> ${ item.price-(item.price*item.discount/100)} </Text>} 
+          {item.discount !==0 &&<Text style={{ textDecorationLine: 'line-through',fontSize: 20 }}> ${item.price}  </Text>}
+
+          { item.discount !==0 && <Text style={{ fontSize: 20, color:'red' }}> ${ item.price-(item.price*item.discount/100)} </Text>} 
           <View style={styles.together}>
             <Button
               title="Add to Cart"
@@ -100,16 +110,20 @@ const FilterCoffeeScreen = ({ navigation }) => {
                 itemImage: item.image_path,
                 itemName: item.name,
                 itemModel: item.model,
-                itemPrice: item.price,
+                itemPrice:item.price,
+                discountPrice: discount_price,
                 itemRating: item.rating,
                 itemStock: item.stock,
+                itemDiscount: item.discount
               })} //navigate
             />
           </View>
 
 
         </View>
-        <View>
+        <View style={{ marginTop:10, marginLeft:-40}}>
+        { item.discount !==0 && <Foundation name="burst-sale" size={65} color="red" />} 
+        {item.discount !==0 && <Text style={{ fontSize: 15,color:'red' }}> %{item.discount} Off </Text>}
 
         </View>
       </View>

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Fla
 import { Button } from './Button';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-community/async-storage';
-
+import { Foundation } from '@expo/vector-icons';
 const TurkishCoffeeScreen = ({ navigation }) => {
   const [productlist, setProductList] = useState([]);
 
@@ -75,6 +75,9 @@ const TurkishCoffeeScreen = ({ navigation }) => {
 
   const renderItem = ({ item }) => {
     //console.log("start4",item.name);
+    let discount_price=0 ;
+    if (item.discount !==0) {(discount_price=item.price-(item.price*item.discount/100))}
+    else{discount_price= item.price}
     return (
 
       <View style={{ flexDirection: 'row', marginVertical: 50, paddingHorizontal: 0 }}>
@@ -83,11 +86,15 @@ const TurkishCoffeeScreen = ({ navigation }) => {
             uri: item.image_path
           }} />
         <View>
-          <Text style={{ width: 250, fontSize: 17, fontWeight: 'bold' }}>{item.name} </Text>
+          <Text style={{ width: 240, fontSize: 17, fontWeight: 'bold' }}>{item.name} </Text>
           <Text style={{ fontSize: 15 }}> Model: {item.model}</Text>
           {/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
           <Text > </Text>
-          <Text style={{ fontSize: 20 }}> ${item.price} </Text>
+          {item.discount ===0 &&<Text style={{fontSize: 20 }}> ${item.price}  </Text>}
+          {item.discount !==0 &&<Text style={{ textDecorationLine: 'line-through',fontSize: 20 }}> ${item.price}  </Text>}
+
+          { item.discount !==0 && <Text style={{ fontSize: 20, color:'red' }}> ${ item.price-(item.price*item.discount/100)} </Text>} 
+          
           <View style={styles.together}>
             <Button
               title="Add to Cart"
@@ -99,16 +106,20 @@ const TurkishCoffeeScreen = ({ navigation }) => {
                 itemImage: item.image_path,
                 itemName: item.name,
                 itemModel: item.model,
-                itemPrice: item.price,
+                itemPrice:item.price,
+                discountPrice: discount_price,
                 itemRating: item.rating,
                 itemStock: item.stock,
+                itemDiscount: item.discount
               })} //navigate
             />
           </View>
 
 
         </View>
-        <View>
+        <View style={{ marginTop:15, marginLeft:-40}}>
+        { item.discount !==0 && <Foundation name="burst-sale" size={65} color="red" />} 
+        {item.discount !==0 && <Text style={{ fontSize: 15,color:'red' }}> %{item.discount} Off </Text>}
 
         </View>
       </View>
@@ -142,7 +153,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 30,
   },
-  image: { width: 130, height: 200, marginBottom: 10 },
+  image: { width: 130, height: 200, marginBottom: 0 },
   rowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

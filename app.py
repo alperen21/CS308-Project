@@ -729,7 +729,7 @@ class findProduct(Resource):
         productName = "%"+productName+"%"
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT name, rating, model, price, image_path, stock FROM PRODUCT WHERE name like (%s)"
+        query = "SELECT name, rating, model, price, image_path, stock, discount FROM PRODUCT WHERE name like (%s)"
         cursor.execute(query, (productName,))
         data = cursor.fetchall()
 
@@ -743,7 +743,8 @@ class findProduct(Resource):
                     "model": element[2],
                     "price": element[3],
                     "image_path": element[4],
-                    "stock": element[5]
+                    "stock": element[5],
+                    "discount":element[6]
                 }
                 data_list.append(product)
             return jsonify({
@@ -890,7 +891,7 @@ class orderBy(Resource):
 
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT product_id, name, rating, model, price, image_path, stock FROM PRODUCT ORDER BY {} {}".format(
+        query = "SELECT product_id, name, rating, model, price, image_path, stock, discount FROM PRODUCT ORDER BY {} {}".format(
             criteria, orderType)
         cursor.execute(query)
 

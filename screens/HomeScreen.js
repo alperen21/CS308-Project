@@ -25,33 +25,10 @@ const HomeScreen = ({ navigation }) => {
     getProducts();
   }, [isFocused]);
 
-  // useEffect(() => {
-  //   filterProducts();
-  // }, [isFocused]);
-
-
 
   const getProducts = async () => {
-    console.log("CCHECK",lowest_price_FilterNumber," staticccc");
-    // if(lowest_price_FilterNumber===" ")
-    // {
-    //   lowest_price_setFilterNumber(0);
-    // }
-    // if(highest_price_FilterNumber===" ")
-    // {
-    //   highest_price_setFilterNumber(500000);
-    // }
-    // if(lowest_rating_FilterNumber===" ")
-    // {
-    //   lowest_rating_setFilterNumber(0);
-    // }
-    // if(highest_price_FilterNumber===" ")
-    // {
-    //   highest_rating_setFilterNumber(5);
-    // }
-    
-    
-
+    // console.log("CCHECK",lowest_price_FilterNumber," staticccc");
+  
     const response = await fetch('http://localhost:5000/products', {
       method: 'POST',
       headers: {
@@ -68,15 +45,6 @@ const HomeScreen = ({ navigation }) => {
     })
     let json = await response.json();
     setProductList(json.category_elements);
-    
-console.log("discoun",json)
-    // lowest_price_setFilterNumber(0);
-   
-    //   highest_price_setFilterNumber(500000);
-  
-    //   lowest_rating_setFilterNumber(0);
-   
-    //   highest_rating_setFilterNumber(5);
     
   }
 
@@ -101,8 +69,8 @@ console.log("discoun",json)
       console.log(e);
     }
 
-    console.log("home screen- TOKEN id that we sent to backend::!!!", token_id);
-    console.log("home screen- USERNAME that we sent to backend::!!!", username);
+    // console.log("home screen- TOKEN id that we sent to backend::!!!", token_id);
+    // console.log("home screen- USERNAME that we sent to backend::!!!", username);
 
 
     const response2 = await fetch('http://localhost:5000/basket', {
@@ -122,8 +90,17 @@ console.log("discoun",json)
 
     })
 
-    console.log("username2 geldi mi?????", username); //GELMEDİ KONTROL ET!!!!!!!!!!!!!!!!!
+    // console.log("username2 geldi mi?????", username); //GELMEDİ KONTROL ET!!!!!!!!!!!!!!!!!
     let json = await response2.json();
+
+
+    if(json.status_code === 200){
+      alert("Your cart is updated")
+ 
+    }
+    else{
+      alert("Try again!")
+    }
     //console.log("mesajımız: ", json.message)
     //console.log("code: ", json.status_code)
     //setBasket(json.category_elements);  
@@ -132,7 +109,7 @@ console.log("discoun",json)
 
 
   const SortProducts = async (option,sort) => {
-    console.log("sorrtt hereee", option,sort)
+    // console.log("sorrtt hereee", option,sort)
     const response = await fetch('http://localhost:5000/orderBy', {
       method: 'POST',
       headers: {
@@ -146,7 +123,7 @@ console.log("discoun",json)
 
     })
     let json = await response.json();
-    console.log("sorrtt hereee", json)
+    // console.log("sorrtt hereee", json)
     setProductList(json.product);
   }
 
@@ -213,15 +190,6 @@ console.log("discoun",json)
   return (
    
     <ScrollView style={{ flex: 1 }}>
-       {/* <ModalDropdown onSelect={{choice}} textStyle={{fontSize:18, color:'white'}} style={{ backgroundColor: '#000000bf',
-    borderRadius: 10,
-    paddingHorizontal:13,
-    paddingVertical: 12,
-    marginTop:20}}
-    options={['Price Lowest-Highest', 'Price Highest-Lowest','Rating Highest-Lowest' , 'Rating Lowest-Highest']}>
-       
-        </ModalDropdown> */}
-
 
 <View>
 
@@ -256,7 +224,7 @@ console.log("discoun",json)
     placeholder="Highest Rating"
     placeholderTextColor='#000000bf'
     style={styles.textInput}
-    onChangeText={(val) => {console.log("VALU HERE", val);if(val===""){val=5;highest_rating_setFilterNumber(val);}else{highest_rating_setFilterNumber(val)}}}
+    onChangeText={(val) => {if(val===""){val=5;highest_rating_setFilterNumber(val);}else{highest_rating_setFilterNumber(val)}}}
   />
 
 </View>

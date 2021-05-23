@@ -47,7 +47,7 @@ useEffect(() => {
 
     })
     let json = await response.json();
-    console.log(" orders::!!!", json.orders);
+    // console.log(" orders::!!!", json.orders);
     setOrdersList(json.orders);
   }
 

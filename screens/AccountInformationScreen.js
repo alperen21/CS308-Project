@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Image ,TextInput} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Image, TextInput } from 'react-native';
 import { Button } from './Products/Button';
 import PropTypes from 'prop-types';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon2 from 'react-native-vector-icons/Feather';
 
 const AccountInformationScreen = ({ navigation }) => {
-const [Informationlist, setInformationList] = useState([]);
+  const [Informationlist, setInformationList] = useState([]);
 
-const [data, setData] = React.useState({
+  const [data, setData] = React.useState({
 
     username: Informationlist.username,
     first_name: Informationlist.first_name,
     last_name: Informationlist.last_name,
     email: Informationlist.email,
     phone: Informationlist.phone,
-    address:Informationlist.address,
+    address: Informationlist.address,
     //password: false,
   });
 
@@ -23,12 +23,12 @@ const [data, setData] = React.useState({
     getAccount();
   }, []);
 
-  let json =0;
+  let json = 0;
 
   const getAccount = async () => {
     let token_id = 0;
     let username = 0;
-    
+
     try {
       token_id = await AsyncStorage.getItem('token');
       // setToken(token_id);
@@ -55,8 +55,8 @@ const [data, setData] = React.useState({
       },
 
     })
-     json = await response.json();
-   // console.log(" orders::!!!", json);
+    json = await response.json();
+    // console.log(" orders::!!!", json);
     setInformationList(json);
   }
 
@@ -80,7 +80,7 @@ const [data, setData] = React.useState({
     } catch (e) {
       console.log(e);
     }
-    
+
     const response2 = await fetch('http://localhost:5000/auth', {
       method: 'PUT',
       headers: {
@@ -90,16 +90,16 @@ const [data, setData] = React.useState({
         token: token_id,
 
       },
-     
+
       body: JSON.stringify({
-          'username': data.username,
-          'first_name': data.first_name,
-          'last_name': data.last_name,
-          'email': data.email,
-          'phone':data.phone,   
+        'username': data.username,
+        'first_name': data.first_name,
+        'last_name': data.last_name,
+        'email': data.email,
+        'phone': data.phone,
         'address': data.address,
-        
-        })
+
+      })
 
     })
     json = await response2.json();
@@ -107,244 +107,244 @@ const [data, setData] = React.useState({
 
   }
 
-        
-   
+
+
 
   const username_Change = (val) => {
-    if( val.length === 0 ) {
+    if (val.length === 0) {
       setData({
         ...data,
         username: false,
-    });
-  } else {
-    setData({
-      ...data,
-      username: val,
-      //username:val,
-  }); 
-  //Informationlist.username=val;
+      });
+    } else {
+      setData({
+        ...data,
+        username: val,
+        //username:val,
+      });
+      //Informationlist.username=val;
+    }
   }
-}
 
-const firstname_Change = (val) => {
-    if( val.length === 0 ) {
+  const firstname_Change = (val) => {
+    if (val.length === 0) {
       setData({
         ...data,
         first_name: false,
-    });
-  } else {
-    setData({
-      ...data,
-      first_name: val,
-  }); 
- // Informationlist.first_name=val;
+      });
+    } else {
+      setData({
+        ...data,
+        first_name: val,
+      });
+      // Informationlist.first_name=val;
+    }
   }
-}
 
 
-const lastname_Change = (val) => {
-    if( val.length === 0 ) {
+  const lastname_Change = (val) => {
+    if (val.length === 0) {
       setData({
         ...data,
         last_name: false,
-    });
-  } else {
-    setData({
-      ...data,
-      last_name: val,
-  }); 
- // Informationlist.last_name=val;
+      });
+    } else {
+      setData({
+        ...data,
+        last_name: val,
+      });
+      // Informationlist.last_name=val;
+    }
   }
-}
 
-const email_Change = (val) => {
-    if( val.length === 0 ) {
+  const email_Change = (val) => {
+    if (val.length === 0) {
       setData({
         ...data,
         email: false,
-    });
-  } else {
-    setData({
-      ...data,
-      email: val,
-  }); 
- // Informationlist.email=val;
+      });
+    } else {
+      setData({
+        ...data,
+        email: val,
+      });
+      // Informationlist.email=val;
+    }
   }
-}
 
-const phone_Change = (val) => {
-    if( val.length === 0 ) {
+  const phone_Change = (val) => {
+    if (val.length === 0) {
       setData({
         ...data,
         phone: val,
-    });
-  } else {
-    setData({
-      ...data,
-      phone: val,
-  }); 
-  //Informationlist.phone=val;
+      });
+    } else {
+      setData({
+        ...data,
+        phone: val,
+      });
+      //Informationlist.phone=val;
+    }
   }
-}
 
-const address_Change = (val) => {
-    if( val.length === 0 ) {
+  const address_Change = (val) => {
+    if (val.length === 0) {
       setData({
         ...data,
         address: false,
-    });
-  } else {
-    setData({
-      ...data,
-      address: val,
-  }); 
-  //Informationlist.address=val;
+      });
+    } else {
+      setData({
+        ...data,
+        address: val,
+      });
+      //Informationlist.address=val;
+    }
   }
-}
 
 
 
   return (
-      <View style={{ paddingHorizontal:5 ,paddingVertical:20 ,marginBottom:15, flex: 1 }}>
-    <ScrollView >
-        <Text style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30,fontWeight: 'bold', color: '#BFA38F'  }}>  <Icon2 name='user' size={30} color= 'black'> </Icon2> My Account </Text>
+    <View style={{ paddingHorizontal: 5, paddingVertical: 20, marginBottom: 15, flex: 1 }}>
+      <ScrollView >
+        <Text style={{ marginTop: 25, paddingLeft: 10, fontSize: 25, marginRight: 30, fontWeight: 'bold', color: '#BFA38F' }}>  <Icon2 name='user' size={30} color='black'> </Icon2> My Account </Text>
         <View style={{ flexDirection: 'column', marginVertical: 40, paddingHorizontal: 20 }}>
-        
-        <View>
+
+          <View>
             <Text>
-                <Text style={{ fontSize: 20, fontWeight: '600' }}>Username:  </Text>
-                <Text style={{ fontSize: 18 }}>{Informationlist.username} </Text>
+              <Text style={{ fontSize: 20, fontWeight: '600' }}>Username:  </Text>
+              <Text style={{ fontSize: 18 }}>{Informationlist.username} </Text>
             </Text>
-  
-        <Text></Text>
-          <Text>
-          <Text style={{ fontSize: 20 , fontWeight: '600'}}>First Name:  </Text>
-          <Text style={{ fontSize: 18 }}>{Informationlist.first_name} </Text>
-          </Text>
-          <Text></Text>
-          <Text>
-          <Text style={{ fontSize: 20,  fontWeight: '600' }}>Last Name:  </Text>
-          <Text style={{ fontSize: 18 }}>{Informationlist.last_name} </Text>
-          </Text>
-          <Text></Text>
-          <Text>
-          <Text style={{ fontSize: 20 ,fontWeight: '600'}}>Email:   </Text>
-          <Text style={{ fontSize: 17 }}>{Informationlist.email} </Text>
-          </Text>
-          <Text></Text>
-          <Text>
-          <Text style={{ fontSize: 20 ,fontWeight: '600'}}>Phone Number:  </Text>
-          <Text style={{ fontSize: 17 }}>{Informationlist.phone} </Text>
-          </Text>
-          <Text></Text>
-          <Text>
-          <Text style={{ fontSize: 20 ,fontWeight: '600'}}>Address: </Text>
-          <Text style={{ fontSize: 17 }}>{Informationlist.address} </Text>
-          </Text>
-     
-          <View style={{ marginTop: 15,flex: 1 }} >
-          <View style={{
-            //borderBottomColor: '#BFA38F',
-            borderColor: '#BFA38F',
-						borderBottomWidth: 5,
-						borderEndWidth: 1000,
-					}}
-				/> 
-        <Text style={{ marginTop: 25,fontSize: 25 ,fontWeight: 'bold', color: '#BFA38F'  }}>  <Icon2 name='edit' size={30} color= 'black'> </Icon2> Update Information </Text>
-        <Text></Text>
-        <View style={styles.action}>
-        <TextInput 
-                    placeholder="Enter New Username"
-                    placeholderTextColor='#000000bf'
-                    style={styles.textInput}   
-                    onChangeText={(val) =>username_Change(val)}          
-        />
-      </View>
-      <View style={styles.action}>
-        <TextInput 
-                    placeholder="Enter New First Name"
-                    placeholderTextColor='#000000bf'
-                    style={styles.textInput}   
-                    onChangeText={(val) => firstname_Change(val)}          
-        />
-      </View>
-      <View style={styles.action}>
-        <TextInput 
-                    placeholder="Enter New Last Name"
-                    placeholderTextColor='#000000bf'
-                    style={styles.textInput}   
-                    onChangeText={(val) => lastname_Change(val)}          
-        />
-      </View>
-      <View style={styles.action}>
-        <TextInput 
-                    placeholder="Enter New Email "
-                    placeholderTextColor='#000000bf'
-                    style={styles.textInput}   
-                    onChangeText={(val) => email_Change(val)}          
-        />
-      </View>
-      <View style={styles.action}>
-        <TextInput 
-                    placeholder="Enter New Phone Number"
-                    placeholderTextColor='#000000bf'
-                    style={styles.textInput}   
-                    onChangeText={(val) => phone_Change(val)}          
-        />
-      </View>
-      <View style={styles.action}>
-        <TextInput 
-                    placeholder="Enter New Address"
-                    placeholderTextColor='#000000bf'
-                    style={styles.textInput}   
-                    onChangeText={(val) => address_Change(val)}          
-        />
-      </View>
-        
+
+            <Text></Text>
+            <Text>
+              <Text style={{ fontSize: 20, fontWeight: '600' }}>First Name:  </Text>
+              <Text style={{ fontSize: 18 }}>{Informationlist.first_name} </Text>
+            </Text>
+            <Text></Text>
+            <Text>
+              <Text style={{ fontSize: 20, fontWeight: '600' }}>Last Name:  </Text>
+              <Text style={{ fontSize: 18 }}>{Informationlist.last_name} </Text>
+            </Text>
+            <Text></Text>
+            <Text>
+              <Text style={{ fontSize: 20, fontWeight: '600' }}>Email:   </Text>
+              <Text style={{ fontSize: 17 }}>{Informationlist.email} </Text>
+            </Text>
+            <Text></Text>
+            <Text>
+              <Text style={{ fontSize: 20, fontWeight: '600' }}>Phone Number:  </Text>
+              <Text style={{ fontSize: 17 }}>{Informationlist.phone} </Text>
+            </Text>
+            <Text></Text>
+            <Text>
+              <Text style={{ fontSize: 20, fontWeight: '600' }}>Address: </Text>
+              <Text style={{ fontSize: 17 }}>{Informationlist.address} </Text>
+            </Text>
+
+            <View style={{ marginTop: 15, flex: 1 }} >
+              <View style={{
+                //borderBottomColor: '#BFA38F',
+                borderColor: '#BFA38F',
+                borderBottomWidth: 5,
+                borderEndWidth: 1000,
+              }}
+              />
+              <Text style={{ marginTop: 25, fontSize: 25, fontWeight: 'bold', color: '#BFA38F' }}>  <Icon2 name='edit' size={30} color='black'> </Icon2> Update Information </Text>
+              <Text></Text>
+              <View style={styles.action}>
+                <TextInput
+                  placeholder="Enter New Username"
+                  placeholderTextColor='#000000bf'
+                  style={styles.textInput}
+                  onChangeText={(val) => username_Change(val)}
+                />
+              </View>
+              <View style={styles.action}>
+                <TextInput
+                  placeholder="Enter New First Name"
+                  placeholderTextColor='#000000bf'
+                  style={styles.textInput}
+                  onChangeText={(val) => firstname_Change(val)}
+                />
+              </View>
+              <View style={styles.action}>
+                <TextInput
+                  placeholder="Enter New Last Name"
+                  placeholderTextColor='#000000bf'
+                  style={styles.textInput}
+                  onChangeText={(val) => lastname_Change(val)}
+                />
+              </View>
+              <View style={styles.action}>
+                <TextInput
+                  placeholder="Enter New Email "
+                  placeholderTextColor='#000000bf'
+                  style={styles.textInput}
+                  onChangeText={(val) => email_Change(val)}
+                />
+              </View>
+              <View style={styles.action}>
+                <TextInput
+                  placeholder="Enter New Phone Number"
+                  placeholderTextColor='#000000bf'
+                  style={styles.textInput}
+                  onChangeText={(val) => phone_Change(val)}
+                />
+              </View>
+              <View style={styles.action}>
+                <TextInput
+                  placeholder="Enter New Address"
+                  placeholderTextColor='#000000bf'
+                  style={styles.textInput}
+                  onChangeText={(val) => address_Change(val)}
+                />
+              </View>
+
+            </View>
+
+
           </View>
 
-
         </View>
-        
-      </View>
       </ScrollView>
-     
-    <Button 
-              title="Update Information"
-              onPress={() => {
-                if (data.address !==false ) {
-                    Informationlist.address=data.address;
-                 updateAccount();
-                }if (data.email !==false ){
-                    Informationlist.email=data.email;
-                    updateAccount();
-                }
-                if (data.first_name !==false){
-                    Informationlist.first_name=data.first_name;
-                    updateAccount();
-                }
-                if (data.last_name !==false){
-                    Informationlist.last_name=data.last_name;
-                    updateAccount();
-                }
-                if (data.phone !==false){
-                    Informationlist.phone=data.phone;
-                    updateAccount();
-                }
-                if (data.username !==false){
-                    Informationlist.username=data.username;
-                    updateAccount();
-                }
-                else{ }
-                getAccount();
-                alert('Your information is updated!')
-            }
+
+      <Button
+        title="Update Information"
+        onPress={() => {
+          if (data.address !== false) {
+            Informationlist.address = data.address;
+            updateAccount();
+          } if (data.email !== false) {
+            Informationlist.email = data.email;
+            updateAccount();
+          }
+          if (data.first_name !== false) {
+            Informationlist.first_name = data.first_name;
+            updateAccount();
+          }
+          if (data.last_name !== false) {
+            Informationlist.last_name = data.last_name;
+            updateAccount();
+          }
+          if (data.phone !== false) {
+            Informationlist.phone = data.phone;
+            updateAccount();
+          }
+          if (data.username !== false) {
+            Informationlist.username = data.username;
+            updateAccount();
+          }
+          else { }
+          getAccount();
+          alert('Your information is updated!')
+        }
 
 
-            }
-            />
+        }
+      />
     </View>
-    
+
   );
 };
 
@@ -387,15 +387,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f2f2f2',
     paddingBottom: 5
-},
-	input: {
-		height: 30,
-		width: 25,
-		margin: 2,
-		borderWidth: 0.3,
-		fontSize: 15,
-		textAlign: 'center'
-	},
+  },
+  input: {
+    height: 30,
+    width: 25,
+    margin: 2,
+    borderWidth: 0.3,
+    fontSize: 15,
+    textAlign: 'center'
+  },
 
 
 });

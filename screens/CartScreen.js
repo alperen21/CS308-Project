@@ -26,7 +26,7 @@ const CartScreen = ({ navigation }) => {
 		AsyncStorage.getItem('userName')
 			.then((val) => {
 				setloggedIn(val);
-				console.log("am i logged in ????????????", loggedIn);
+				// console.log("am i logged in ????????????", loggedIn);
 			});
 	}, [isFocused]);
 
@@ -51,8 +51,8 @@ const CartScreen = ({ navigation }) => {
 			console.log(e);
 		}
 
-		console.log("cart screen- TOKEN id that we sent to backend::!!!", token_id);
-		console.log("cart screen- USERNAME that we sent to backend::!!!", username);
+		// console.log("cart screen- TOKEN id that we sent to backend::!!!", token_id);
+		// console.log("cart screen- USERNAME that we sent to backend::!!!", username);
 
 		const response2 = await fetch('http://localhost:5000/basket', {
 			method: 'GET',

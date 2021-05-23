@@ -1,0 +1,152 @@
+@import url(https://fonts.googleapis.com/css?family=Raleway:400,300,500,700);
+* {
+  box-sizing: border-box;
+}
+body {
+  background: #aedaa6;
+  font-family: "Raleway";
+}
+body .card {
+  padding: 75px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 675x auto;
+  grid-gap: 20px;
+  width: 1350px;
+  position: absolute;
+  background: white;
+  margin: 40px auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  transition: all 0.3s;
+}
+body .card:hover {
+  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+body .card nav {
+  width: 100%;
+  color: #727272;
+  text-transform: uppercase;
+  padding: 20px;
+  border-bottom: 2px solid #efefef;
+  font-size: 12px;
+}
+body .card nav svg.heart {
+  height: 24px;
+  width: 24px;
+  float: right;
+  margin-top: -3px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+body .card nav svg.heart:hover {
+  fill: red;
+}
+body .card nav svg.arrow {
+  float: left;
+  height: 15px;
+  width: 15px;
+  margin-right: 10px;
+}
+body .card .photo {
+  grid-column-end: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 2;
+  margin-top: 280px;
+  padding: 25px;
+  width: 100%;
+  text-align: center;
+}
+body .card .photo img {
+  max-height: 240px;
+}
+body .card .description {
+  padding: 25px;
+  margin-top: 220px;
+  width: 100%;
+  border-left: 2px solid #efefef;
+}
+body .card .description .h1_b {
+  color: #515151;
+  font-weight: 300;
+  padding-top: 15px;
+  margin: 0;
+  font-size: 30px;
+  font-weight: 300;
+}
+body .card .description .h2_b {
+  text-align: center;
+  padding-bottom: 10px;
+  color: #515151;
+  margin-top: 50px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+body .card .description .h3_b {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  color: #515151;
+  margin: 0;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+body .card .description .h4_b {
+  margin: 0;
+  color: #727272;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 12px;
+}
+body .card .description .p_b {
+  font-size: 12px;
+  line-height: 20px;
+  color: #727272;
+  padding: 20px 0;
+  margin: 0;
+}
+body .card .description .button_b {
+  margin-top: 20px;
+  outline: 0;
+  border: 0;
+  background: none;
+  border: 1px solid #d9d9d9;
+  padding: 8px 0px;
+  margin-bottom: 30px;
+  color: #515151;
+  text-transform: uppercase;
+  width: 125px;
+  font-family: inherit;
+  margin-right: 5px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+body .card .description .button_b:hover {
+  border: 1px solid #aedaa6;
+  color: #aedaa6;
+  cursor: pointer;
+}
+body .card .comments {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 2;
+  grid-row-end: span 2;
+  width: 100%;
+  border-top: 2px solid #efefef;
+  padding: 30px;
+}
+body .card .comments .single-comment {
+  padding: 50px;
+}
+body .card .comments .single-comment .h4_b {
+  font-weight: 500;
+  font-size: 18px;
+}
+body .card .comments .single-comment .p_b {
+  margin-top: 8px;
+  color: #727272;
+  font-weight: 500;
+  font-size: 14px;
+}

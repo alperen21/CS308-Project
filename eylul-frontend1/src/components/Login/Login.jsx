@@ -44,7 +44,8 @@ const Login = () => {
             console.log("HEYY CHECK IT OUTTTTT - signinScnreen!!!!",data.token);
             //signIn(data.username, data.token);
             // ProfileScreen();
-            Cookies.set(data.username, data.token)
+            Cookies.set("userName", data.username)
+            Cookies.set("token", data.token)
             history.push("/home");
 
         }

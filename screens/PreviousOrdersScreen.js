@@ -50,6 +50,48 @@ useEffect(() => {
   console.log(" orders::!!!", json.orders);
     setOrdersList(json.orders);
   }
+  
+  
+  
+  
+  const cancelOrders = async (order_idd) => {
+    
+    let token_id = 0;
+    let username = 0;
+
+    try {
+      token_id = await AsyncStorage.getItem('token');
+      // setToken(token_id);
+    } catch (e) {
+      console.log(e);
+    }
+
+    try {
+      // await AsyncStorage.setItem('userToken', userToken);
+      username = await AsyncStorage.getItem('userName');
+      // setUsername(username);
+    } catch (e) {
+      console.log(e);
+    }
+
+    const response = await fetch('http://localhost:5000/cancelOrder', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        user: username,
+        token: token_id,
+
+      },
+      body: JSON.stringify({
+        order_id: order_idd ,
+      })
+
+    })
+    let json = await response.json();
+  console.log(" orders::!!!", json.orders);
+    setOrdersList(json.orders);
+  }
 
   
 
@@ -81,7 +123,7 @@ useEffect(() => {
             {item.status==='Preparing' &&
             <Button
               title="Cancel order"
-              onPress={() => {}}  //navigate
+              onPress={() => {cancelOrders(item.order_id), alert('Your order is cancelled!')}}  //navigate
             /> }
            
            

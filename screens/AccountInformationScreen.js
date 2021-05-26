@@ -16,6 +16,7 @@ const AccountInformationScreen = ({ navigation }) => {
     email: Informationlist.email,
     phone: Informationlist.phone,
     address: Informationlist.address,
+    password:""
     //password: false,
   });
 
@@ -98,6 +99,7 @@ const AccountInformationScreen = ({ navigation }) => {
         'email': data.email,
         'phone': data.phone,
         'address': data.address,
+        'password':data.password
 
       })
 
@@ -204,6 +206,23 @@ const AccountInformationScreen = ({ navigation }) => {
 
 
 
+  const password_Change = (val) => {
+    if (val.length === 0) {
+      setData({
+        ...data,
+        password: false,
+      });
+    } else {
+      setData({
+        ...data,
+        password: val,
+      });
+      //Informationlist.address=val;
+    }
+  }
+
+
+
   return (
     <View style={{ paddingHorizontal: 5, paddingVertical: 20, marginBottom: 15, flex: 1 }}>
       <ScrollView >
@@ -300,6 +319,14 @@ const AccountInformationScreen = ({ navigation }) => {
                   onChangeText={(val) => address_Change(val)}
                 />
               </View>
+              <View style={styles.action}>
+                <TextInput
+                  placeholder="Enter New Password"
+                  placeholderTextColor='#000000bf'
+                  style={styles.textInput}
+                  onChangeText={(val) => password_Change(val)}
+                />
+              </View>
 
             </View>
 
@@ -333,6 +360,10 @@ const AccountInformationScreen = ({ navigation }) => {
           }
           if (data.username !== false) {
             Informationlist.username = data.username;
+            updateAccount();
+          }
+          if (data.password !== false) {
+           
             updateAccount();
           }
           else { }

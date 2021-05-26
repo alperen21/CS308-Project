@@ -1798,15 +1798,15 @@ class cancelOrder(Resource):
 
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT amount FROM ORDERS WHERE order_id = (%s)"
-        cursor.execute(query, (order_id,))
-        amount = cursor.fetchone()
-        amountofProduct = amount[0]
-
         query = "SELECT cart_id FROM ORDERS WHERE order_id = (%s)"
         cursor.execute(query, (order_id,))
         cart = cursor.fetchone()
         cart_id = cart[0]
+        
+        query = "SELECT amount FROM CART_PRODUCT WHERE cart_id = (%s)"
+        cursor.execute(query, (cart_id,))
+        amount = cursor.fetchone()
+        amountofProduct = amount[0]
 
         query = "SELECT product_id FROM CART WHERE cart_id = (%s)"
         cursor.execute(query, (cart_id,))
@@ -1818,7 +1818,7 @@ class cancelOrder(Resource):
         data = cursor.fetchone()
 
         query = "UPDATE PRODUCT SET stock=(%s) WHERE product_id=(%s)"
-        cursor.execute(query, (int(data[7] + amountofProduct), product_id))
+        cursor.execute(query, (int(data[7] + int(amountofProduct)), product_id))
         mysql.get_db().commit()
 
         #query = "DELETE FROM CART WHERE cart_id = (%s)"

@@ -31,6 +31,11 @@ mysql = MySQL(app)
 mysql.init_app(app)
 api = Api(app)
 
+def get_basket_price(product_id, cart_id):
+    cursor = mysql.get_db().cursor()
+    query = "SELECT price_with_discount FROM CART_PRODUCT WHERE product_id = (%s) AND cart_id = (%s)"
+    cursor.execute(query, (product_id, cart_id))
+    return cursor.fetchone()[0]
 
 def get_quantity(cart_id, product_id):
     cursor = mysql.get_db().cursor()
@@ -1098,10 +1103,13 @@ class basket(Resource):
             product_data = cursor.fetchone()
             product_id = product_data[0]
             discount = product_data[2]
-            if (int(discount) != 0):
-                cost = int(product_data[1])*(int(discount)/100)
+            print("*************")
+            print(discount)
+            if (float(discount) != 0):
+                cost = float(float(product_data[1]) - float(product_data[1])*(float(discount)/100.0))
+                print(cost)
             else:
-                cost = int(product_data[1])
+                cost = float(product_data[1])
 
             # check if product is already in basket
             query = "SELECT quantity FROM `BASKET` WHERE product_id = (%s) AND customer_id = (%s)"
@@ -1109,9 +1117,12 @@ class basket(Resource):
             data = cursor.fetchone()
             if (data is None):
                 # add to basket
+                print("basket query")
+                print(cost)
                 query = "INSERT INTO `BASKET`(`cost`, `quantity`, `product_name`, `product_id`, `customer_id`) VALUES ((%s),(%s),(%s),(%s),(%s))"
+
                 cursor.execute(
-                    query, (cost, quantity, product_name, product_id, customer_id))
+                    query, (float(cost), quantity, product_name, product_id, customer_id))
                 mysql.get_db().commit()
             else:
                 quantity = int(data[0])+1
@@ -1151,10 +1162,13 @@ class basket(Resource):
             query = "SELECT name, model, price, image_path, stock FROM PRODUCT WHERE product_id = (%s)"
             cursor.execute(query, (id,))
             product_info = cursor.fetchone()
+
+            cursor.execute("SELECT cost FROM BASKET WHERE customer_id = (%s) AND product_id = (%s)", (customer_id,id))
+            cost = cursor.fetchone()[0]
             products.append({
                 "name": product_info[0],
                 "model": product_info[1],
-                "price": product_info[2],
+                "price": cost,
                 "image_path": product_info[3],
                 "quantity": quantity,
                 "stock": product_info[4]
@@ -1298,7 +1312,7 @@ class order(Resource):
                         "name": product[0],
                         "rating": product[1],
                         "model": product[2],
-                        "price": product[3],
+                        "price": get_basket_price(product[6], order[0]),
                         "image_path": product[4],
                         "stock": product[5],
                         "amount": get_quantity(order[0], product[6])
@@ -1317,8 +1331,8 @@ class order(Resource):
         cursor = mysql.get_db().cursor()
         customer_id = username_to_id(
             request.headers["user"])
-        # add each product to cart
 
+        # add each product to cart
         query = "SELECT cost, quantity, product_id FROM BASKET WHERE customer_id = (%s)"
 
         cursor.execute(query, (customer_id,))
@@ -1327,6 +1341,7 @@ class order(Resource):
         query = "INSERT INTO `CART`(`customer_id`, `product_id`, `total_cost`, `quantity`) VALUES ((%s),(%s),(%s),(%s))"
         cursor.execute(
             query, (customer_id, 1, 2, 3))
+
         # get cart id
         query = "SELECT cart_id FROM CART WHERE customer_id = (%s)"
         cursor.execute(query, (customer_id))
@@ -1341,6 +1356,7 @@ class order(Resource):
 
         products_dict = dict() #will be used to send invoice
         for element in elements:
+            price = element[0]
             quantity = element[1]
             product_id = element[2]
             if (self.isStockAdequate(product_id, quantity) == False):
@@ -1356,8 +1372,8 @@ class order(Resource):
             
 
             # add to cart_product
-            query = "INSERT INTO `CART_PRODUCT`(`cart_id`,`product_id`,`amount`) VALUES ((%s),(%s),(%s))"
-            cursor.execute(query, (cart_id, product_id, quantity))
+            query = "INSERT INTO `CART_PRODUCT`(`cart_id`,`product_id`,`amount`,`price_with_discount`) VALUES ((%s),(%s),(%s),(%s))"
+            cursor.execute(query, (cart_id, product_id, quantity, price))
             
 
             # remove from basket
@@ -1848,9 +1864,32 @@ class cancelOrder(Resource):
         }
         return retJson
 
+class transform(Resource):
+    def post(self):
+        cursor = mysql.get_db().cursor()
+        query = "SELECT product_id FROM CART_PRODUCT"
+        cursor.execute(query)
+        pids = cursor.fetchall()
+
+        for pid in pids:
+            query = "SELECT price FROM PRODUCT WHERE product_id = (%s)"
+            cursor.execute(query, (pid,))
+            price = cursor.fetchone()
+
+            query = "UPDATE `CART_PRODUCT` SET `price_with_discount`=(%s) WHERE product_id = (%s) "
+            print(query, (price,pid))
+            cursor.execute(query, (price,pid))
+        mysql.get_db().commit()
+
+        return jsonify({
+            "message":"transformation complete",
+        })
+        
+
+
 
 api.add_resource(cancelOrder, "/cancelOrder")
-        
+api.add_resource(transform, "/transform")
 
 api.add_resource(pmview, "/pmview")
 api.add_resource(changeAddress, "/changeAddress")

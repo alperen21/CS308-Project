@@ -1525,7 +1525,7 @@ class rate(Resource):
 api.add_resource(rate, "/rate")
 
 class avgRate(Resource):
-    #Calculating average rate for given product id
+    #Calculating average rate for given product id.
     @cross_origin(origins="http://localhost:3000*")
     def post(self):
         posted_data = request.get_json()
@@ -1766,6 +1766,54 @@ class pmview(Resource):
             "message":"success"
         })
 
+class cancelOrder(Resource):
+    #Cancelling the order, adding the cancelled amount of the product to stock and changing status of the ordered as Cancelled.
+    @cross_origin(origins="http://localhost:3000*")
+    def post(self):
+        posted_data = request.get_json()
+        order_id = posted_data["order_id"]
+
+        cursor = mysql.get_db().cursor()
+
+        query = "SELECT amount FROM ORDERS WHERE order_id = (%s)"
+        cursor.execute(query, (order_id,))
+        amount = cursor.fetchone()
+        amountofProduct = amount[0]
+
+        query = "SELECT cart_id FROM ORDERS WHERE order_id = (%s)"
+        cursor.execute(query, (order_id,))
+        cart = cursor.fetchone()
+        cart_id = cart[0]
+
+        query = "SELECT product_id FROM CART WHERE cart_id = (%s)"
+        cursor.execute(query, (cart_id,))
+        product = cursor.fetchone()
+        product_id = product[0]
+
+        query = "SELECT * FROM PRODUCT WHERE product_id=(%s)"
+        cursor.execute(query, (product_id,))
+        data = cursor.fetchone()
+
+        query = "UPDATE PRODUCT SET stock=(%s) WHERE product_id=(%s)"
+        cursor.execute(query, (int(data[7] + amountofProduct), product_id))
+        mysql.get_db().commit()
+
+        #query = "DELETE FROM CART WHERE cart_id = (%s)"
+        #cursor.execute(query, (cart_id,))
+        #mysql.get_db().commit()
+
+        query = "UPDATE ORDERS SET status = (%s) WHERE order_id = (%s)"
+        cursor.execute(query, ("Cancelled", order_id))
+        mysql.get_db().commit()
+
+        retJson = {
+                "message": "Order canceled successfully.",
+                "status_code": 200
+        }
+        return retJson
+
+
+api.add_resource(cancelOrder, "/cancelOrder")
         
 
 api.add_resource(pmview, "/pmview")

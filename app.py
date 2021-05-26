@@ -36,7 +36,7 @@ def get_quantity(cart_id, product_id):
     cursor = mysql.get_db().cursor()
     query = "SELECT  `amount` FROM `CART_PRODUCT` WHERE cart_id = (%s) AND product_id = (%s)"
     cursor.execute(query, (cart_id,product_id))
-    stock = cursor.fetchone()[0]
+    return cursor.fetchone()[0]
 
 
 
@@ -1272,7 +1272,7 @@ class order(Resource):
         cursor = mysql.get_db().cursor()
         customer_id = username_to_id(
             request.headers["user"])
-        query = "SELECT cart_id, time, amount, status FROM `ORDERS` WHERE customer_id = (%s)"
+        query = "SELECT cart_id, date_of_purchase, amount, status FROM `ORDERS` WHERE customer_id = (%s)"
         cursor.execute(query, (customer_id,))
 
         # get all cart ids from the corresponding user
@@ -1281,18 +1281,18 @@ class order(Resource):
         return_list = list()
         for order in orders:
             # to get product information
-            query = "SELECT name, rating, model, price, image_path, stock, amount FROM CART_PRODUCT NATURAL JOIN PRODUCT WHERE cart_id = (%s)"
+            query = "SELECT name, rating, model, price, image_path, stock, product_id amount FROM CART_PRODUCT NATURAL JOIN PRODUCT WHERE cart_id = (%s)"
             cursor.execute(query, (order[0],))
             # products that the corresponding user bought in this particular order
             products = cursor.fetchall()
-
+            
             return_list.append(
                 {
                     "cart_id": order[0],
                     "time": str(order[1]),
                     "total_amount": sum([1 for product in products]),
                     "status": order[3],
-                    "total_price": sum([product[3] for product in products]),
+                    "total_price": sum( [float(product[3]) * float( get_quantity(order[0], product[6]) ) for product in products]),
                     "products": [{
                         "name": product[0],
                         "rating": product[1],
@@ -1300,7 +1300,7 @@ class order(Resource):
                         "price": product[3],
                         "image_path": product[4],
                         "stock": product[5],
-                        "amount": product[6]
+                        "amount": get_quantity(order[0], product[6])
                     } for product in products]
                 }
             )

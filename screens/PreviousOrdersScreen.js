@@ -89,8 +89,8 @@ useEffect(() => {
 
     })
     let json = await response.json();
-  console.log(" orders::!!!", json.orders);
-    setOrdersList(json.orders);
+  //console.log(" orders::!!!", json.orders);
+    getOrders();
   }
 
   

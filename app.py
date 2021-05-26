@@ -651,7 +651,7 @@ class Auth(Resource):
         else:
             address = posted_data["address"]
 
-        if("password" not in posted_data):
+        if("password" not in posted_data or posted_data["password"] == ""):
             password = data[6]
         else:
             password = posted_data["password"]

@@ -1802,24 +1802,37 @@ class cancelOrder(Resource):
         cursor.execute(query, (order_id,))
         cart = cursor.fetchone()
         cart_id = cart[0]
+
+        query = "SELECT product_id FROM CART_PRODUCT WHERE cart_id = (%s)"
+        cursor.execute(query, (cart_id,))
+        product_id_list = cursor.fetchall()
+        #product_id = product[0]
         
         query = "SELECT amount FROM CART_PRODUCT WHERE cart_id = (%s)"
         cursor.execute(query, (cart_id,))
-        amount = cursor.fetchone()
-        amountofProduct = amount[0]
+        amount_list = cursor.fetchall()
+        #amountofProduct = amount[0]
 
-        query = "SELECT product_id FROM CART WHERE cart_id = (%s)"
-        cursor.execute(query, (cart_id,))
-        product = cursor.fetchone()
-        product_id = product[0]
+        for i in range(0,len(product_id_list)):
+            product_id_var = product_id_list[i]
+            amount_list_var = amount_list[i]
+            query = "SELECT * FROM PRODUCT WHERE product_id=(%s)"
+            cursor.execute(query, (product_id_var[0],))
+            data = cursor.fetchone()
 
-        query = "SELECT * FROM PRODUCT WHERE product_id=(%s)"
-        cursor.execute(query, (product_id,))
-        data = cursor.fetchone()
+            query = "UPDATE PRODUCT SET stock=(%s) WHERE product_id=(%s)"
+            cursor.execute(query, (int(data[7] + int(amount_list_var[0])), product_id_var[0]))
+            mysql.get_db().commit()
 
-        query = "UPDATE PRODUCT SET stock=(%s) WHERE product_id=(%s)"
-        cursor.execute(query, (int(data[7] + int(amountofProduct)), product_id))
-        mysql.get_db().commit()
+        
+
+        #query = "SELECT * FROM PRODUCT WHERE product_id=(%s)"
+        #cursor.execute(query, (product_id,))
+        #data = cursor.fetchone()
+
+        #query = "UPDATE PRODUCT SET stock=(%s) WHERE product_id=(%s)"
+        #cursor.execute(query, (int(data[7] + int(amountofProduct)), product_id))
+        #mysql.get_db().commit()
 
         #query = "DELETE FROM CART WHERE cart_id = (%s)"
         #cursor.execute(query, (cart_id,))

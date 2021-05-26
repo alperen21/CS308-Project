@@ -11,8 +11,10 @@ from datetime import datetime
 import datetime
 import threading
 import bcrypt
+import time
 import base64
 from pdf_writer import pdf_writer,invoice_html_render
+
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -30,10 +32,19 @@ mysql.init_app(app)
 api = Api(app)
 
 
+def get_quantity(cart_id, product_id):
+    cursor = mysql.get_db().cursor()
+    query = "SELECT  `amount` FROM `CART_PRODUCT` WHERE cart_id = (%s) AND product_id = (%s)"
+    cursor.execute(query, (cart_id,product_id))
+    return cursor.fetchone()[0]
+
+
+
 def send_invoice(cart_id, items):
     render = invoice_html_render(cart_id,"invoice.html",items)
     render.solid_write()
     pdf = pdf_writer(cart_id,render.filename)
+    time.sleep(3)
     count = 0
     print(items)
     while(count < 10):
@@ -50,8 +61,7 @@ def send_invoice(cart_id, items):
         query = "INSERT INTO `INVOICE`(`invoice`, `cart_id`) VALUES ((%s),(%s))"
         cursor.execute(query, (blob, cart_id))
         mysql.get_db().commit()
-    os.remove(render.filename)
-    os.remove(pdf.filename)
+    return blob
 
 
 def increase_stock(product_id, amount):
@@ -728,7 +738,7 @@ class findProduct(Resource):
         productName = "%"+productName+"%"
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT name, rating, model, price, image_path, stock FROM PRODUCT WHERE name like (%s)"
+        query = "SELECT name, rating, model, price, image_path, stock, discount FROM PRODUCT WHERE name like (%s)"
         cursor.execute(query, (productName,))
         data = cursor.fetchall()
 
@@ -742,7 +752,8 @@ class findProduct(Resource):
                     "model": element[2],
                     "price": element[3],
                     "image_path": element[4],
-                    "stock": element[5]
+                    "stock": element[5],
+                    "discount":element[6]
                 }
                 data_list.append(product)
             return jsonify({
@@ -889,7 +900,7 @@ class orderBy(Resource):
 
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT product_id, name, rating, model, price, image_path, stock FROM PRODUCT ORDER BY {} {}".format(
+        query = "SELECT product_id, name, rating, model, price, image_path, stock, discount FROM PRODUCT ORDER BY {} {}".format(
             criteria, orderType)
         cursor.execute(query)
 
@@ -903,7 +914,8 @@ class orderBy(Resource):
                     "model":data[3],
                     "price":data[4],
                     "image_path":data[5],
-                    "stock":data[6]
+                    "stock":data[6],
+                    "discount":data[7]
                 }for data in datas],
             "status_code": 200
         }
@@ -963,7 +975,7 @@ class productsOfCategory(Resource):
         category_name = posted_data["category_name"]
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT * FROM PRODUCT P, CATEGORY C WHERE P.category_id = C.category_id AND C.category_name = (%s)"
+        query = "SELECT C.category_id, product_id, name, rating, model, price, image_path, stock, pm_id, C.category_name, discount FROM PRODUCT P, CATEGORY C WHERE P.category_id = C.category_id AND C.category_name = (%s)"
 
         if ("lowest_rating" in posted_data):
             query = query + \
@@ -992,9 +1004,9 @@ class productsOfCategory(Resource):
                 "price": info[5],
                 "image_path": info[6],
                 "stock": info[7],
-                "category_id": info[8],
-                "pm_id": info[9],
-                "category_name": info[10]
+                "pm_id": info[8],
+                "category_name": info[9],
+                "discount": info[10],
             })
 
         retJson = {
@@ -1014,7 +1026,7 @@ class products(Resource):
         posted_data = request.get_json()
         cursor = mysql.get_db().cursor()
 
-        query = "SELECT category_id, product_id, name, rating, model, price, image_path, stock FROM PRODUCT"
+        query = "SELECT category_id, product_id, name, rating, model, price, image_path, stock, discount FROM PRODUCT"
 
         if ("lowest_rating" in posted_data or "highest_rating" in posted_data or "lowest_price" in posted_data or "highest_price" in posted_data):
             query = query + " WHERE"
@@ -1053,6 +1065,7 @@ class products(Resource):
                 "price": info[5],
                 "image_path": info[6],
                 "stock": info[7],
+                "discount": info[8],
             })
 
         retJson = {
@@ -1080,11 +1093,15 @@ class basket(Resource):
             cursor = mysql.get_db().cursor()
 
             # get product id
-            query = "SELECT product_id, price FROM PRODUCT WHERE name = (%s)"
+            query = "SELECT product_id, price, discount FROM PRODUCT WHERE name = (%s)"
             cursor.execute(query, (product_name,))
             product_data = cursor.fetchone()
             product_id = product_data[0]
-            cost = product_data[1]
+            discount = product_data[2]
+            if (int(discount) != 0):
+                cost = int(product_data[1])*(int(discount)/100)
+            else:
+                cost = int(product_data[1])
 
             # check if product is already in basket
             query = "SELECT quantity FROM `BASKET` WHERE product_id = (%s) AND customer_id = (%s)"
@@ -1251,11 +1268,11 @@ class order(Resource):
 
     @private
     @cross_origin(origins="http://localhost:3000*")
-    def get(self):
+    def get(self): #past orders
         cursor = mysql.get_db().cursor()
         customer_id = username_to_id(
             request.headers["user"])
-        query = "SELECT cart_id, time, amount, status FROM `ORDERS` WHERE customer_id = (%s)"
+        query = "SELECT cart_id, date_of_purchase, amount, status FROM `ORDERS` WHERE customer_id = (%s)"
         cursor.execute(query, (customer_id,))
 
         # get all cart ids from the corresponding user
@@ -1264,27 +1281,30 @@ class order(Resource):
         return_list = list()
         for order in orders:
             # to get product information
-            query = "SELECT name, rating, model, price, image_path, stock FROM CART_PRODUCT NATURAL JOIN PRODUCT WHERE cart_id = (%s)"
+            query = "SELECT name, rating, model, price, image_path, stock, product_id amount FROM CART_PRODUCT NATURAL JOIN PRODUCT WHERE cart_id = (%s)"
             cursor.execute(query, (order[0],))
             # products that the corresponding user bought in this particular order
             products = cursor.fetchall()
-
+            
             return_list.append(
                 {
                     "cart_id": order[0],
                     "time": str(order[1]),
-                    "amount": order[2],
+                    "total_amount": sum([1 for product in products]),
                     "status": order[3],
+                    "total_price": sum( [float(product[3]) * float( get_quantity(order[0], product[6]) ) for product in products]),
                     "products": [{
                         "name": product[0],
                         "rating": product[1],
                         "model": product[2],
                         "price": product[3],
                         "image_path": product[4],
-                        "stock": product[5]
+                        "stock": product[5],
+                        "amount": get_quantity(order[0], product[6])
                     } for product in products]
                 }
             )
+            
         return jsonify({
             "status_code": 200,
             "orders": return_list
@@ -1335,8 +1355,8 @@ class order(Resource):
             
 
             # add to cart_product
-            query = "INSERT INTO `CART_PRODUCT`(`cart_id`,`product_id`) VALUES ((%s),(%s))"
-            cursor.execute(query, (cart_id, product_id))
+            query = "INSERT INTO `CART_PRODUCT`(`cart_id`,`product_id`,`amount`) VALUES ((%s),(%s),(%s))"
+            cursor.execute(query, (cart_id, product_id, quantity))
             
 
             # remove from basket
@@ -1349,8 +1369,10 @@ class order(Resource):
 
             products_dict[product_name+"({})".format(str(quantity))] = str(quantity*get_price(product_id))
         
+        '''
         #send invoice
-        send_invoice(cart_id, products_dict)
+        blob = send_invoice(cart_id, products_dict)
+        '''
         mysql.get_db().commit()
 
         return jsonify({
@@ -1375,7 +1397,7 @@ class refund(Resource):
             cart_id = posted_data["cart_id"]
 
             # check if refund request amount is <= than ordered
-            query = """ SELECT amount
+            query = """ SELECT CART_PRODUCT.amount
                         FROM ORDERS, CART, CART_PRODUCT, PRODUCT
                         WHERE 
                         ORDERS.cart_id = CART.cart_id AND 

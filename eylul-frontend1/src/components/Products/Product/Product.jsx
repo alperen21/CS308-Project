@@ -3,6 +3,7 @@ import {Card, CardMedia, CardContent, CardActions, Typography, IconButton, Link}
 import { AddShoppingCart } from '@material-ui/icons';
 import { useHistory } from "react-router-dom"; 
 import useStyles from './styles';
+import Cookies from 'js-cookie'
 
 const Product = ({ product }) => {
     const history = useHistory();
@@ -13,22 +14,62 @@ const Product = ({ product }) => {
             pathname: "/product_details",
             state: {product: product}});
     }
+    const HandleAddtoCart = async (name) => {
 
-    const HandleAddtoCart= async(name, quantity) =>{
-        const response = await fetch('http://localhost:5000/basket',{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Accept:"application/json",
-            },
-                body: JSON.stringify({
-                    product_name: name,
-                    quantity: quantity,
-                })
-            })
-            let json=await response.json();
-            console.log(json.category_elements);
+        let token_id = 0;
+        let username = 0;
+    
+        try {
+          token_id = await Cookies.get('token');
+          // setToken(token_id);
+        } catch (e) {
+          console.log(e);
         }
+    
+        try {
+          // await AsyncStorage.setItem('userToken', userToken);
+          username = await Cookies.get('userName');
+          // setUsername(username);
+        } catch (e) {
+          console.log(e);
+        }
+    
+        // console.log("home screen- TOKEN id that we sent to backend::!!!", token_id);
+        // console.log("home screen- USERNAME that we sent to backend::!!!", username);
+    
+    
+        const response2 = await fetch('http://localhost:5000/basket', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            user: username,
+            token: token_id,
+          },
+          body: JSON.stringify({
+            //category_name:'Coffee Machines'
+            product_name: name,
+            quantity: 1
+    
+          })
+    
+        })
+    
+        // console.log("username2 geldi mi?????", username); //GELMEDİ KONTROL ET!!!!!!!!!!!!!!!!!
+        let json = await response2.json();
+    
+    
+        if(json.status_code === 200){
+          alert("Your cart is updated")
+     
+        }
+        else{
+          alert("Try again!")
+        }
+        //console.log("mesajımız: ", json.message)
+        //console.log("code: ", json.status_code)
+        //setBasket(json.category_elements);  
+      }
     
     return (
         <Card classname={classes.root}>

@@ -1,4 +1,4 @@
-export { default as Navbar } from './Navbar/Navbar';
+export { default as Navbar1 } from './Navbar/Navbar';
 export { default as Products } from './Products/Products';
 export { default as Login } from './Login/Login';
 export { default as Register } from './Register/Register';
@@ -11,3 +11,4 @@ export { default as Cart } from './Cart/Cart';
 export { default as Product_Detail } from './Product_Details/product_details';
 export { default as Checkout } from './CheckoutForm/Checkout/Checkout';
 export { default as Profile } from './Profile/Profile';
+export { default as PrevOrders } from './PrevOrders/PrevOrders';

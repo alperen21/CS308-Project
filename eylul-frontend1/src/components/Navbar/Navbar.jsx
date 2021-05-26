@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { Component } from 'react'; 
+import {  Navbar, Nav, NavItem, NavDropdown } from 'react-bootstrap';
 import { AppBar, Toolbar, IconButton, Badge, MenuItem, Typography } from '@material-ui/core';
 import { ShoppingCart } from '@material-ui/icons';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -8,10 +9,22 @@ import logo from '../../assests/coffee.png';
 import useStyles from './styles';
 import { useHistory } from "react-router-dom"; 
 import { Button } from 'semantic-ui-react';
-const Navbar = () => {
+import Cookies from 'js-cookie';
+import { AuthContext } from '../context';
+
+const Navbar1 = () => {
     const history = useHistory();
     const classes = useStyles();
 
+    let user =  Cookies.get("userName")
+
+    //const { signOut } = React.useContext(AuthContext);
+    const signOut= async() => {
+        let bla = Cookies.remove("token");
+        let kla = Cookies.remove("userName");
+        history.push("/");
+       }
+    
     const toFilter = async() => {
         history.push("/filter_coffees");
     }
@@ -44,6 +57,7 @@ const Navbar = () => {
     };
 
     return (
+        
         <div>
              <>
                 <AppBar position="fixed" className={classes.appBar} color="inherit">
@@ -63,7 +77,7 @@ const Navbar = () => {
                             <MenuItem onClick={() => toEspressoM()}>Coffee machines</MenuItem>
                             </Select>
                         </FormControl>
-                        <IconButton> Sign out </IconButton>
+                        <IconButton onClick={() => signOut()} > Sign out </IconButton>
                         <Button onClick={() => toProfile()}> My Profile </Button>
                         
 
@@ -82,4 +96,4 @@ const Navbar = () => {
     )
 }
 
-export default Navbar
+export default Navbar1;

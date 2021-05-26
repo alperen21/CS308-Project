@@ -1,7 +1,8 @@
 import React from 'react';
 import {useState, useEffect} from "react";
 import Cookies from 'js-cookie'
-import { Button } from '@material-ui/core';
+import { Button } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 
 const Profile = () => {
     const [Informationlist, setInformationList] = useState([]);
@@ -61,8 +62,8 @@ const Profile = () => {
         }
 
         const updateAccount = async () => {
-            // console.log("HEYYYY",new_val);
-            // console.log("HEYYYY",item_to_update);
+            //console.log("HEYYYY",new_val);
+            //console.log("HEYYYY",item_to_update);
             let token_id = 0;
             let username = 0;
         
@@ -198,7 +199,7 @@ const Profile = () => {
         //Informationlist.address=val;
         }
     }
-
+    
     return (
         <div style={{ paddingHorizontal:5 ,paddingVertical:20 ,marginBottom:15, flex: 1 }}>
         <div >
@@ -252,7 +253,7 @@ const Profile = () => {
                         placeholder="Enter New Username"
                         placeholderTextColor='#000000bf'
                             
-                        onChangeText={(val) =>username_Change(val)}          
+                        onChange={(val) =>username_Change(val)}          
             />
         </div>
         <div >
@@ -260,7 +261,7 @@ const Profile = () => {
                         placeholder="Enter New First Name"
                         placeholderTextColor='#000000bf'
                             
-                        onChangeText={(val) => firstname_Change(val)}          
+                        onChange={(val) => firstname_Change(val)}          
             />
         </div>
         <div >
@@ -268,15 +269,15 @@ const Profile = () => {
                         placeholder="Enter New Last Name"
                         placeholderTextColor='#000000bf'
                             
-                        onChangeText={(val) => lastname_Change(val)}          
+                        onChange={(val) => lastname_Change(val)}          
             />
         </div>
         <div >
             <input 
                         placeholder="Enter New Email "
                         placeholderTextColor='#000000bf'
-                            
-                        onChangeText={(val) => email_Change(val)}          
+                        
+                        onChange={(val) => email_Change(val)}          
             />
         </div>
         <div >
@@ -284,7 +285,7 @@ const Profile = () => {
                         placeholder="Enter New Phone Number"
                         placeholderTextColor='#000000bf'
                         
-                        onChangeText={(val) => phone_Change(val)}          
+                        onChange={(val) => phone_Change(val)}          
             />
         </div>
         <div >
@@ -292,7 +293,7 @@ const Profile = () => {
                         placeholder="Enter New Address"
                         placeholderTextColor='#000000bf'
                         
-                        onChangeText={(val) => address_Change(val)}          
+                        onChange={(val) => address_Change(val)}          
             />
         </div>
             
@@ -303,13 +304,14 @@ const Profile = () => {
             
         </div>
         </div>
-        
-        <Button 
-                title="Update Information"
-                onPress={() => {
+                <br>
+                </br>
+        <Button align="center"
+                title="Update inff"
+                onClick={() => {
                     if (data.address !==false ) {
                         Informationlist.address=data.address;
-                    updateAccount();
+                        updateAccount();
                     }if (data.email !==false ){
                         Informationlist.email=data.email;
                         updateAccount();
@@ -334,10 +336,13 @@ const Profile = () => {
                     getAccount();
                     alert('Your information is updated!')
                 }
-
-
                 }
-                />
+                > Update Info </Button>
+                <br>
+                </br>
+                <br>
+                </br>
+                <Link to="/orders" style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30,fontWeight: 'bold', color: '#BFA38F'  }}>  <icon name='user' size={30} color= 'black'> </icon> See Previous Orders </Link>
         </div>
     );
 };

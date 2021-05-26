@@ -1822,12 +1822,10 @@ class cancelOrder(Resource):
         query = "SELECT product_id FROM CART_PRODUCT WHERE cart_id = (%s)"
         cursor.execute(query, (cart_id,))
         product_id_list = cursor.fetchall()
-        #product_id = product[0]
         
         query = "SELECT amount FROM CART_PRODUCT WHERE cart_id = (%s)"
         cursor.execute(query, (cart_id,))
         amount_list = cursor.fetchall()
-        #amountofProduct = amount[0]
 
         for i in range(0,len(product_id_list)):
             product_id_var = product_id_list[i]

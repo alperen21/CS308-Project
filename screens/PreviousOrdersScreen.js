@@ -47,7 +47,7 @@ useEffect(() => {
 
     })
     let json = await response.json();
-  //console.log(" orders::!!!", json.orders);
+  console.log(" orders::!!!", json.orders);
     setOrdersList(json.orders);
   }
 
@@ -74,9 +74,15 @@ useEffect(() => {
               order_time:item.time,
               order_status:item.status,
               total_price: item.total_price, 
+              cart_id:item.cart_id
 
               })}  //navigate
             />
+            {item.status==='Preparing' &&
+            <Button
+              title="Cancel order"
+              onPress={() => {}}  //navigate
+            /> }
            
            
             
@@ -99,7 +105,7 @@ useEffect(() => {
       }
       {
         item.status == 'Preparing'&&
-        <View style={{ flexDirection: 'row',  marginLeft:140}}><Image style={{width: 45, height: 45, marginBottom: 10 }}
+        <View style={{ flexDirection: 'row',  marginLeft:110}}><Image style={{width: 45, height: 45, marginBottom: 10 }}
             source={{
               uri: 'https://static.thenounproject.com/png/598271-200.png'
             }}/></View>

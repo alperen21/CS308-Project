@@ -16,7 +16,7 @@ const PrevOrderDetailScreen = ({ route, navigation }) => {
     marginBottom: 20,
   };
   /* 2. Get the param */
-  const { itemlist,order_time,order_status,total_price } = route.params;
+  const { itemlist,order_time,order_status,total_price,cart_id } = route.params;
 
 // console.log("DID LIST COME",itemlist)
 
@@ -25,24 +25,22 @@ const renderItem = ({ item }) => {
    
     return (
         
-      <View style={{ flexDirection: 'row', marginVertical: 20}}>
+      <View style={{ flexDirection: 'row', marginVertical: 15}}>
         <Image style={styles.image}
           source={{
             uri: item.image_path
           }} />
-        <View>
-          <Text style={{ fontSize: 13, fontWeight: 'bold' }}>{item.name} </Text>
+        <View style={{ flexDirection: 'column'}}>
+          <Text style={{ width:150,fontSize: 13, fontWeight: 'bold' }}>{item.name} </Text>
           <Text style={{ fontSize: 15 }}> Model: {item.model}</Text>
           <Text > </Text>
           <Text style={{ fontSize: 20 }}> ${item.price} </Text>
           <Text style={{ fontSize: 18 }}> x{item.amount} </Text>
-          <View style={styles.together}>
-            
+          
           </View>
 
-
-        </View>
-        <View style={{flex:0.8}}>
+        
+        <View style={{flexDirection: 'column'}}>
         {order_status !== 'Preparing' && order_status !=='Cancelled' && order_status !== 'Shipped' &&
         <Button
               title="Rate-Comment"
@@ -52,7 +50,19 @@ const renderItem = ({ item }) => {
               })} //navigate
             />
         }
+        {order_status !== 'Preparing' && order_status !=='Cancelled' && order_status !== 'Shipped' &&
+        <Button
+              title="Return"
+              onPress={() => navigation.navigate('Return', {
+                itemName: item.name,
+                itemImage:item.image_path,
+                cart_id:cart_id,
+                amount_purchased:item.amount
+              })} //navigate
+            />
+        }
 
+        
         </View>
       </View>
 

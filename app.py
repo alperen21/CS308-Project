@@ -1767,7 +1767,7 @@ class pmview(Resource):
         })
 
 class cancelOrder(Resource):
-    #Cancelling the order, adding the cancelled amount of the product to stock and changing status of the ordered as Cancelled.
+    #Cancelling the order, adding the cancelled amount of the product to stock and changing status of the order as Cancelled.
     @cross_origin(origins="http://localhost:3000*")
     def post(self):
         posted_data = request.get_json()

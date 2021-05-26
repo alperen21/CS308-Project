@@ -1272,7 +1272,7 @@ class order(Resource):
         cursor = mysql.get_db().cursor()
         customer_id = username_to_id(
             request.headers["user"])
-        query = "SELECT cart_id, date_of_purchase, amount, status FROM `ORDERS` WHERE customer_id = (%s)"
+        query = "SELECT cart_id, date_of_purchase, amount, status, order_id FROM `ORDERS` WHERE customer_id = (%s)"
         cursor.execute(query, (customer_id,))
 
         # get all cart ids from the corresponding user
@@ -1292,6 +1292,7 @@ class order(Resource):
                     "time": str(order[1]),
                     "total_amount": sum([1 for product in products]),
                     "status": order[3],
+                    "order_id": order[4],
                     "total_price": sum( [float(product[3]) * float( get_quantity(order[0], product[6]) ) for product in products]),
                     "products": [{
                         "name": product[0],

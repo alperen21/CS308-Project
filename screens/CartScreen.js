@@ -67,7 +67,7 @@ const CartScreen = ({ navigation }) => {
 		})
 
 		let json = await response2.json();
-		//console.log("basket products::!!!", json);
+		console.log("basket products::!!!", json);
 
 		setBasketList(json.products);
 		totalcalculate(json.products);
@@ -176,7 +176,8 @@ const CartScreen = ({ navigation }) => {
 		})
 
 		let json = await response4.json();
-		//console.log("basket products after quantity change!!", json);
+		
+	
 
 		getBasket();
 
@@ -211,13 +212,13 @@ const CartScreen = ({ navigation }) => {
 							<View style={{}}><Text style={{ fontSize: 18, color: '#000000bf' }}> ${item.price} </Text></View>
 							<View style={{ marginTop: 7, marginLeft: 38 }} >
 
-								<MaterialIcons name="remove" size={21} color="#000000bf" onPress={() => { changeQuantity(item.name, item.quantity - 1) }} />
+								<MaterialIcons name="remove" size={21} color="#000000bf" onPress={() => {changeQuantity(item.name, item.quantity - 1) }} />
 							</View>
 
 							<View style={{ marginLeft: 0 }}><TextInput style={styles.input}>{item.quantity} </TextInput></View>
 							<View style={{ marginTop: 7, marginLeft: 0 }} >
 
-								<MaterialIcons name="add" size={21} color="#000000bf" onPress={() => { changeQuantity(item.name, item.quantity + 1) }} />
+								<MaterialIcons name="add" size={21} color="#000000bf" onPress={() => { if (item.quantity >= item.stock) {alert('There is not enough stock!')} else {changeQuantity(item.name, item.quantity + 1) }}} />
 							</View>
 
 							<View style={{ marginLeft: 30 }}>

@@ -80,7 +80,7 @@ const CheckoutScreen = ({ route, navigation }) => {
 
 							<View style={{}}><Text style={{ fontSize: 18, color: '#000000bf' }}> ${item.price} </Text></View>
 						
-							<View style={{ marginLeft: 200 , marginRight:50}}><Text style={{ fontSize: 18}}>{item.quantity}</Text></View>
+							<View style={{ marginLeft: 200 , marginRight:50}}><Text style={{ fontSize: 18}}>x{item.quantity}</Text></View>
 
 						</View>
 
@@ -235,7 +235,7 @@ const cvv_Change = (val) => {
         </ScrollView>
 
 
-        <View><Text style={{ marginTop: 20, marginLeft: 10, fontWeight: "500", fontSize: 20, color: 'black' }}>Credit Card Details:</Text></View>
+        <View><Text style={{ marginTop: 20, marginLeft: 10, fontWeight: "500", fontSize: 20, color: 'black' }}><AntDesign name="creditcard" size={25} color="black"/>  Credit Card Details:</Text></View>
       <View style={styles.action}>
         <TextInput 
                     placeholder="Enter Credit Card Number"

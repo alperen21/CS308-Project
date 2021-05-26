@@ -47,7 +47,7 @@ useEffect(() => {
 
     })
     let json = await response.json();
-    // console.log(" orders::!!!", json.orders);
+  //console.log(" orders::!!!", json.orders);
     setOrdersList(json.orders);
   }
 
@@ -61,8 +61,9 @@ useEffect(() => {
         
         <View>
          
-          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Order Time: {item.time} </Text>
-          <Text style={{ fontSize: 17 }}>Order Status :{item.status} </Text>
+          <Text style={{ textDecorationLine:'underline' ,width: 190,fontSize: 18, fontWeight: 'bold' }}>Order Date:  </Text><Text style={{fontSize: 18}}>{item.time}</Text>
+          <Text></Text>
+          <Text style={{ textDecorationLine:'underline',fontSize: 17 ,fontWeight: 'bold'}}>Order Status : </Text><Text style={{fontSize: 18}}>{item.status}</Text>
           {/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
           {/* <Text style={{ fontSize: 15 }}> Quantity: {item.amount} </Text> */}
           <View style={styles.together}>
@@ -72,6 +73,7 @@ useEffect(() => {
               itemlist:item.products,
               order_time:item.time,
               order_status:item.status,
+              total_price: item.total_price, 
 
               })}  //navigate
             />

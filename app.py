@@ -1397,7 +1397,7 @@ class refund(Resource):
             cart_id = posted_data["cart_id"]
 
             # check if refund request amount is <= than ordered
-            query = """ SELECT amount
+            query = """ SELECT CART_PRODUCT.amount
                         FROM ORDERS, CART, CART_PRODUCT, PRODUCT
                         WHERE 
                         ORDERS.cart_id = CART.cart_id AND 

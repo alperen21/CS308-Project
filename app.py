@@ -329,9 +329,9 @@ def sales_manager_only(func):
                         "message": "token does not match the user",
                         "status_code": 403
                     })
-                elif ("sales_manager" not in request.headers):
+                elif (data["user_type"] != "sales_manager"):
                     return jsonify({
-                        "message": "user is not a product manager",
+                        "message": "user is not a sales manager",
                         "status_code": 403
                     })
             except jwt.ExpiredSignatureError:
@@ -586,7 +586,7 @@ class Auth(Resource):
                         "name": data[1],
                         "surname": data[2],
                         "token": token,
-                        "user type": "sales manager",
+                        "user_type": "sales manager",
                         "status_code": 200
                     }
                 else:
@@ -1506,8 +1506,8 @@ class refund(Resource):
                 "message": "bad request",
                 "status_code": check_posted_data(posted_data, "refund/post")})
 
-    @product_manager_only
-    def get(self):  # evaluate refund
+    @sales_manager_only
+    def get(self):  # get refund requests
         cursor = mysql.get_db().cursor()
         query = """ SELECT username, name, cart_id, refund_request.amount
                     FROM refund_request, USERS, PRODUCT
@@ -1528,7 +1528,7 @@ class refund(Resource):
             "status_code": 200
         })
 
-    @product_manager_only
+    @sales_manager_only
     def put(self):  # evaluate refund
         cursor = mysql.get_db().cursor()
         posted_data = request.get_json()

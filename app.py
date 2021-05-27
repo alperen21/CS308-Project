@@ -1467,6 +1467,7 @@ class order(Resource):
 
         return jsonify({
             "message": "successful",
+            "invoice": blob.decode(),
             "status_code": 200
         })
 

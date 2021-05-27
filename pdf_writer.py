@@ -57,8 +57,7 @@ class invoice_html_render:
             result = template_list[0] +items_html + total + template_list[1]
 
 
-            with open(self.filename, "w") as output:
-                output.write(result)
+            return result
 
     def solid_delete(self):
         os.remove(self.filename)

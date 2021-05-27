@@ -4,6 +4,7 @@ from flaskext.mysql import MySQL
 from passlib.hash import sha256_crypt
 import os
 import jwt
+from pathlib import Path
 from functools import wraps
 from flask_cors import CORS, cross_origin
 from emailClass import OAuthMail
@@ -14,7 +15,8 @@ import bcrypt
 import pdfkit
 import time
 import base64
-from pdf_writer import pdf_writer,invoice_html_render
+from pdf_writer import invoice_html_render
+from weasyprint import HTML
 
 
 app = Flask(__name__)
@@ -34,14 +36,16 @@ api = Api(app)
 
 def invoice(cart_id, items, mail):
     render = invoice_html_render(cart_id, "invoice.html", items)
-    render.solid_write()
+    html_file = render.solid_write()
     print("html file has been successfully created")
 
     html_filename = render.filename
-    pdf_filename = hash(cart_id) + ".pdf"
+    pdf_filename = str(hash(cart_id)) + ".pdf"
     print ("pdf file has been succesfully created")
 
-    pdfkit.from_file(html_filename, pdf_filename)
+    htmldoc = HTML(string=html_file, base_url="")
+    pdf = htmldoc.write_pdf()
+    Path(pdf_filename).write_bytes(pdf)
 
     mail = OAuthMail(mail, "your invoice", html="mails/order.html", attach=[pdf_filename])
     mail.send()
@@ -58,9 +62,6 @@ def invoice(cart_id, items, mail):
 
     os.remove(pdf_filename)
     print("pdf file removed")
-
-    os.remove(html_filename)
-    print("html file removed")
 
     print("returnning base64 object")
 
@@ -1460,7 +1461,7 @@ class order(Resource):
         
         
         #send invoice
-        #blob = invoice(cart_id, products_dict, "alperenyildiz@sabanciuniv.edu")
+        blob = invoice(cart_id, products_dict, "alperenyildiz@sabanciuniv.edu")
         
         mysql.get_db().commit()
 

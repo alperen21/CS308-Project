@@ -392,7 +392,7 @@ def user_id_to_username(user_id):
 
 class getComment(Resource):
     @cross_origin(origins="http://localhost:3000*")
-    def post(self):
+    def post(self): #get all comments
         posted_data = request.get_json()
         product_name = posted_data["product_name"]
         cursor = mysql.get_db().cursor()
@@ -401,7 +401,7 @@ class getComment(Resource):
         cursor.execute(query, (product_name,))
         product_id = cursor.fetchone()[0]
 
-        query = "SELECT text, time, customer_id FROM `COMMENTS` WHERE product_id=(%s)"
+        query = "SELECT text, date_time, customer_id, approved, customer_id, product_id FROM `COMMENTS` WHERE product_id=(%s)"
         cursor.execute(query, (product_id,))
         comments = cursor.fetchall()
         product_comments = list()
@@ -410,7 +410,10 @@ class getComment(Resource):
             product_comments.append({
                 "username": user_id_to_username(comment[2]),
                 "text": comment[0],
-                "time": str(comment[1])
+                "time": str(comment[1]),
+                "approved": bool(comment[3]),
+                "customer_id": comment[4],
+                "product_id": comment[5] 
             })
 
         return jsonify({
@@ -422,10 +425,11 @@ class getComment(Resource):
 api.add_resource(getComment, "/getcomment")
 
 
+
 class Comment(Resource):
     @cross_origin(origins="http://localhost:3000*")
     @private
-    def post(self):
+    def post(self): #post comment
         posted_data = request.get_json()
         if (check_posted_data(posted_data, "comment_post") == 200):
             username = request.headers["user"]
@@ -459,6 +463,34 @@ class Comment(Resource):
             "message": "Bad Request",
             "status_code": 403
         })
+
+    @cross_origin(origins="http://localhost:3000*")
+    @product_manager_only
+    def put(self): #approve comment
+        posted_data = request.get_json()
+        cursor = mysql.get_db().cursor()
+
+        customer_id = posted_data["customer_id"]
+        product_id = posted_data["product_id"]
+        decision = posted_data["decision"]
+
+        query = "UPDATE `COMMENTS` SET `approved`=(%s) WHERE customer_id = (%s) AND product_id = (%s)"
+        cursor.execute(query, (bool(decision), customer_id,product_id))
+        mysql.get_db().commit()
+
+        if (decision == True):
+            return jsonify({
+                "message":"comment approved",
+                "status_code":201
+            })
+        else:
+            return jsonify({
+                "message":"comment disapproved",
+                "status_code":201
+            })
+
+
+
 
     @cross_origin(origins="http://localhost:3000*")
     def get(self):
@@ -1797,15 +1829,45 @@ class pmview(Resource):
             ],
             "status_code":200
         })
-    def post(self): #get invoice
+    def post(self): #get invoice, adress, time and phone 
         cursor = mysql.get_db().cursor()
         posted_data = request.get_json()
         cart_id = posted_data["cart_id"]
+        query = "SELECT date_of_purchase, address, phone FROM ORDERS, CUSTOMER WHERE ORDERS.customer_id = CUSTOMER.customer_id AND ORDERS.cart_id = (%s)"
+        cursor.execute(query,(cart_id,))
+        data = cursor.fetchone()
+
+        date_of_purchase = data[0].strftime('%Y-%m-%d %H-%M-%S')
+        address = data[1]
+        phone = data[2]
+
         query = "SELECT invoice FROM INVOICE WHERE cart_id = (%s)"
         cursor.execute(query,(cart_id,))
-        invoice = cursor.fetchone()[0]
+        data = cursor.fetchone()
+
+        if (data is None):
+            mystr = "invoice not found"
+            mystr_bytes = mystr.encode('ascii')
+            invoice = base64.b64encode(mystr_bytes)
+        else:
+            invoice = data[0]
+
+        query = "SELECT price_with_discount, quantity FROM CART_PRODUCT , CART WHERE CART_PRODUCT.cart_id = (%s) AND CART_PRODUCT.cart_id = CART.cart_id"
+        cursor.execute(query,(cart_id,))
+        products = cursor.fetchall()
+
+
         return jsonify({
             "invoice":invoice.decode(),
+            "date_of_purchase": date_of_purchase,
+            "address": address,
+            "phone": phone,
+            "purchased products": [
+                {
+                    "price_with_discount": product[0],
+                    "quantity": product[1]
+                } for product in products
+            ],
             "status_code":200
         })
 
@@ -1883,32 +1945,13 @@ class cancelOrder(Resource):
         }
         return retJson
 
-class transform(Resource):
-    def post(self):
-        cursor = mysql.get_db().cursor()
-        query = "SELECT product_id FROM CART_PRODUCT"
-        cursor.execute(query)
-        pids = cursor.fetchall()
 
-        for pid in pids:
-            query = "SELECT price FROM PRODUCT WHERE product_id = (%s)"
-            cursor.execute(query, (pid,))
-            price = cursor.fetchone()
-
-            query = "UPDATE `CART_PRODUCT` SET `price_with_discount`=(%s) WHERE product_id = (%s) "
-            print(query, (price,pid))
-            cursor.execute(query, (price,pid))
-        mysql.get_db().commit()
-
-        return jsonify({
-            "message":"transformation complete",
-        })
         
 
 
 
 api.add_resource(cancelOrder, "/cancelOrder")
-api.add_resource(transform, "/transform")
+
 
 api.add_resource(pmview, "/pmview")
 api.add_resource(changeAddress, "/changeAddress")

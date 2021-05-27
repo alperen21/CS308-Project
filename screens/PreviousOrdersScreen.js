@@ -199,7 +199,7 @@ useEffect(() => {
       <FlatList style={{ flex: 1 }}
         data={orderslist}
         renderItem={renderItem}
-        keyExtractor={(item) => item.time.toString()}
+        keyExtractor={(item) => item.order_id}
       />
 
     </SafeAreaView>

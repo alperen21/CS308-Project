@@ -40,6 +40,7 @@ const ProductDetailsScreen = ({ route, navigation }) => {
 
     })
     let json = await response.json();
+    console.log('HEYYY',json)
     setCommentList(json.comments);
   }
 
@@ -90,17 +91,20 @@ const ProductDetailsScreen = ({ route, navigation }) => {
     return (
       <View>
         <View style={{ flexDirection: 'column', marginVertical: 40, paddingHorizontal: 10 }}>
-          <Text style={{ fontSize: 18, fontWeight: 'bold' }}> {item.username} </Text>
-          <View><Text style={{ fontSize: 15, marginTop: 15 }}> {item.text} </Text></View>
-        </View>
-        <View
+          
+         {item.approved == true &&<Text style={{ fontSize: 18, fontWeight: 'bold' }}> {item.username}                 <Text style={{ fontSize: 15, marginTop: 15 ,fontWeight: '500' }}>                            {item.time} </Text>    </Text> } 
+         {item.approved == true &&  <View><Text style={{ fontSize: 15, marginTop: 15 ,fontWeight: '500' }}> {item.text} </Text></View> } 
+         {item.approved == true &&  <View
           style={{
             //borderBottomColor: '#BFA38F',
             borderColor: '#BFA38F',
             borderBottomWidth: 3,
             borderEndWidth: 1000,
           }}
-        />
+        />} 
+         
+        </View>
+       
       </View>
     )
   };

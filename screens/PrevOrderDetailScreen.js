@@ -94,7 +94,7 @@ const renderItem = ({ item }) => {
 				}}
 		/>
          <Text style={{ textDecorationLine:'underline',marginTop: 25, paddingLeft:10,fontSize: 18, marginRight: 30,fontWeight: 'bold', color: '#000000bf' }}>  Total Amount paid:  </Text><Text style={{ fontWeight: '500', paddingLeft:17,fontSize: 18}}> ${total_price}</Text>
-         <Text style={{ textDecorationLine:'underline',marginTop: 25, paddingLeft:10,fontSize: 18, marginRight: 30,fontWeight: 'bold', color: '#000000bf' }}>  Order Time: </Text><Text style={{fontWeight: '500', paddingLeft:17,fontSize: 18}}>{order_time}</Text>
+         <Text style={{ textDecorationLine:'underline',marginTop: 25, paddingLeft:10,fontSize: 18, marginRight: 30,fontWeight: 'bold', color: '#000000bf' }}>  Order Date: </Text><Text style={{fontWeight: '500', paddingLeft:17,fontSize: 18}}>{order_time}</Text>
          <Text style={{ textDecorationLine:'underline',marginTop: 25, paddingLeft:10,fontSize: 18, marginRight: 30,fontWeight: 'bold', color: '#000000bf' }}>  Payment Type: </Text><Text style={{fontWeight: '500', paddingLeft:17,fontSize: 18}}>Credit card </Text>
         
 

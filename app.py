@@ -6,11 +6,12 @@ import os
 import jwt
 from functools import wraps
 from flask_cors import CORS, cross_origin
-from emailClass import SMTPemail, OAuthMail
+from emailClass import OAuthMail
 from datetime import datetime
 import datetime
 import threading
 import bcrypt
+import pdfkit
 import time
 import base64
 from pdf_writer import pdf_writer,invoice_html_render
@@ -30,6 +31,43 @@ app.config["MYSQL_DATABASE_CURSORCLASS"] = "DictCursor"
 mysql = MySQL(app)
 mysql.init_app(app)
 api = Api(app)
+
+def invoice(cart_id, items, mail):
+    render = invoice_html_render(cart_id, "invoice.html", items)
+    render.solid_write()
+    print("html file has been successfully created")
+
+    html_filename = render.filename
+    pdf_filename = hash(cart_id) + ".pdf"
+    print ("pdf file has been succesfully created")
+
+    pdfkit.from_file(html_filename, pdf_filename)
+
+    mail = OAuthMail(mail, "your invoice", html="mails/order.html", attach=[pdf_filename])
+    mail.send()
+    print("invoice has been sent to the customer successfully")
+
+    with open(pdf_filename, 'rb') as f:
+        blob = base64.b64encode(f.read())
+        cursor = mysql.get_db().cursor()
+        query = "INSERT INTO `INVOICE`(`invoice`, `cart_id`) VALUES ((%s),(%s))"
+        cursor.execute(query, (blob, cart_id))
+        mysql.get_db().commit()
+    
+    print("invoice has been inserted to the database")
+
+    os.remove(pdf_filename)
+    print("pdf file removed")
+
+    os.remove(html_filename)
+    print("html file removed")
+
+    print("returnning base64 object")
+
+    return blob
+
+
+
 
 def get_basket_price(product_id, cart_id):
     cursor = mysql.get_db().cursor()
@@ -1296,7 +1334,6 @@ api.add_resource(basket, "/basket")
 
 
 class order(Resource):
-    @cross_origin(origins="http://localhost:3000*")
     def isStockAdequate(self, product_id, quantity):
         cursor = mysql.get_db().cursor()
         query = "SELECT stock FROM `PRODUCT` WHERE product_id=(%s)"
@@ -1306,7 +1343,7 @@ class order(Resource):
             return True
         else:
             return False
-    @cross_origin(origins="http://localhost:3000*")
+    
     def getStock(self, product_id):
         cursor = mysql.get_db().cursor()
         query = "SELECT stock FROM `PRODUCT` WHERE product_id=(%s)"
@@ -1359,8 +1396,9 @@ class order(Resource):
             "orders": return_list
         })
 
-    @private
+    
     @cross_origin(origins="http://localhost:3000*")
+    @private
     def post(self):  # order everything on basket
         cursor = mysql.get_db().cursor()
         customer_id = username_to_id(
@@ -1420,10 +1458,10 @@ class order(Resource):
 
             products_dict[product_name+"({})".format(str(quantity))] = str(quantity*get_price(product_id))
         
-        '''
+        
         #send invoice
-        blob = send_invoice(cart_id, products_dict)
-        '''
+        #blob = invoice(cart_id, products_dict, "alperenyildiz@sabanciuniv.edu")
+        
         mysql.get_db().commit()
 
         return jsonify({

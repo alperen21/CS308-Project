@@ -808,6 +808,7 @@ api.add_resource(findProduct, "/findProduct")
 
 
 class addProduct(Resource):
+    @cross_origin(origins="http://localhost:3000*")
     @private
     def post(self):  # adding new product to database
         posted_data = request.get_json()
@@ -1295,6 +1296,7 @@ api.add_resource(basket, "/basket")
 
 
 class order(Resource):
+    @cross_origin(origins="http://localhost:3000*")
     def isStockAdequate(self, product_id, quantity):
         cursor = mysql.get_db().cursor()
         query = "SELECT stock FROM `PRODUCT` WHERE product_id=(%s)"
@@ -1304,7 +1306,7 @@ class order(Resource):
             return True
         else:
             return False
-
+    @cross_origin(origins="http://localhost:3000*")
     def getStock(self, product_id):
         cursor = mysql.get_db().cursor()
         query = "SELECT stock FROM `PRODUCT` WHERE product_id=(%s)"
@@ -1434,6 +1436,7 @@ class order(Resource):
 
 
 class refund(Resource):
+    @cross_origin(origins="http://localhost:3000*")
     @private
     def post(self):  # ask for a refund
         posted_data = request.get_json()
@@ -1505,7 +1508,7 @@ class refund(Resource):
             return jsonify({
                 "message": "bad request",
                 "status_code": check_posted_data(posted_data, "refund/post")})
-
+    @cross_origin(origins="http://localhost:3000*")
     @sales_manager_only
     def get(self):  # get refund requests
         cursor = mysql.get_db().cursor()
@@ -1527,7 +1530,7 @@ class refund(Resource):
             ],
             "status_code": 200
         })
-
+    @cross_origin(origins="http://localhost:3000*")
     @sales_manager_only
     def put(self):  # evaluate refund
         cursor = mysql.get_db().cursor()
@@ -1652,6 +1655,7 @@ class avgRate(Resource):
         })
 
 class stock(Resource):
+    @cross_origin(origins="http://localhost:3000*")
     def isStockAdequate(self, product_id, quantity):
         cursor = mysql.get_db().cursor()
         query = "SELECT stock FROM `PRODUCT` WHERE product_id=(%s)"
@@ -1661,6 +1665,7 @@ class stock(Resource):
             return True
         else:
             return False
+    @cross_origin(origins="http://localhost:3000*")
     def put(self): #change stock
         cursor = mysql.get_db().cursor()
         posted_data = request.get_json()
@@ -1674,16 +1679,17 @@ class stock(Resource):
         if ("add" in posted_data and product is None and posted_data["add"]):
             print("hy")
             query = """INSERT INTO `PRODUCT`
-            (`category_id`, `name`, `model`, `price`, `image_path`, `stock`, `discount`) 
-            VALUES ((%s),(%s),(%s),(%s),(%s),(%s),(%s))"""
+            (`category_id`, `name`, `model`, `price`, `image_path`, `stock`, `discount`,  `expense`) 
+            VALUES ((%s),(%s),(%s),(%s),(%s),(%s),(%s),(%s))"""
 
             category_id = posted_data["category_id"]
             model = posted_data["model"]
             price = posted_data["price"]
             image_path = posted_data["image_path"]
             stock = posted_data["stock"]
+            expense = posted_data["expense"]
 
-            cursor.execute(query, (category_id, product_name, model, price, image_path, stock,"0"))
+            cursor.execute(query, (category_id, product_name, model, price, image_path, stock,"0",expense))
             mysql.get_db().commit()
 
             return jsonify({
@@ -1829,6 +1835,7 @@ class pmview(Resource):
             ],
             "status_code":200
         })
+    @cross_origin(origins="http://localhost:3000*")
     def post(self): #get invoice, adress, time and phone 
         cursor = mysql.get_db().cursor()
         posted_data = request.get_json()
@@ -1946,13 +1953,102 @@ class cancelOrder(Resource):
         return retJson
 
 
+class change_price(Resource):
+    @cross_origin(origins="http://localhost:3000*")
+    def post(self): # change price of a product
+        cursor = mysql.get_db().cursor()
+        posted_data = request.get_json()
+        product_name = posted_data["product_name"]
+        new_price = posted_data["new_price"]
+        product_id = product_to_id(product_name)
+
+        query = "UPDATE `PRODUCT` SET `price`=(%s) WHERE product_id = (%s)"
+        cursor.execute(query, (new_price, product_id))
+        mysql.get_db().commit()
+
+        return jsonify({
+            "message":"success",
+            "status_code": 201
+        })
+
+class discount(Resource):
+    @cross_origin(origins="http://localhost:3000*")
+    def post(self): # change discount of a product
+        cursor = mysql.get_db().cursor()
+        posted_data = request.get_json()
+        product_name = posted_data["product_name"]
+        discount = posted_data["discount"]
+        product_id = product_to_id(product_name)
+
+        query = "UPDATE `PRODUCT` SET `discount`=(%s) WHERE product_id = (%s)"
+        cursor.execute(query, (discount, product_id))
+        mysql.get_db().commit()
+
+        return jsonify({
+            "message":"success",
+            "status_code": 201
+        })
+
+class viewInvoices(Resource):
+    @cross_origin(origins="http://localhost:3000*")
+    def post(self):
+        cursor = mysql.get_db().cursor()
+        posted_data = request.get_json()
+        start_date = posted_data["start_date"]
+        end_date = posted_data["end_date"]
+
+        query = "SELECT invoice FROM ORDERS, INVOICE WHERE INVOICE.cart_id = ORDERS.order_id AND date_of_purchase >= (%s) AND date_of_purchase <= (%s)"
+        cursor.execute(query, (start_date, end_date))
+
+        invoices = cursor.fetchall()
+
+        return jsonify({
+            "invoices": [invoice[0].decode() for invoice in invoices],
+            "status_code":200
+        })
+
+class stonks(Resource):
+    @cross_origin(origins="http://localhost:3000*")
+    @sales_manager_only
+    def post(self): 
+        cursor = mysql.get_db().cursor()
+        posted_data = request.get_json()
+        start_date = posted_data["start_date"]
+        end_date = posted_data["end_date"]
+
+        #calculate expense
+        query = "SELECT expense, stock FROM PRODUCT WHERE when_purchased >= (%s) AND when_purchased <= (%s)"
+        cursor.execute(query, (start_date, end_date))
+
+        total_expense = 0
+        expenses = cursor.fetchall()
+
+        for expense in expenses:
+            total_expense += expense[0]*expense[1]
         
+        #calculate revenue
 
+        query = "SELECT CART_PRODUCT.amount, price_with_discount FROM ORDERS, CART_PRODUCT WHERE ORDERS.cart_id = CART_PRODUCT.cart_id AND ORDERS.date_of_purchase >= (%s) AND ORDERS.date_of_purchase <= (%s)"
+        cursor.execute(query, (start_date, end_date))
 
+        total_revenue = 0
+        revenues = cursor.fetchall()
 
+        for revenue in revenues:
+            total_revenue += float(revenue[0]) * revenue[1]
+        
+        
+        return jsonify({
+            "expenses":total_expense,
+            "revenue":total_revenue,
+            "profit":total_revenue-total_expense
+        })
+
+api.add_resource(stonks, "/stonks")
+api.add_resource(viewInvoices, "/viewinvoices")
+api.add_resource(discount, "/discount")
 api.add_resource(cancelOrder, "/cancelOrder")
-
-
+api.add_resource(change_price, "/change_price")
 api.add_resource(pmview, "/pmview")
 api.add_resource(changeAddress, "/changeAddress")
 api.add_resource(stock, "/stock")

@@ -1457,7 +1457,7 @@ class order(Resource):
             #prepare invoice
             product_name = id_to_product(product_id)
 
-            products_dict[product_name+"({})".format(str(quantity))] = str(quantity*get_price(product_id))
+            products_dict[product_name+"({})".format(str(quantity))] = str(quantity*price)
         
         
         #send invoice

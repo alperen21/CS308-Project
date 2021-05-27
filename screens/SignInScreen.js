@@ -62,10 +62,10 @@ const SignInScreen = ({navigation}) => {
             signIn(data.username, data.token);
             // ProfileScreen();
 
-            navigation.navigate('Products',{
-                username:data.username,
-              }); 
-            // navigation.navigate('Products');
+            // navigation.navigate('Products',{
+            //     username:data.username,
+            //   }); 
+             navigation.navigate('Home');
 
         }
         else if(json.status_code == 400){

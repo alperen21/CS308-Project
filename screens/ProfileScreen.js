@@ -100,7 +100,7 @@ const ProfileScreen = ({ navigation }) => {
                                 </TouchableOpacity>
 
 
-                                <TouchableOpacity
+                                {/* <TouchableOpacity
                                     onPress={() => alert('does not exist')}
                                     style={[styles.signIn, {
                                         borderColor: '#BFA38F',
@@ -111,7 +111,7 @@ const ProfileScreen = ({ navigation }) => {
                                     <Text style={[styles.textSign, {
                                         color: '#BFA38F'
                                     }]}>Comments | Ratings </Text>
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
 
 
                                 <TouchableOpacity

@@ -136,7 +136,7 @@ const Cart = () => {
             <Grid container spacing = {3}>
                 {cart.map((cart) => (
                     <Grid cart xs={12} sm={4} key={cart.name}>
-                            <Product product={cart}/>
+                            <Product product={cart} getCart={getCart}/>
                     </Grid>
                 ))}
             </Grid>
@@ -149,6 +149,13 @@ const Cart = () => {
             </div>
         </>
     );
+
+    const toCheckout = async() => {
+        history.push({
+            pathname: "/checkout",
+            state: {product: totalprice}});
+    }
+
     return (
         <Container>
             <div className={classes.toolbar} />

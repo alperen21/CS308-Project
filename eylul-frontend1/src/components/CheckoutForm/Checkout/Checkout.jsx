@@ -9,7 +9,7 @@ import useStyles from './styles';
 
 const steps = ['Shipping address', 'Payment details'];
 
-const Checkout = () => {
+const Checkout1 = () => {
   //const [checkoutToken, setCheckoutToken] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
   //const [shippingData, setShippingData] = useState({});
@@ -98,4 +98,4 @@ const Checkout = () => {
   );
 };
 
-export default Checkout;
+export default Checkout1;

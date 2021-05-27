@@ -9,6 +9,6 @@ export { default as Turkish_coffees } from './Turkish_coffees/Turkish_coffees';
 export { default as Espressos } from './Espressos/Espressos';
 export { default as Cart } from './Cart/Cart';
 export { default as Product_Detail } from './Product_Details/product_details';
-export { default as Checkout } from './CheckoutForm/Checkout/Checkout';
+export { default as Checkout } from './Checkout/Checkout';
 export { default as Profile } from './Profile/Profile';
 export { default as PrevOrders } from './PrevOrders/PrevOrders';

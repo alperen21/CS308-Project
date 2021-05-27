@@ -109,6 +109,7 @@ const Profile = () => {
           }
 
     const username_Change = (val) => {
+        //console.log(val.target.value)
         if( val.length === 0 ) {
             setData({
             ...data,
@@ -249,11 +250,11 @@ const Profile = () => {
             <div style={{ marginTop: 25,fontSize: 25 ,fontWeight: 'bold', color: '#BFA38F'  }}>  <icon name='edit' size={30} color= 'black'> </icon> Update Information </div>
             <div></div>
             <div >
-            <div 
+            <input 
                         placeholder="Enter New Username"
                         placeholderTextColor='#000000bf'
                             
-                        onChange={(val) =>username_Change(val)}          
+                        onChange={(val) =>username_Change(val.target.value)}          
             />
         </div>
         <div >
@@ -261,7 +262,7 @@ const Profile = () => {
                         placeholder="Enter New First Name"
                         placeholderTextColor='#000000bf'
                             
-                        onChange={(val) => firstname_Change(val)}          
+                        onChange={(val) => firstname_Change(val.target.value)}          
             />
         </div>
         <div >
@@ -269,7 +270,7 @@ const Profile = () => {
                         placeholder="Enter New Last Name"
                         placeholderTextColor='#000000bf'
                             
-                        onChange={(val) => lastname_Change(val)}          
+                        onChange={(val) => lastname_Change(val.target.value)}          
             />
         </div>
         <div >
@@ -277,7 +278,7 @@ const Profile = () => {
                         placeholder="Enter New Email "
                         placeholderTextColor='#000000bf'
                         
-                        onChange={(val) => email_Change(val)}          
+                        onChange={(val) => email_Change(val.target.value)}          
             />
         </div>
         <div >
@@ -285,7 +286,7 @@ const Profile = () => {
                         placeholder="Enter New Phone Number"
                         placeholderTextColor='#000000bf'
                         
-                        onChange={(val) => phone_Change(val)}          
+                        onChange={(val) => phone_Change(val.target.value)}          
             />
         </div>
         <div >
@@ -293,7 +294,7 @@ const Profile = () => {
                         placeholder="Enter New Address"
                         placeholderTextColor='#000000bf'
                         
-                        onChange={(val) => address_Change(val)}          
+                        onChange={(val) => address_Change(val.target.value)}          
             />
         </div>
             

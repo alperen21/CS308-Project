@@ -7,7 +7,7 @@ import useStyles from './styles';
 import Cookies from 'js-cookie';
 
 
-const Product = ({ product }) => {
+const Product = ({ product, getCart }) => {
     const [totalprice, setTotalprice] = React.useState(0);
     const [cart, setCart] = useState([]);
     var total_price = 0;
@@ -86,7 +86,7 @@ const Product = ({ product }) => {
     
         }
 
-        const getCart= async() =>{
+        /*const getCart= async() =>{
 
             let token_id = 0;
             let username = 0;
@@ -123,7 +123,7 @@ const Product = ({ product }) => {
     
             setCart(json.products);
             totalcalculate(json.products);
-            }
+            }*/
         function totalcalculate(products) {
             let total = 0;
             for (const product of products) {

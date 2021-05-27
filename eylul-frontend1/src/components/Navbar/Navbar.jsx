@@ -11,10 +11,17 @@ import { useHistory } from "react-router-dom";
 import { Button } from 'semantic-ui-react';
 import Cookies from 'js-cookie';
 import { AuthContext } from '../context';
+import {useState, useEffect} from "react";
 
 const Navbar1 = () => {
     const history = useHistory();
     const classes = useStyles();
+    const [token_id, setToken] = useState(undefined);
+
+    useEffect(() => {
+        let token_id = Cookies.get("token");
+        setToken(token_id);
+        }, []);
 
     let user =  Cookies.get("userName")
 
@@ -23,6 +30,9 @@ const Navbar1 = () => {
         let bla = Cookies.remove("token");
         let kla = Cookies.remove("userName");
         history.push("/");
+        let token_id = Cookies.get("token");
+        console.log(token_id)
+        setToken(token_id);
        }
     
     const toFilter = async() => {
@@ -55,6 +65,9 @@ const Navbar1 = () => {
     const toProfile = async() => {
         history.push("/profile");
     };
+    const toLogin = async() => {
+        history.push("/");
+    };
 
     return (
         
@@ -77,9 +90,10 @@ const Navbar1 = () => {
                             <MenuItem onClick={() => toEspressoM()}>Coffee machines</MenuItem>
                             </Select>
                         </FormControl>
-                        <IconButton onClick={() => signOut()} > Sign out </IconButton>
-                        <Button onClick={() => toProfile()}> My Profile </Button>
-                        
+
+                        {token_id && <IconButton onClick={() => signOut()} > Sign out </IconButton>}
+                        {token_id &&<Button onClick={() => toProfile()}> My Profile </Button>}
+                        {!token_id &&<Button onClick={() => toLogin()}> Login </Button>}
 
                         <div className={classes.button}>
                             <IconButton aria-label="Show cart items" color="inherit">

@@ -47,7 +47,7 @@ const Login = () => {
             Cookies.set("userName", data.username)
             Cookies.set("token", data.token)
             history.push("/home");
-
+            window.location.reload(false);
         }
         else if(json.status_code == 400){
 

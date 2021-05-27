@@ -87,7 +87,8 @@ const Product = ({ product }) => {
                 <Typography variant="body2 color=" text>{product.model}</Typography>
             </CardContent>
             <CardActions disableSpacing classname={classes.cardActions}>
-                <IconButton onClick={() => HandleAddtoCart(product.name,1)} aria-label="Add to Cart">
+             
+                <IconButton onClick={() => { { product.stock !== 0 ? HandleAddtoCart(product.name,1): (alert("Item is out of stock!")) }}} aria-label="Add to Cart">
                     <AddShoppingCart />
                 </IconButton>
                 <Link onClick={() => toDetails()} style={{marginTop: '5px'}}   >View Details </Link>

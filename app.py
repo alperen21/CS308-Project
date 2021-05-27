@@ -1411,6 +1411,28 @@ class refund(Resource):
                 request.headers["user"])
             product_name = posted_data["product_name"]
             amount = posted_data["amount"]
+
+            if (amount <= 0):
+                return jsonify({
+                    "message":"amount parameter cannot be equal or smaller than zero",
+                    "status_code":403
+                })
+
+            product_id = product_to_id(product_name)
+            query = "SELECT * FROM refund_request WHERE product_id = (%s) AND customer_id =(%s)"
+            cursor.execute(query, (product_id, customer_id))
+            data = cursor.fetchone()
+
+            if (data != None):
+                query = "UPDATE `refund_request` SET `amount`=(%s)  WHERE product_id = (%s) AND customer_id =(%s)"
+                cursor.execute(query, (amount, product_id, customer_id))
+                mysql.get_db().commit()
+
+                return jsonify({
+                    "message":"refund request updated!",
+                    "status_code":201
+                })
+
             cart_id = posted_data["cart_id"]
 
             # check if refund request amount is <= than ordered
@@ -1422,7 +1444,8 @@ class refund(Resource):
                         name = (%s) AND 
                         ORDERS.customer_id = (%s) AND 
                         ORDERS.cart_id = (%s) """
-
+            print(query, (str(product_name),
+                                   str(customer_id), str(cart_id)))
             cursor.execute(query, (str(product_name),
                                    str(customer_id), str(cart_id)))
             amount_ordered = cursor.fetchone()
@@ -1436,13 +1459,11 @@ class refund(Resource):
 
             query = "SELECT * FROM ORDERS WHERE customer_id = (%s)"
             cursor.execute(query, (customer_id,))
-            refund_requests = cursor.fetchall()
-
-            product_id = product_to_id(product_name)
 
             query = "INSERT INTO `refund_request`(`product_id`, `customer_id`,`amount`,`cart_id`) VALUES ((%s),(%s),(%s),(%s))"
             cursor.execute(query, (product_id, customer_id, amount, cart_id))
             mysql.get_db().commit()
+            
 
             return jsonify({
                 "status_code": check_posted_data(posted_data, "refund/post"),

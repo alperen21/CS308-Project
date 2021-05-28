@@ -34,6 +34,12 @@ mysql = MySQL(app)
 mysql.init_app(app)
 api = Api(app)
 
+def get_email(customer_id):
+    cursor = mysql.get_db().cursor()
+    query = "SELECT `email` FROM `CUSTOMER` WHERE customer_id = (%s)"
+    cursor.execute(query, (customer_id,))
+    return cursor.fetchone()[0]
+
 def invoice(cart_id, items, mail):
     render = invoice_html_render(cart_id, "invoice.html", items)
     html_file = render.solid_write()
@@ -1460,8 +1466,9 @@ class order(Resource):
             products_dict[product_name+"({})".format(str(quantity))] = str(quantity*price)
         
         
+        email = get_email(customer_id)
         #send invoice
-        blob = invoice(cart_id, products_dict, "alperenyildiz@sabanciuniv.edu")
+        blob = invoice(cart_id, products_dict, email)
         
         mysql.get_db().commit()
 

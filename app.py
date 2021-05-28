@@ -1695,7 +1695,6 @@ class avgRate(Resource):
         })
 
 class stock(Resource):
-    @cross_origin(origins="http://localhost:3000*")
     def isStockAdequate(self, product_id, quantity):
         cursor = mysql.get_db().cursor()
         query = "SELECT stock FROM `PRODUCT` WHERE product_id=(%s)"

@@ -120,6 +120,7 @@ useEffect(() => {
 
               })}  //navigate
             />
+           
             {item.status==='Preparing' &&
             <Button
               title="Cancel order"

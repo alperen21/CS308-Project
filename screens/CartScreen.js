@@ -67,7 +67,7 @@ const CartScreen = ({ navigation }) => {
 		})
 
 		let json = await response2.json();
-		console.log("basket products::!!!", json);
+		//console.log("basket products::!!!", json);
 
 		setBasketList(json.products);
 		totalcalculate(json.products);

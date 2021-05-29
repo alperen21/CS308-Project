@@ -72,7 +72,7 @@ const ProfileScreen = ({ navigation }) => {
                         (
 
                             <View style={styles.button}>
-                                <Text style={{ marginTop: 20, fontSize: 20, marginRight: 30 }}>  <Icon2 name='user' size={30}> </Icon2> {username}</Text>
+                                <Text style={{ marginTop: 60, fontSize: 20, marginRight: 30 }}>  <Icon2 name='user' size={30}> </Icon2> {username}</Text>
                                 <TouchableOpacity
                                     onPress={() => navigation.navigate('PreviousOrders')}
                                     style={[styles.signIn, {
@@ -100,7 +100,7 @@ const ProfileScreen = ({ navigation }) => {
                                 </TouchableOpacity>
 
 
-                                {/* <TouchableOpacity
+                                <TouchableOpacity
                                     onPress={() => alert('does not exist')}
                                     style={[styles.signIn, {
                                         borderColor: '#BFA38F',
@@ -110,8 +110,8 @@ const ProfileScreen = ({ navigation }) => {
                                 >
                                     <Text style={[styles.textSign, {
                                         color: '#BFA38F'
-                                    }]}>Comments | Ratings </Text>
-                                </TouchableOpacity> */}
+                                    }]}>Contact Us </Text>
+                                </TouchableOpacity>
 
 
                                 <TouchableOpacity

@@ -149,7 +149,9 @@ const CheckoutScreen = ({ route, navigation }) => {
     
     if(json.status_code === 200){
       alert("We received your order! Here is your order number 23814281.")
-      navigation.navigate('Invoice')
+      navigation.navigate('Invoice', {
+       invoice:json.invoice
+      })
     }
     else{
       alert("Try again!")

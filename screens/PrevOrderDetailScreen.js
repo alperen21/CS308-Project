@@ -18,7 +18,7 @@ const PrevOrderDetailScreen = ({ route, navigation }) => {
   /* 2. Get the param */
   const { itemlist,order_time,order_status,total_price,cart_id } = route.params;
 
-// console.log("DID LIST COME",itemlist)
+ console.log("DID LIST COME",cart_id)
 
 
 const renderItem = ({ item }) => {
@@ -96,6 +96,13 @@ const renderItem = ({ item }) => {
          <Text style={{ textDecorationLine:'underline',marginTop: 25, paddingLeft:10,fontSize: 18, marginRight: 30,fontWeight: 'bold', color: '#000000bf' }}>  Total Amount paid:  </Text><Text style={{ fontWeight: '500', paddingLeft:17,fontSize: 18}}> ${total_price}</Text>
          <Text style={{ textDecorationLine:'underline',marginTop: 25, paddingLeft:10,fontSize: 18, marginRight: 30,fontWeight: 'bold', color: '#000000bf' }}>  Order Date: </Text><Text style={{fontWeight: '500', paddingLeft:17,fontSize: 18}}>{order_time}</Text>
          <Text style={{ textDecorationLine:'underline',marginTop: 25, paddingLeft:10,fontSize: 18, marginRight: 30,fontWeight: 'bold', color: '#000000bf' }}>  Payment Type: </Text><Text style={{fontWeight: '500', paddingLeft:17,fontSize: 18}}>Credit card </Text>
+
+         <Button
+              title="Show Invoice"
+              onPress={() => navigation.navigate('Invoice', {
+                cart_id:cart_id,
+              })} //navigate
+            />
         
 
     </ScrollView>

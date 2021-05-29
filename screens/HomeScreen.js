@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, TextInput,FlatList, Image } from 'react-native';
+import {Pressable,Alert, View, Text, StyleSheet, LinearGradient,TouchableOpacity, SafeAreaView, ScrollView, TextInput,FlatList, Image } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Button } from './Products/Button';
 import PropTypes from 'prop-types';
@@ -8,8 +8,16 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import {Dimensions} from "react-native";
 var {height, width} = Dimensions.get('window');
 import { Foundation } from '@expo/vector-icons';
-const HomeScreen = ({ navigation }) => {
+import Modal from 'react-native-modal';
 
+
+const HomeScreen = ({ navigation }) => {
+  const [isModalVisible, setModalVisible] = useState(true);
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible);
+  };
+  const [isDiscountlist, setDiscountList] = useState(null);
+  
   const [productlist, setProductList] = useState([]);
   const [choice, setChoice] = useState();
   const isFocused = useIsFocused();
@@ -153,7 +161,7 @@ const HomeScreen = ({ navigation }) => {
 
           { item.discount !==0 && <Text style={{ fontSize: 20, color:'red' }}> ${ item.price-(item.price*item.discount/100)} </Text>} 
 
-          <Text style={{ fontSize: 18 }}> Rating: {item.rating.toFixed(1)} </Text>
+          <Text style={{ fontSize: 18 }}> Rating: {item.rating} </Text>
           <View style={styles.together}>
             <Button
               title="Add to Cart"
@@ -178,6 +186,8 @@ const HomeScreen = ({ navigation }) => {
         </View>
         <View style={{marginLeft:-50}}>
         { item.discount !==0 && <Foundation name="burst-sale" size={65} color="red" />} 
+        {item.discount !==0 && setDiscountList(item)}
+        {/* {console.log("HEYHOLEZGO",isDiscountlist)} */}
         {item.discount !==0 && <Text style={{ fontSize: 15,color:'red' }}> %{item.discount} Off </Text>}
         </View>
       </View>
@@ -188,6 +198,7 @@ const HomeScreen = ({ navigation }) => {
 
 
   return (
+    
    
     <ScrollView style={{ flex: 1 }}>
 
@@ -284,6 +295,45 @@ const HomeScreen = ({ navigation }) => {
         renderItem={renderItem}
         keyExtractor={(item) => item.product_id.toString()}
       />
+     
+     {(isDiscountlist)!==null && 
+     <View style={{marginTop:100,flex: 1}}>
+      
+      {/* https://media0.giphy.com/media/U6qUUgLbeVkPFUG2yW/giphy.gif
+          https://cliply.co/wp-content/uploads/2019/08/371908020_CONFETTI_400px.gif
+          https://cliply.co/wp-content/uploads/2021/04/392104290_RAINBOW_400px.gif */}
+
+      <Modal style={{marginTop:10,flex: 1,}}
+      isVisible={isModalVisible}>
+        <View style={{backgroundColor: 'white',marginHorizontal:40,width:300,height:185,borderRadius:10}}>
+          <Text style={{marginTop:0 ,marginLeft:20, color:'red',fontSize:30,fontWeight:'bold'}}>Sale Alert!</Text>
+          <Text style={{marginTop:0 ,marginLeft:20, color:'#000000bf',fontSize:20}}>Follow the red tags :)</Text>
+          <Image style={{marginLeft:240, width: 60, height: 60, marginTop: -65 }}
+        source={{
+          uri: 'https://cdn0.iconfinder.com/data/icons/shopping-extras-set-2/512/18-512.png'
+        }}/>
+        <View style={{flexDirection:'row'}}>
+        <Image style={{marginLeft:40, width: 200, height: 105, marginTop:20 }}
+        source={{
+          uri: 'https://img1.picmix.com/output/stamp/normal/0/2/3/4/534320_791f5.gif'
+        }}/>
+        {/* <Image style={{marginLeft:30, width: 100, height: 100, marginTop:20 }}
+        source={{
+        
+          uri: 'https://img1.picmix.com/output/stamp/normal/0/2/3/4/534320_791f5.gif'
+        }}/> */}
+        </View>
+          <View style={{marginTop:-0}}>
+          {/* <Button style={{}} title="Okay" onPress={toggleModal} /> */}
+          <TouchableOpacity
+        style={styles.button}
+        onPress={toggleModal}><Text style={{fontSize:14,fontWeight:'bold' ,color:'white'}}>OK</Text></TouchableOpacity>
+       
+          </View>
+        </View>
+      </Modal>
+    </View>
+    }
 
     </ScrollView>
   );
@@ -293,6 +343,24 @@ export default HomeScreen;
 
 
 const styles = StyleSheet.create({
+  
+  dialog_container: {
+    shadowColor: '#cdcdcd',
+    width: 50, height: 50 ,
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 5,
+    marginBottom: 30,
+  },
+  input: {
+		height: 30,
+		width: 25,
+		margin: 1,
+		borderWidth: 0.3,
+		fontSize: 15,
+		textAlign: 'center'
+	},
+
   container: {
     shadowColor: '#cdcdcd',
     shadowOffset: { width: 5, height: 5 },
@@ -341,9 +409,13 @@ const styles = StyleSheet.create({
 },
 
 button: {
+  marginTop:15,
+  width:150,
+  marginLeft:80,
   flexDirection: 'column',
+  borderRadius:10,
   alignItems: "center",
-  backgroundColor: "#DDDDDD",
+  backgroundColor: "#BFA38F",
   padding: 10,
   justifyContent: 'space-between',
 },
@@ -358,14 +430,20 @@ height: height / 20,
 flexDirection: 'row',
 
 },
+
 signIn: {
-   width: 85,
-  // height: 50,
-  // justifyContent: 'center',
-  // alignItems: 'center',
- borderRadius: 10,
- marginLeft:15
+  width: 85,
+ // height: 50,
+ // justifyContent: 'center',
+ // alignItems: 'center',
+borderRadius: 10,
+marginLeft:15,
+marginTop:-15,
 },
+textSign: {
+  color: 'white',
+  fontWeight: 'bold'
+}
 
 
 });

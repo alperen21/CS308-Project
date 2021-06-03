@@ -415,7 +415,351 @@ class ProductTest(unittest.TestCase):
         }
         response = requests.post(
             self.url + "/findProduct", data=json.dumps(body), headers=self.headers)
+    
+    def testRateProduct(self):
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+            query = 'INSERT INTO `PRODUCT`(`name`, `rating`, `model`, `price`, `image_path`, `stock`) VALUES ("test product", 3.2, "AX92039", 5, "images/f-c.png", 1)'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                product_name = "test product"
+            query = 'INSERT INTO `USERS`(`username`, `password`, `first_name`, `last_name`, `email`) VALUES ("testUsername", "testPassword", "testName", "testSurname", "testEmail")'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                cursor.execute(
+                    "SELECT user_id FROM USERS WHERE username='testUsername'")
+                user_id = cursor.fetchone()[0]
+        body = {
+            "product_name": product_name,
+            "rate": 4
+        }
+        header = {
+            "user": "testUsername"
+        }
+        response = requests.post(
+            self.url + "/rate", data=json.dumps(body), headers=header)
 
+        expected = "Rate successfully added to database."
+
+        self.assertEqual(response.json()["message"], expected)
+
+    def testAVGRate(self):
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+            query = 'INSERT INTO `PRODUCT`(`name`, `rating`, `model`, `price`, `image_path`, `stock`) VALUES ("test product", 3.2, "AX92039", 5, "images/f-c.png", 1)'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                product_name = "test product"
+            query = 'INSERT INTO `USERS`(`username`, `password`, `first_name`, `last_name`, `email`) VALUES ("testUsername", "testPassword", "testName", "testSurname", "testEmail")'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                cursor.execute(
+                    "SELECT user_id FROM USERS WHERE username='testUsername'")
+                user_id = cursor.fetchone()[0]
+            query = 'INSERT INTO `USERS`(`username`, `password`, `first_name`, `last_name`, `email`) VALUES ("testUsername2", "testPassword2", "testName2", "testSurname2", "testEmail2")'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                cursor.execute(
+                    "SELECT user_id FROM USERS WHERE username='testUsername2'")
+                user_id2 = cursor.fetchone()[0]
+        body = {
+            "product_name": product_name,
+            "rate": 4
+        }
+        header = {
+            "user": "testUsername"
+        }
+        requests.post(self.url + "/rate", data=json.dumps(body), headers=header)
+        body2 = {
+            "product_name": product_name,
+            "rate": 2
+        }
+        header2 = {
+            "user": "testUsername2"
+        }
+        requests.post(self.url + "/rate", data=json.dumps(body2), headers=header2)
+        
+        query = 'SELECT rating FROM PRODUCT WHERE name = (%s)'
+        with connection.cursor() as cursor:
+            cursor.execute(query,(product_name,))
+            rating = cursor.fetchone()[0]
+
+        self.assertEqual(3, rating)
+
+    def testRateProductTwice(self):
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+            query = 'INSERT INTO `PRODUCT`(`name`, `rating`, `model`, `price`, `image_path`, `stock`) VALUES ("test product", 3.2, "AX92039", 5, "images/f-c.png", 1)'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                product_name = "test product"
+            query = 'INSERT INTO `USERS`(`username`, `password`, `first_name`, `last_name`, `email`) VALUES ("testUsername", "testPassword", "testName", "testSurname", "testEmail")'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                cursor.execute(
+                    "SELECT user_id FROM USERS WHERE username='testUsername'")
+                user_id = cursor.fetchone()[0]
+        body = {
+            "product_name": product_name,
+            "rate": 4
+        }
+        header = {
+            "user": "testUsername"
+        }
+        requests.post(self.url + "/rate", data=json.dumps(body), headers=header)
+        body2 = {
+            "product_name": product_name,
+            "rate": 2
+        }
+        requests.post(self.url + "/rate", data=json.dumps(body2), headers=header)
+        query = 'SELECT rating FROM PRODUCT WHERE name = (%s)'
+        with connection.cursor() as cursor:
+            cursor.execute(query,(product_name,))
+            rating = cursor.fetchone()[0]
+
+        self.assertEqual(4, rating)
+    
+    def testOrderCancelled(self):
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+            query = 'INSERT INTO `PRODUCT`(`name`, `rating`, `model`, `price`, `image_path`, `stock`) VALUES ("test product", 3.2, "AX92039", 5, "images/f-c.png", 1)'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                product_name = "test product"
+                cursor.execute(
+                    "SELECT product_id FROM PRODUCT WHERE name='test product'")
+                product_id = cursor.fetchone()[0]
+            query = 'INSERT INTO `USERS`(`username`, `password`, `first_name`, `last_name`, `email`) VALUES ("testUsername", "testPassword", "testName", "testSurname", "testEmail")'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                cursor.execute(
+                    "SELECT user_id FROM USERS WHERE username='testUsername'")
+                user_id = cursor.fetchone()[0]
+            query = 'INSERT INTO `CART`(`customer_id`, `product_id`, `total_cost`, `quantity`) VALUES ((%s), (%s), 100, 2)'
+            with connection.cursor() as cursor:
+                cursor.execute(query,(user_id, product_id))
+                connection.commit()
+                cursor.execute(
+                    "SELECT cart_id FROM CART WHERE product_id=(%s)", (product_id,))
+                cart_id = cursor.fetchone()[0]
+            query = 'INSERT INTO `ORDERS`(`time`, `amount`, `status`, `cart_id`, `customer_id`, `sm_id`, `date_of_purchase`) VALUES ((NULL, 2, "Preparing", (%s), (%s), 5, NULL)'
+            with connection.cursor() as cursor:
+                cursor.execute(query,(cart_id, user_id))
+                connection.commit()
+                cursor.execute(
+                    "SELECT order_id FROM ORDERS WHERE cart_id=(%s)", (cart_id,))
+                order_id = cursor.fetchone()[0]
+        body = {
+            "order_id": order_id
+        }
+        response = requests.post(
+            self.url + "/cancelOrder", data=json.dumps(body), headers=self.headers)
+
+        expected = "Order canceled successfully."
+
+        self.assertEqual(response.json()["message"], expected)
+
+    def testCancelledOrderStatus(self):
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+            query = 'INSERT INTO `PRODUCT`(`name`, `rating`, `model`, `price`, `image_path`, `stock`) VALUES ("test product", 3.2, "AX92039", 5, "images/f-c.png", 1)'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                product_name = "test product"
+                cursor.execute(
+                    "SELECT product_id FROM PRODUCT WHERE name='test product'")
+                product_id = cursor.fetchone()[0]
+            query = 'INSERT INTO `USERS`(`username`, `password`, `first_name`, `last_name`, `email`) VALUES ("testUsername", "testPassword", "testName", "testSurname", "testEmail")'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                cursor.execute(
+                    "SELECT user_id FROM USERS WHERE username='testUsername'")
+                user_id = cursor.fetchone()[0]
+            query = 'INSERT INTO `CART`(`customer_id`, `product_id`, `total_cost`, `quantity`) VALUES ((%s), (%s), 100, 2)'
+            with connection.cursor() as cursor:
+                cursor.execute(query,(user_id, product_id))
+                connection.commit()
+                cursor.execute(
+                    "SELECT cart_id FROM CART WHERE product_id=(%s)", (product_id,))
+                cart_id = cursor.fetchone()[0]
+            query = 'INSERT INTO `ORDERS`(`time`, `amount`, `status`, `cart_id`, `customer_id`, `sm_id`, `date_of_purchase`) VALUES ((NULL, 2, "Preparing", (%s), (%s), 5, NULL)'
+            with connection.cursor() as cursor:
+                cursor.execute(query,(cart_id, user_id))
+                connection.commit()
+                cursor.execute(
+                    "SELECT order_id FROM ORDERS WHERE cart_id=(%s)", (cart_id,))
+                order_id = cursor.fetchone()[0]
+        body = {
+            "order_id": order_id
+        }
+        requests.post(self.url + "/cancelOrder", data=json.dumps(body), headers=self.headers)
+
+        query = 'SELECT status FROM ORDERS WHERE order_id = (%s)'
+        with connection.cursor() as cursor:
+            cursor.execute(query,(order_id,))
+            order_status = cursor.fetchone()[0]
+
+        self.assertEqual("Cancelled", order_status)
+
+    def cancelledOrderStock(self):
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+            query = 'INSERT INTO `PRODUCT`(`name`, `rating`, `model`, `price`, `image_path`, `stock`) VALUES ("test product", 3.2, "AX92039", 5, "images/f-c.png", 5)'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                product_name = "test product"
+                cursor.execute(
+                    "SELECT product_id FROM PRODUCT WHERE name='test product'")
+                product_id = cursor.fetchone()[0]
+            query = 'INSERT INTO `USERS`(`username`, `password`, `first_name`, `last_name`, `email`) VALUES ("testUsername", "testPassword", "testName", "testSurname", "testEmail")'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                cursor.execute(
+                    "SELECT user_id FROM USERS WHERE username='testUsername'")
+                user_id = cursor.fetchone()[0]
+            query = 'INSERT INTO `CART`(`customer_id`, `product_id`, `total_cost`, `quantity`) VALUES ((%s), (%s), 100, 3)'
+            with connection.cursor() as cursor:
+                cursor.execute(query,(user_id, product_id))
+                connection.commit()
+                cursor.execute(
+                    "SELECT cart_id FROM CART WHERE product_id=(%s)", (product_id,))
+                cart_id = cursor.fetchone()[0]
+            query = 'INSERT INTO `ORDERS`(`time`, `amount`, `status`, `cart_id`, `customer_id`, `sm_id`, `date_of_purchase`) VALUES ((NULL, 3, "Preparing", (%s), (%s), 5, NULL)'
+            with connection.cursor() as cursor:
+                cursor.execute(query,(cart_id, user_id))
+                connection.commit()
+                cursor.execute(
+                    "SELECT order_id FROM ORDERS WHERE cart_id=(%s)", (cart_id,))
+                order_id = cursor.fetchone()[0]
+        body = {
+            "order_id": order_id
+        }
+        requests.post(self.url + "/cancelOrder", data=json.dumps(body), headers=self.headers)
+
+        query = 'SELECT stock FROM PRODUCT WHERE product_id = (%s)'
+        with connection.cursor() as cursor:
+            cursor.execute(query,(product_id,))
+            stock = cursor.fetchone()[0]
+
+        self.assertEqual(5, stock)
+
+    def testChangeMail(self):
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+            query = 'INSERT INTO `USERS`(`username`, `password`, `first_name`, `last_name`, `email`) VALUES ("testUsername", "testPassword", "testName", "testSurname", "testEmail")'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                cursor.execute(
+                    "SELECT user_id FROM USERS WHERE username='testUsername'")
+                user_id = cursor.fetchone()[0]
+        body = {
+            "username":"testUsername",
+            "newMail": "testNewEmail"
+        }
+        requests.post(self.url + "/changeMail", data=json.dumps(body), headers=self.headers)
+
+        query = 'SELECT email FROM USERS WHERE user_id = (%s)'
+        with connection.cursor() as cursor:
+            cursor.execute(query,(user_id,))
+            newEmail = cursor.fetchone()[0]
+
+        self.assertEqual("testNewEmail", newEmail)
+
+    def testChangePhone(self):
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+            query = 'INSERT INTO `CUSTOMER`(`phone`, `address`, `email`) VALUES ("05015015151", "testAdress", "testEmail")'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                cursor.execute(
+                    "SELECT customer_id FROM USERS WHERE email='testEmail'")
+                customer_id = cursor.fetchone()[0]
+        body = {
+            "username":"testUsername",
+            "newPhone": "testNewPhone"
+        }
+        requests.post(self.url + "/changePhone", data=json.dumps(body), headers=self.headers)
+
+        query = 'SELECT phone FROM CUSTOMER WHERE customer_id = (%s)'
+        with connection.cursor() as cursor:
+            cursor.execute(query,(customer_id,))
+            newPhone = cursor.fetchone()[0]
+
+        self.assertEqual("testNewPhone", newPhone)
+    
+    def testChangeAddress(self):
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+            query = 'INSERT INTO `CUSTOMER`(`phone`, `address`, `email`) VALUES ("05015015151", "testAdress", "testEmail")'
+            with connection.cursor() as cursor:
+                cursor.execute(query)
+                connection.commit()
+                cursor.execute(
+                    "SELECT customer_id FROM USERS WHERE email='testEmail'")
+                customer_id = cursor.fetchone()[0]
+        body = {
+            "username":"testUsername",
+            "newAddress": "testNewAddress"
+        }
+        requests.post(self.url + "/changeAddress", data=json.dumps(body), headers=self.headers)
+
+        query = 'SELECT address FROM CUSTOMER WHERE customer_id = (%s)'
+        with connection.cursor() as cursor:
+            cursor.execute(query,(customer_id,))
+            newAddress = cursor.fetchone()[0]
+
+        self.assertEqual("testNewAddress", newAddress)
 
 if __name__ == '__main__':
     unittest.main()

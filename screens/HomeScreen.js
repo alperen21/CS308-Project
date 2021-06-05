@@ -141,7 +141,11 @@ const HomeScreen = ({ navigation }) => {
     let discount_price=0 ;
     if (item.discount !==0) {(discount_price=item.price-(item.price*item.discount/100))}
     else{discount_price= item.price}
-   
+    let float_rating=0;
+    if (item.rating !==null){
+      float_rating=item.rating.toFixed(1);}
+      else{ float_rating=0;}
+    
     //console.log("start4",item.name);
     return (
 
@@ -161,7 +165,7 @@ const HomeScreen = ({ navigation }) => {
 
           { item.discount !==0 && <Text style={{ fontSize: 20, color:'red' }}> ${ item.price-(item.price*item.discount/100)} </Text>} 
 
-          <Text style={{ fontSize: 18 }}> Rating: {item.rating} </Text>
+          <Text style={{ fontSize: 18 }}> Rating: {float_rating} </Text>
           <View style={styles.together}>
             <Button
               title="Add to Cart"
@@ -176,7 +180,7 @@ const HomeScreen = ({ navigation }) => {
                 itemModel: item.model,
                 itemPrice:item.price,
                 discountPrice: discount_price,
-                itemRating: item.rating,
+                itemRating: float_rating,
                 itemStock: item.stock,
                 itemDiscount: item.discount
               })} //navigate

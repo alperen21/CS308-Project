@@ -1,16 +1,30 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet,TouchableHighlight } from 'react-native';
-import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import * as Print from 'expo-print';
+import { View,ScrollView, Text, Button, StyleSheet,TouchableHighlight } from 'react-native';
 
-const InvoiceScreen = async({ route, navigation }) => {
-  const { invoice} = route.params;
-  const my_uri = "data:application/pdf;base64"+invoice
-  console.log("DID INVIOCE COMEEE",invoice)
-  await   Print.printAsync(
-    {uri:my_uri,
-      width: 595, height: 842 })
+import PDFReader from 'rn-pdf-reader-js'
+
+
+const InvoiceScreen = ({ route, navigation }) => {
+
   
+  const { invoice_all } = route.params;
+ // console.log("!!!!!!!!DID EVERY COME",invoice_all);
+  const invoice=invoice_all.invoice;
+ 
+  const my_uri = "data:application/pdf;base64,"+invoice;
+
+
+return (
+<PDFReader
+      source={{
+        base64:my_uri ,
+      }}
+      // props={{
+      //   source: Source,
+      // }}
+    />
+   
+)
 };
 
 export default InvoiceScreen;

@@ -99,6 +99,7 @@ useEffect(() => {
     //console.log("start4",item.name);
     return (
 <View>
+
       <View style={{ flexDirection: 'row', marginVertical: 40, paddingHorizontal: 20 }}>
         
         <View>
@@ -239,6 +240,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
 
+  },
+  spinnerTextStyle: {
+    color: '#FFF'
   },
 
 

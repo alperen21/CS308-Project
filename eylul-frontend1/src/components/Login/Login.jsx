@@ -41,11 +41,9 @@ const Login = () => {
       
     
         if(json.status_code == 200){
-            console.log("HEYY CHECK IT OUTTTTT - signinScnreen!!!!",data.token);
-            //signIn(data.username, data.token);
-            // ProfileScreen();
             Cookies.set("userName", data.username)
             Cookies.set("token", data.token)
+            Cookies.set("userType", json.user_type)
             history.push("/home");
             window.location.reload(false);
         }

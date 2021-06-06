@@ -29,6 +29,7 @@ const Navbar1 = () => {
     const signOut= async() => {
         let bla = Cookies.remove("token");
         let kla = Cookies.remove("userName");
+        let pla = Cookies.remove("userType");
         history.push("/");
         let token_id = Cookies.get("token");
         console.log(token_id)

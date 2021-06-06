@@ -83,8 +83,10 @@ const Product = ({ product }) => {
                         {'$'}
                         {product.price}
                     </Typography>
+                    <Typography variant="body2 color=" text>Rating: {product.rating}</Typography>
                 </div>
                 <Typography variant="body2 color=" text>{product.model}</Typography>
+               
             </CardContent>
             <CardActions disableSpacing classname={classes.cardActions}>
              

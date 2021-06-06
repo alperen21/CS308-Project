@@ -1468,7 +1468,7 @@ class order(Resource):
         
         email = get_email(customer_id)
         #send invoice
-        blob = invoice(cart_id, products_dict, emai)
+        blob = invoice(cart_id, products_dict, email)
         
         mysql.get_db().commit()
 

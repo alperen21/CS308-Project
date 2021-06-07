@@ -46,6 +46,7 @@ const Login = () => {
             // ProfileScreen();
             Cookies.set("userName", data.username)
             Cookies.set("token", data.token)
+            Cookies.set("user_type", response.user_type)
             history.push("/home");
             window.location.reload(false);
         }

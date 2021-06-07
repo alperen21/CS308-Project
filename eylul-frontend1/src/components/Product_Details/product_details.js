@@ -31,7 +31,7 @@ export const Product_Detail = (product) => {
         console.log(location.state.product); // result: 'some_value'
       }, [location]);
 
-      return (<>
+      return (<div>
 	  <div className="card">
   <div className="photo">
     <img src={location.state.product.image_path} />
@@ -62,7 +62,7 @@ export const Product_Detail = (product) => {
   </div>
 </div>
 
-</>
+</div>
 
   );
 };

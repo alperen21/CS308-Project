@@ -12,3 +12,4 @@ export { default as Product_Detail } from './Product_Details/product_details';
 export { default as Checkout } from './Checkout/Checkout';
 export { default as Profile } from './Profile/Profile';
 export { default as PrevOrders } from './PrevOrders/PrevOrders';
+export { default as Charts } from './Charts/Charts';

@@ -25,4 +25,11 @@ export default makeStyles(() => ({
     maxHeight:'5px',
     padding: "10px"
   },
+  custom:{
+    color:"red"
+  },
+  old_price:{
+    textDecorationLine:'line-through'
+
+  }
 }));

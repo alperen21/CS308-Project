@@ -150,3 +150,17 @@ body .card .comments .single-comment .p_b {
   font-weight: 500;
   font-size: 14px;
 }
+body .card .description .h6_b {
+  margin: 0;
+  color:red;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 30px;
+}
+body .card .description .h7_b {
+  margin: 0;
+  text-decoration-line: line-through;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 20px;
+}

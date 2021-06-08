@@ -1,8 +1,9 @@
 import React from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import { Grid, Paper , IconButton} from '@material-ui/core';
 import { useState, useEffect } from "react";
 import Product from './Product/Product';
 import useStyles from './styles';
+import { Search } from '@material-ui/icons';
 
 
 const Products = () => {
@@ -16,6 +17,10 @@ const Products = () => {
   const [lowest_rating_FilterNumber, lowest_rating_setFilterNumber] = useState();
   const [highest_price_FilterNumber, highest_price_setFilterNumber] = useState();
   const [highest_rating_FilterNumber, highest_rating_setFilterNumber] = useState();
+
+  const [searchQuery, setSearchQuery] = React.useState('');
+
+
 
 
   const SortProducts = async (option, sort) => {
@@ -65,6 +70,34 @@ const Products = () => {
 
     setProductList(json.category_elements);
 
+  }
+
+
+  const findProducts = async () => {
+
+    // console.log("we are in get products:", productlist);
+
+    const response = await fetch('http://localhost:5000/findProduct', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        productName: searchQuery
+      })
+
+    })
+    let json = await response.json();
+    // console.log("code: ", json.status_code);
+    if (json.status_code == 200) {
+      setProductList(json.items);
+      // console.log("we are in get products, data must come here!!:", productlist);
+    }
+    else {
+      alert('Item does not exist')
+      //missing field
+    }
   }
 
 
@@ -121,7 +154,7 @@ const Products = () => {
       </form>
 
 
-      <form style={{ marginRight:400, marginBottom: 30, flexDirection: "row"  }} >
+      <form style={{ marginRight:40, marginBottom: 30, flexDirection: "row"  }} >
 
         <h3>Sort Products  </h3>
 
@@ -133,7 +166,24 @@ const Products = () => {
 
         <button style={{marginLeft:35, marginTop: '2px', maxWidth:150 }} onClick={(e) => {e.preventDefault(); SortProducts('rating','ASC')} }>Rating Lowest-Highest</button>
 
+
+        <input style={{marginLeft:180, marginTop: '1px' , width: 130  }} type="text" placeholder="Search" value={searchQuery}
+          onChange={(e) => {
+            console.log("CHECK OUT4", e.target.value);
+            if (e.target.value === undefined) { setSearchQuery(""); }
+            else {  setSearchQuery(e.target.value); }
+          }} />
+
+    
+        <IconButton onClick={(e) => {e.preventDefault(); findProducts() } } aria-label="Add to Cart">
+                    <Search />
+        </IconButton>
+
+       
+
       </form>
+
+      
 
 
       </div>

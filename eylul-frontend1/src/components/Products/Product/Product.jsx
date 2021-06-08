@@ -1,9 +1,11 @@
 import React from 'react'
-import {Card, CardMedia, CardContent, CardActions, Typography, IconButton, Link} from '@material-ui/core';
-import { AddShoppingCart } from '@material-ui/icons';
+import {Card, CardMedia, CardContent, CardActions, Typography,IconButton, Link} from '@material-ui/core';
+import { AddShoppingCart,LocalOffer } from '@material-ui/icons';
 import { useHistory } from "react-router-dom"; 
 import useStyles from './styles';
 import Cookies from 'js-cookie'
+import styles from './styles';
+
 
 const Product = ({ product }) => {
     const history = useHistory();
@@ -76,13 +78,29 @@ const Product = ({ product }) => {
             <CardMedia className ={classes.media} image={product.image_path} title={product.name}/>
             <CardContent>
                 <div className={classes.CardContent}>
+                  {product.discount!==0 && 
+                <IconButton className={classes.custom} aria-label="Add to Cart">
+                    <LocalOffer  />
+               </IconButton>}
                     <Typography variant="h6" gutterBottom>
                         {product.name}
                     </Typography>
-                    <Typography variant="h6">
+                    {product.discount===0 && <Typography variant="h6">
                         {'$'}
                         {product.price}
-                    </Typography>
+                    </Typography>}
+                    { product.discount!==0 && 
+                    <Typography className={classes.old_price} variant="overline">
+                    {'$'}
+                    {product.discount!==0 && product.price}
+                </Typography> }
+                { product.discount!==0 && 
+                    <Typography  variant="h6" className={classes.custom}>
+                        {'$'}
+                        {product.discount!==0 && (product.price)-(product.price*product.discount/100)}
+                    </Typography> }
+                   
+                 
                     <Typography variant="body2 color=" text>Rating: {product.rating}</Typography>
                 </div>
                 <Typography variant="body2 color=" text>{product.model}</Typography>

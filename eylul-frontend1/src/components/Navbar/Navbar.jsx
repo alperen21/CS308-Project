@@ -29,6 +29,7 @@ const Navbar1 = () => {
     const signOut= async() => {
         let bla = Cookies.remove("token");
         let kla = Cookies.remove("userName");
+        let pla = Cookies.remove("userType");
         history.push("/");
         let token_id = Cookies.get("token");
         console.log(token_id)
@@ -72,7 +73,7 @@ const Navbar1 = () => {
     return (
         
         <div>
-             <>
+             <div>
                 <AppBar position="fixed" className={classes.appBar} color="inherit">
                     <Toolbar>
                         <Typography variant="h6" className={classes.title} color="inherit">
@@ -105,7 +106,7 @@ const Navbar1 = () => {
                         </div>
                     </Toolbar>
                 </AppBar>
-    </>
+    </div>
         </div>
     )
 }

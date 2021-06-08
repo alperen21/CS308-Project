@@ -44,7 +44,7 @@ export const Register = () => {
 	hist.push("/");
 }
   
-    return (<>
+    return (<div>
 	
     <div class="container" id="container">
         <div class="form-container sign-in-container">
@@ -85,7 +85,7 @@ export const Register = () => {
             </div>
         </div>
 
-</>
+</div>
 
   );
 }

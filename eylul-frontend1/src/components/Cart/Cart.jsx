@@ -132,7 +132,7 @@ const Cart = () => {
     );
 
     const FilledCart = () => (
-        <>
+        <div>
             <Grid container spacing = {3}>
                 {cart.map((cart) => (
                     <Grid cart xs={12} sm={4} key={cart.name}>
@@ -147,7 +147,7 @@ const Cart = () => {
                         <Button component={Link} to="/checkout" className={classes.emptyButton} size="large" type="button" variant="contained" color="primary"> Checkout</Button>
                     </div>
             </div>
-        </>
+        </div>
     );
 
     const toCheckout = async() => {

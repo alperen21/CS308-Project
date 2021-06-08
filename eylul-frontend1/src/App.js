@@ -1,12 +1,13 @@
 import React from 'react'
 import { CssBaseline } from '@material-ui/core';
-import { PrevOrders, Products , Navbar1, Login, Register,Espressos, Filter_coffee_products, Espresso_machines,Hot_chocolates,Turkish_coffees, Cart, Product_Detail, Checkout, Profile} from './components';
+import { PrevOrders, Charts, Products, Navbar1, Login, Register,Espressos, Filter_coffee_products, Espresso_machines,Hot_chocolates,Turkish_coffees, Cart, Product_Detail, Checkout, Profile} from './components';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+
 
 
 const App = () => {
     return (
-        <Router>
+        <Router >
       
         <CssBaseline />
         <Navbar1/>
@@ -49,6 +50,9 @@ const App = () => {
           </Route>
           <Route exact path="/orders">
             <PrevOrders />
+          </Route>
+          <Route exact path="/chart">
+            <Charts />
           </Route>
         </Switch>
      

@@ -100,6 +100,21 @@ body .card .description .h4_b {
   font-weight: 500;
   font-size: 12px;
 }
+body .card .description .h6_b {
+  margin: 0;
+  color: #727272;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 20px;
+  text-decoration: line-through;
+}
+body .card .description .h7_b {
+  margin: 0;
+  color:red;
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 30px;
+}
 body .card .description .p_b {
   font-size: 12px;
   line-height: 20px;

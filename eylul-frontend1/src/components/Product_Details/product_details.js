@@ -101,7 +101,9 @@ export const Product_Detail = (product) => {
     <h2 className="h2_b">{location.state.product.name}</h2>
     <h3 className="h3_b">Rating: {location.state.product.rating}</h3>
     
-    <h1 className="h1_b">${location.state.product.price}</h1>
+    {location.state.product.discount === 0 &&  <h1 className="h1_b">${location.state.product.price}</h1>}
+    {location.state.product.discount !== 0 && <h1 className="h6_b">${location.state.product.price}</h1>}
+    {location.state.product.discount !== 0 && <h1 className="h7_b">${location.state.product.price-(location.state.product.price*location.state.product.discount/100)}</h1>}
     <p className="p_b">{location.state.product.model}.</p>
     <h4 className="h4_b">Item in Stock: {location.state.product.stock}</h4>
     <button onClick={() => { { product.stock !== 0 ? HandleAddtoCart(location.state.product.name,1): (alert("Item is out of stock!")) }}} className="button_b">Add to Cart</button>

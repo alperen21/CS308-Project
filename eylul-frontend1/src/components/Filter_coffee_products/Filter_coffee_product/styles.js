@@ -22,4 +22,12 @@ export default makeStyles(() => ({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  custom:{
+    color:"red"
+  },
+  old_price:{
+    textDecorationLine:'line-through'
+
+  }
+
 }));

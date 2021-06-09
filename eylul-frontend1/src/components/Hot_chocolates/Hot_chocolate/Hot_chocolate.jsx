@@ -14,10 +14,20 @@ const Hot_chocolate = ({ product }) => {
                     <Typography variant="h5" gutterBottom>
                         {product.name}
                     </Typography>
-                    <Typography variant="h5">
+                    {product.discount===0 && <Typography variant="h6">
                         {'$'}
                         {product.price}
-                    </Typography>
+                    </Typography>}
+                    { product.discount!==0 && 
+                    <Typography className={classes.old_price} variant="overline">
+                    {'$'}
+                    {product.discount!==0 && product.price}
+                </Typography> }
+                { product.discount!==0 && 
+                    <Typography  variant="h6" className={classes.custom}>
+                        {'$'}
+                        {product.discount!==0 && (product.price)-(product.price*product.discount/100)}
+                    </Typography> }
                 </div>
                 <Typography variant="body2 color=" text>{product.model}</Typography>
             </CardContent>

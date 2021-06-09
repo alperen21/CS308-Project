@@ -3,10 +3,12 @@ import {useState, useEffect} from "react";
 import Cookies from 'js-cookie'
 import { Button } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import { useHistory } from "react-router-dom"; 
 
 const Profile = () => {
+    const history = useHistory();
     const [Informationlist, setInformationList] = useState([]);
-
+    let userType =  Cookies.get('userType');
     const [data, setData] = React.useState({
     
         username: Informationlist.username,
@@ -17,8 +19,10 @@ const Profile = () => {
         address:Informationlist.address,
         //password: false,
     });
+    
 
     useEffect(() => {
+    
     getAccount();
     }, []);
 
@@ -30,6 +34,7 @@ const Profile = () => {
         
         try {
             token_id = await Cookies.get('token');
+            
             //setToken(token_id);
             console.log(token_id)
         } catch (e) {
@@ -200,6 +205,9 @@ const Profile = () => {
         //Informationlist.address=val;
         }
     }
+    const toPm = async() => {
+        history.push("/pm_page");
+    }
     
     return (
         <div style={{ paddingHorizontal:5 ,paddingVertical:20 ,marginBottom:15, flex: 1 }}>
@@ -307,7 +315,7 @@ const Profile = () => {
         </div>
                 <br>
                 </br>
-        <Button align="center"
+        <Button style={{marginLeft:20}}
                 title="Update inff"
                 onClick={() => {
                     if (data.address !==false ) {
@@ -343,7 +351,9 @@ const Profile = () => {
                 </br>
                 <br>
                 </br>
-                <Link to="/orders" style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30,fontWeight: 'bold', color: '#BFA38F'  }}>  <icon name='user' size={30} color= 'black'> </icon> See Previous Orders </Link>
+                {userType==="customer" && <Link to="/orders" style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30,fontWeight: 'bold', color: '#BFA38F'  }}>  <icon name='user' size={30} color= 'black'> </icon> See Previous Orders </Link>}
+                <br></br>
+                {userType==="product manager" && <Button onClick={() => toPm()}> Product Manager Page </Button>}
         </div>
     );
 };

@@ -15,8 +15,8 @@ const Product = ({ item }) => {
 
     const toDetails = async() => {
         history.push({
-            pathname: "/product_details",
-            state: {product: item}});
+            pathname: "/prev_details",
+            state: {product:item}});
     }
     const HandleAddtoCart = async (name) => {
 
@@ -76,78 +76,47 @@ const Product = ({ item }) => {
       }
     
     return (
-      <div>
-      <div style={{ flexDirection: 'row', marginVertical: 40, paddingHorizontal: 20 }}>
+      <div  >
+      <div style={{ marginTop:0, flexDirection: 'row', marginVertical: 40, paddingHorizontal: 20 }}>
           
           <div>
-          
-          <div style={{ fontSize: 18, fontWeight: 'bold' }}>Order Time: {item.time} </div>
-          <div style={{ fontSize: 17 }}>Order Status :{item.status} </div>
-          {/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
-          {/* <Text style={{ fontSize: 15 }}> Quantity: {item.amount} </Text> */}
-          <div>
-          <IconButton
-              title="View Details"
-              //onPress={() => navigation.navigate('PrevOrderDetail', {
-              //itemlist:item.products,
-              //order_time:item.time,
-              //order_status:item.status,
-
-              //})}  //navigate
-              />
-          
-          
-              
-          </div>
 
 
           </div>
           {/* if (item.status == 'Shipped') */}
           { item.status == 'Delivered'&&
-          <div style={{ flexDirection: 'row',  marginLeft:140}}><CardMedia style={{width: 45, height: 45, marginBottom: 10 }}
-              source={{
-              uri: 'https://static.thenounproject.com/png/581279-200.png'
-              
-              //on the way : https://static.thenounproject.com/png/581278-200.png
-              // delivered :https://static.thenounproject.com/png/581279-200.png
-              // preparing : https://static.thenounproject.com/png/598271-200.png
-              // returned : https://static.thenounproject.com/png/598350-200.png
-              // cancelled : https://static.thenounproject.com/png/581276-200.png
-              }}/></div>
+           <CardMedia className ={classes.media} image={'https://static.thenounproject.com/png/581279-200.png'}/>
       }
       {
           item.status == 'Preparing'&&
-          <div style={{ flexDirection: 'row',  marginLeft:140}}><CardMedia style={{width: 45, height: 45, marginBottom: 10 }}
-              source={{
-              uri: 'https://static.thenounproject.com/png/598271-200.png'
-              }}/></div>
+          <CardMedia className ={classes.media} image={'https://static.thenounproject.com/png/598271-200.png'}/>
 
       }
       {
           item.status == 'Shipped'&&
-          <div style={{ flexDirection: 'row',  marginLeft:140}}><CardMedia style={{width: 45, height: 45, marginBottom: 10 }}
-              source={{
-              uri: 'https://static.thenounproject.com/png/581278-200.png'
-              }}/></div>
+          <CardMedia className ={classes.media} image={'https://static.thenounproject.com/png/581278-200.png'}/>
       }
       {
           item.status == 'Cancelled'&&
-          <div style={{ flexDirection: 'row',  marginLeft:140}}><CardMedia style={{width: 45, height: 45, marginBottom: 10 }}
-          source={{
-          uri: 'https://static.thenounproject.com/png/581276-200.png'
-          }}/></div>
+          <CardMedia className ={classes.media} image={'https://static.thenounproject.com/png/581276-200.png'}/>
 
       }
       {
           item.status == 'Returned'&&
-          <div style={{ flexDirection: 'row', marginLeft:140}}><CardMedia style={{width: 40, height: 40, marginBottom: 10 }}
-          source={{
-          uri: 'https://static.thenounproject.com/png/598350-200.png'
-          }}/></div>
-
+          <CardMedia className ={classes.media} image={'https://static.thenounproject.com/png/598350-200.png'}/>
       }
           
       </div>
+      <br></br>
+      <div style={{ fontSize: 18, fontWeight: 'bold' }}>Order Time: {item.time} </div>
+          <div style={{ fontSize: 17 }}>Order Status :{item.status} </div>
+         
+          <div>
+          { item.status == 'Delivered'&&
+          <IconButton style={{marginLeft:20,marginTop:10}} onClick={() => toDetails()} >Rate Your Order</IconButton>
+    }
+          
+          </div>
       <div
                       style={{
               //borderBottomColor: '#BFA38F',
@@ -158,6 +127,7 @@ const Product = ({ item }) => {
                   />
       
       </div>
+      
 
     )
 }

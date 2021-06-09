@@ -13,3 +13,6 @@ export { default as Checkout } from './Checkout/Checkout';
 export { default as Profile } from './Profile/Profile';
 export { default as PrevOrders } from './PrevOrders/PrevOrders';
 export { default as Charts } from './Charts/Charts';
+export { default as PrevDetail } from './PrevDetails/PrevDetails';
+export { default as PmPage } from './PmPage/PmPage';
+export { default as OrderDetail } from './OrderDetail/OrderDetail';

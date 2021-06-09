@@ -53,10 +53,10 @@ const PrevOrders = () => {
 
     //console.log("orderlist: ", orderslist)
     return (
-        <div >
+        <div style={{marginTop:200}} >
             <Grid container spacing={5}>
                     {orderslist.map((product) => (
-                        <Grid item key={product.id} xs={12} sm={6} md={10} lg={2} >
+                        <Grid item key={product.id} xs={12} sm={3} md={5} lg={2} >
                                 <Product item={product} />
                         </Grid>
                    ))}

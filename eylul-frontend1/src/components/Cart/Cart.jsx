@@ -144,7 +144,7 @@ const Cart = () => {
                     <Typography variant="h4">Subtotal: ${totalprice} </Typography>
                     <div>
                         <Button className={classes.emptyButton} size="large" type="button" variant="contained" color="secondary" > Empty Cart</Button>
-                        <Button component={Link} to="/checkout" className={classes.emptyButton} size="large" type="button" variant="contained" color="primary"> Checkout</Button>
+                        <Button onClick={() => toCheckout()} className={classes.emptyButton} size="large" type="button" variant="contained" color="primary"> Checkout</Button>
                     </div>
             </div>
         </div>
@@ -153,7 +153,7 @@ const Cart = () => {
     const toCheckout = async() => {
         history.push({
             pathname: "/checkout",
-            state: {product: totalprice}});
+            state: {route: totalprice}});
     }
 
     return (

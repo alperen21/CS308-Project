@@ -1,13 +1,14 @@
 import React from 'react'
 import {CardMedia} from '@material-ui/core';
 
-const render = ( {item} ) => {
+
+const Renderr = ( {item} ) => {
+  console.log(item)
     return (
         <div style={{ flexDirection: 'row', marginVertical: 15}}>
-        <CardMedia style={styles.image}
-          source={{
-            uri: item.image_path
-          }} />
+           
+        <CardMedia 
+          image={item.image_path} />
         <div style={{ flexDirection: 'column'}}>
           <text style={{ width:150,fontSize: 13, fontWeight: 'bold' }}>{item.name} </text>
           <text style={{ fontSize: 15 }}> Model: {item.model}</text>
@@ -19,25 +20,12 @@ const render = ( {item} ) => {
 
         
         <div style={{flexDirection: 'column'}}>
-        {order_status !== 'Preparing' && order_status !=='Cancelled' && order_status !== 'Shipped' &&
-        <button
-              title="Rate-Comment"
-              onPress={() => navigation.navigate('RateComment', {
-                itemName: item.name,
-                itemImage:item.image_path
-              })} //navigate
-            />
+        {item.status !== 'Preparing' && item.status !=='Cancelled' && item.status !== 'Shipped' &&
+        <button style={{marginLeft:20,marginTop:10}} >Give Rating</button>
+  
         }
-        {order_status !== 'Preparing' && order_status !=='Cancelled' && order_status !== 'Shipped' &&
-        <button
-              title="Return"
-              onPress={() => navigation.navigate('Return', {
-                itemName: item.name,
-                itemImage:item.image_path,
-                cart_id:cart_id,
-                amount_purchased:item.amount
-              })} //navigate
-            />
+        {item.status !== 'Preparing' && item.status !=='Cancelled' && item.status !== 'Shipped' &&
+        <button style={{marginLeft:20,marginTop:10}} >Return Request</button>
         }
 
         
@@ -46,4 +34,4 @@ const render = ( {item} ) => {
     )
 }
 
-export default render
+export default Renderr;

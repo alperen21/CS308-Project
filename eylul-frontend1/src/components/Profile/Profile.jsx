@@ -351,7 +351,7 @@ const Profile = () => {
                 </br>
                 <br>
                 </br>
-                {userType==="customer" && <Link to="/orders" style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30,fontWeight: 'bold', color: '#BFA38F'  }}>  <icon name='user' size={30} color= 'black'> </icon> See Previous Orders </Link>}
+                {userType==="undefined" && <Link to="/orders" style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30,fontWeight: 'bold', color: '#BFA38F'  }}>  <icon name='user' size={30} color= 'black'> </icon> See Previous Orders </Link>}
                 <br></br>
                 {userType==="product manager" && <Button onClick={() => toPm()}> Product Manager Page </Button>}
         </div>

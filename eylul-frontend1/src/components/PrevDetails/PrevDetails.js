@@ -6,9 +6,11 @@ import { useLocation } from "react-router-dom";
 import {useState} from "react";
 import Cookies from 'js-cookie'
 import { Grid, Paper } from '@material-ui/core';
+import Renderr from './render/render';
 
 export const PrevDetail = ({product}) => {
-  console.log("prev detailsa geldi mi", product)
+  const location = useLocation();
+  console.log("prev detailsa geldi mi", location.state.product)
   const starStyle = {
     width: 155,
     height: 35,
@@ -21,13 +23,12 @@ export const PrevDetail = ({product}) => {
         source={{
           uri: 'http://cdn.onlinewebfonts.com/svg/img_330183.png'
         }}/> */}
-         <text style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30,fontWeight: 'bold', color: '#BFA38F'  }}>   Order Info </text>
-
+    
 
       <Grid container spacing={5}>
-      {product.products.map((product1) => (
+      {location.state.product.products.map((product1) => (
           <Grid item key={product1.id} xs={12} sm={3} md={5} lg={2} >
-                  <render item={product1} />
+                  <Renderr item={product1} />
           </Grid>
       ))}
       </Grid>
@@ -40,9 +41,7 @@ export const PrevDetail = ({product}) => {
 				borderEndWidth: 1000,
 				}}
 		/>
-         <text style={{ textDecorationLine:'underline',marginTop: 25, paddingLeft:10,fontSize: 18, marginRight: 30,fontWeight: 'bold', color: '#000000bf' }}>  Total Amount paid:  </text><text style={{ fontWeight: '500', paddingLeft:17,fontSize: 18}}> ${product.total_price}</text>
-         <text style={{ textDecorationLine:'underline',marginTop: 25, paddingLeft:10,fontSize: 18, marginRight: 30,fontWeight: 'bold', color: '#000000bf' }}>  Order Date: </text><text style={{fontWeight: '500', paddingLeft:17,fontSize: 18}}>{product.time}</text>
-         <text style={{ textDecorationLine:'underline',marginTop: 25, paddingLeft:10,fontSize: 18, marginRight: 30,fontWeight: 'bold', color: '#000000bf' }}>  Payment Type: </text><text style={{fontWeight: '500', paddingLeft:17,fontSize: 18}}>Credit card </text>
+
 
          {/* <Button
               title="Show Invoice"

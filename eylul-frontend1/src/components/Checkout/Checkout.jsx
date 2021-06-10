@@ -10,12 +10,18 @@ import { Button } from 'semantic-ui-react';
 import { useHistory } from "react-router-dom"; 
 
 const Checkout = (route) => {
+
     const history = useHistory();
     const classes=useStyles();
 
     
 
   const [basketlist, setBasketList] = useState([]);
+
+
+  useEffect(() => {
+    getBasket();
+  }, []);
 
   const getBasket = async () => {
 
@@ -52,9 +58,12 @@ const Checkout = (route) => {
 		})
 
 		let json = await response2.json();
-		// console.log("basket products::!!!", json);
+
+		console.log("basket products::!!!", json);
 
 		setBasketList(json.products);
+
+
 	}
     const [data, setData] = React.useState({
 
@@ -183,22 +192,24 @@ const cvv_Change = (val) => {
 
     <div style = {{flex:1}}>
 
-    <div style={{ fontSize: 18, fontWeight: 'bold', marginTop: 0, marginLeft: 20, fontWeight: "500", fontSize: 20, color: 'black' }}>Order details: </div>
+    <div style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 100, marginLeft: 20, fontWeight: "500", fontSize: 20, color: 'black' }}>Order details: </div>
 
-      	<div>
+      	<div style={{  marginBottom: 60 }}>
 
-        <Grid container spacing = {3}>
+        <Grid container spacing = {5}>
             {basketlist.map((item) => (
-                <Grid cart xs={12} sm={4} key={item.name}>
+                <Grid cart xs={12} sm={6} md={10} lg={2} key={item.name}>
                         <Product item={item}/>
                 </Grid>
             ))}
         </Grid>
 
+      
+
         </div>
 
 
-        <div><text style={{ marginTop: 20, marginLeft: 10, fontWeight: "500", fontSize: 20, color: 'black' }}><text name="creditcard" size={25} color="black"/>  Credit Card Details:</text></div>
+        <div><text style={{ marginTop: 40, marginLeft: 10, fontWeight: "500", fontSize: 20, color: 'black' }}><text name="creditcard" size={25} color="black"/>  Credit Card Details:</text></div>
       <div >
         <input 
                     placeholder="Enter Credit Card Number"

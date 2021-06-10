@@ -12,10 +12,8 @@ const Product = ({ item }) => {
 
         <div>
             <div style={{ flexDirection: 'row' }}>
-                <CardMedia 
-                    source={{
-                        url: item.image_path
-                    }} />
+                <CardMedia style={{width: 100, height: 200}}
+                    image={item.image_path} />
                 <div>
                     <text style={{ width: 300, marginTop: 10, fontSize: 14, fontWeight: 'bold' }}>{item.name} </text>
                     <text style={{ fontSize: 15 }}> Model: {item.model}</text>

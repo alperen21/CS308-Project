@@ -7,12 +7,14 @@ import {useState} from "react";
 import Cookies from 'js-cookie'
 import Comments from './comments/comments';
 import { Grid, Paper } from '@material-ui/core';
+import { useHistory } from "react-router-dom"; 
 
  const Product_Detail = (product) => {
+  const history = useHistory();
   let userType =  Cookies.get('userType');
       const location = useLocation();
       const [comments, setComments] = useState([]);
-
+      const [stock, setStock] = React.useState(null);
       const [discount, setDiscount] = React.useState(null);
       const giveDiscount = async () => {
         
@@ -53,6 +55,123 @@ import { Grid, Paper } from '@material-ui/core';
       const discountPrice = (val) => {
        setDiscount(val)
     }
+
+    const increaseStock = async () => {
+      var mystock = parseInt(stock)
+      let token_id = 0;
+      let username = 0;
+  
+      try {
+        token_id = await Cookies.get('token');
+      } catch(e) {
+        console.log(e);
+      }
+  
+      try {
+        username = await Cookies.get('userName'); 
+      } catch(e) {
+        console.log(e);
+      }
+  
+      const response = await fetch('http://localhost:5000/stock', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          user: username,
+          token: token_id,
+        },
+        body: JSON.stringify({
+          'product_name': location.state.product.name,
+          'increase':mystock
+         
+        })
+  
+      })
+      let json = await response.json();
+
+      console.log("JSOOOOOONN", json)
+
+    }
+
+    const newStock = (val) => {
+      setStock(val)
+  }
+
+  const decreaseStock = async () => {
+    var mystock = parseInt(stock)
+    let token_id = 0;
+    let username = 0;
+
+    try {
+      token_id = await Cookies.get('token');
+    } catch(e) {
+      console.log(e);
+    }
+
+    try {
+      username = await Cookies.get('userName'); 
+    } catch(e) {
+      console.log(e);
+    }
+
+    const response = await fetch('http://localhost:5000/stock', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        user: username,
+        token: token_id,
+      },
+      body: JSON.stringify({
+        'product_name': location.state.product.name,
+        'decrease':mystock
+       
+      })
+
+    })
+    let json = await response.json();
+
+    console.log("JSOOOOOONN", json)
+
+  }
+
+
+  const removeProduct = async () => {
+    
+    let token_id = 0;
+    let username = 0;
+
+    try {
+      token_id = await Cookies.get('token');
+    } catch(e) {
+      console.log(e);
+    }
+
+    try {
+      username = await Cookies.get('userName'); 
+    } catch(e) {
+      console.log(e);
+    }
+
+    const response = await fetch('http://localhost:5000/stock', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        user: username,
+        token: token_id,
+      },
+      body: JSON.stringify({
+        'product_name': location.state.product.name,
+        'remove':true
+       
+      })
+
+    })
+    let json = await response.json();
+
+    console.log("JSOOOOOONN", json)
+    history.push("/home")
+  }
+
 
       const HandleAddtoCart = async (name) => {
 
@@ -150,7 +269,7 @@ import { Grid, Paper } from '@material-ui/core';
     <h4 className="h4_b">Item in Stock: {location.state.product.stock}</h4>
     <button onClick={() => { { product.stock !== 0 ? HandleAddtoCart(location.state.product.name,1): (alert("Item is out of stock!")) }}} className="button_b">Add to Cart</button>
     
-    {userType==="sales manager" &&<button className="button_b" > Set Discount </button>}
+    {userType==="product manager" &&<button className="button_b" onClick={() => removeProduct()}> Remove Product </button>}
     
     {userType==="sales manager" &&
     <div >
@@ -174,6 +293,56 @@ import { Grid, Paper } from '@material-ui/core';
                 }
                 }
                 > Set Discount </button>}
+
+{userType==="product manager" &&
+    <div >
+            <input 
+                        placeholder="Quantity"
+                        placeholderTextColor='#000000bf'
+                            
+                        onChange={(val) =>newStock(val.target.value)}          
+            />
+        </div>}
+    {userType==="product manager" &&
+    <button style={{marginLeft:20}}
+                title="Update inff"
+                onClick={() => {
+                    if (discount !==false ) {
+                      increaseStock();
+                        alert('Discount is given')
+                      }
+                    else{ }
+                    
+                }
+                }
+                > Increase Stock </button>}
+
+
+{userType==="product manager" &&
+    <div >
+            <input 
+                        placeholder="Quantity"
+                        placeholderTextColor='#000000bf'
+                            
+                        onChange={(val) =>newStock(val.target.value)}          
+            />
+        </div>}
+    {userType==="product manager" &&
+    <button style={{marginLeft:20}}
+                title="Update inff"
+                onClick={() => {
+                    if (discount !==false ) {
+                      decreaseStock();
+                        alert('Discount is given')
+                      }
+                    else{ }
+                    
+                }
+                }
+                > Decrease Stock </button>}
+
+
+
   </div>
   <div className="comments">
     <h3 className="h3_b">Comments</h3>
@@ -185,7 +354,7 @@ import { Grid, Paper } from '@material-ui/core';
     <Grid container spacing={5}>
       {comments.map((comm) => (
           <Grid item key={location.state.product.product_id} xs={12} sm={6} md={10} lg={12} >
-          <Comments item={comm} />
+          <Comments item={comm} getComments={getComments} />
         </Grid>
         ))}
     </Grid>

@@ -208,6 +208,10 @@ const Profile = () => {
     const toPm = async() => {
         history.push("/pm_page");
     }
+
+    const toAddProduct = async() => {
+        history.push("/add_product");
+    }
     
     return (
         <div style={{ paddingHorizontal:5 ,paddingVertical:20 ,marginBottom:15, flex: 1 }}>
@@ -353,7 +357,13 @@ const Profile = () => {
                 </br>
                 {userType==="undefined" && <Link to="/orders" style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30,fontWeight: 'bold', color: '#BFA38F'  }}>  <icon name='user' size={30} color= 'black'> </icon> See Previous Orders </Link>}
                 <br></br>
-                {userType==="product manager" && <Button onClick={() => toPm()}> Product Manager Page </Button>}
+
+                
+                {userType==="product manager" &&<text style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30,fontWeight: 'bold', color: '#BFA38F'  }}>  <icon name='user' size={30} color= 'black'> </icon> Managerial Opeartions </text>}
+                <br></br>
+                {userType==="product manager" && <Button onClick={() => toPm()}> All Orders </Button>}
+
+                {userType==="product manager" && <button onClick={() => toAddProduct()} style={{marginLeft:70}} > Add New Product </button>}
         </div>
     );
 };

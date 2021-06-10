@@ -4,10 +4,10 @@ import { useState, useEffect } from "react";
 import Product from './Product/Product';
 import useStyles from './styles';
 import { Search } from '@material-ui/icons';
-
+import Cookies from 'js-cookie'
 
 const Products = () => {
-
+  let userType =  Cookies.get('userType');
   const classes = useStyles();
 
   const [productlist, setProductList] = useState([]);
@@ -104,15 +104,8 @@ const Products = () => {
   return (
     <div style={{ padding: 20 }}>
       <div className={classes.toolbar} />
-      {/* <div className={classes.toolbar} />
-      <div className={classes.toolbar} />
-      <div className={classes.toolbar} />
-      <div className={classes.toolbar} />
-      <div className={classes.toolbar} />
-      <div className={classes.toolbar} />
-      <div className={classes.toolbar} /> */}
-
-
+      
+    
       {/* //-------------filter-------------------- */}
       <div  style={{marginTop: 800 }}>
 
@@ -152,6 +145,8 @@ const Products = () => {
         <button style={{ marginLeft: 30, marginTop: '2px', width: 200 }} onClick={(e) => {  e.preventDefault(); getProducts();}}>Filter</button>
 
       </form>
+
+      
 
 
       <form style={{ marginRight:40, marginBottom: 30, flexDirection: "row"  }} >

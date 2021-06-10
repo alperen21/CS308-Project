@@ -742,7 +742,7 @@ class ProductTest(unittest.TestCase):
             "user": "testUsername2"
         }
         response2 = requests.post(
-            self.url + "/rate", data=json.dumps(body), headers=json.dumps(header2))
+            self.url + "/rate", data=json.dumps(body), headers=header2)
 
         expected = "Rate successfully added to database."
 
@@ -775,11 +775,16 @@ class ProductTest(unittest.TestCase):
             "user": "testUsername"
         }
         requests.post(self.url + "/rate", data=json.dumps(body), headers=header)
-        
-        query = 'SELECT rating FROM PRODUCT WHERE name = (%s)'
-        with connection.cursor() as cursor:
-            cursor.execute(query,(product_name,))
-            rating = cursor.fetchone()[0]
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+            query = 'SELECT rating FROM PRODUCT WHERE name = (%s)'
+            with connection.cursor() as cursor:
+                cursor.execute(query,(product_name,))
+                rating = cursor.fetchone()[0]
 
         self.assertEqual(4, rating)
     
@@ -824,7 +829,7 @@ class ProductTest(unittest.TestCase):
         header2 = {
             "user": "testUsername2"
         }
-        requests.post(self.url + "/rate", data=json.dumps(body2), headers=json.dumps(header2))
+        requests.post(self.url + "/rate", data=json.dumps(body2), headers=header2)
         
         query = 'SELECT rating FROM PRODUCT WHERE name = (%s)'
         with connection.cursor() as cursor:
@@ -855,7 +860,7 @@ class ProductTest(unittest.TestCase):
                 cursor.execute(
                     "SELECT user_id FROM USERS WHERE username='testUsername'")
                 user_id = cursor.fetchone()[0]
-            query = 'INSERT INTO `CART`(`customer_id`, `product_id`, `total_cost`, `quantity`) VALUES ((%s), (%s), 100, 2)'
+            query = 'INSERT INTO `CART`(`cart_id`, `customer_id`, `product_id`, `total_cost`, `quantity`) VALUES (2, (%s), (%s), 100, 2)'
             with connection.cursor() as cursor:
                 cursor.execute(query,(user_id, product_id))
                 connection.commit()
@@ -901,7 +906,7 @@ class ProductTest(unittest.TestCase):
                 cursor.execute(
                     "SELECT user_id FROM USERS WHERE username='testUsername'")
                 user_id = cursor.fetchone()[0]
-            query = 'INSERT INTO `CART`(`customer_id`, `product_id`, `total_cost`, `quantity`) VALUES ((%s), (%s), 100, 2)'
+            query = 'INSERT INTO `CART`(`cart_id`, `customer_id`, `product_id`, `total_cost`, `quantity`) VALUES (1, (%s), (%s), 100, 2)'
             with connection.cursor() as cursor:
                 cursor.execute(query,(user_id, product_id))
                 connection.commit()
@@ -947,7 +952,7 @@ class ProductTest(unittest.TestCase):
                 cursor.execute(
                     "SELECT user_id FROM USERS WHERE username='testUsername'")
                 user_id = cursor.fetchone()[0]
-            query = 'INSERT INTO `CART`(`customer_id`, `product_id`, `total_cost`, `quantity`) VALUES ((%s), (%s), 100, 2)'
+            query = 'INSERT INTO `CART`(`cart_id`, `customer_id`, `product_id`, `total_cost`, `quantity`) VALUES (3, (%s), (%s), 100, 2)'
             with connection.cursor() as cursor:
                 cursor.execute(query,(user_id, product_id))
                 connection.commit()
@@ -1041,10 +1046,16 @@ class ProductTest(unittest.TestCase):
         }
         requests.post(self.url + "/changeMail", data=json.dumps(body), headers=self.headers)
 
-        query = 'SELECT email FROM USERS WHERE user_id = (%s)'
-        with connection.cursor() as cursor:
-            cursor.execute(query,(user_id,))
-            newEmail = cursor.fetchone()[0]
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+            query = 'SELECT email FROM USERS WHERE user_id = (%s)'
+            with connection.cursor() as cursor:
+                cursor.execute(query,(user_id,))
+                newEmail = cursor.fetchone()[0]
 
         self.assertEqual("testNewEmail", newEmail)
 
@@ -1074,10 +1085,16 @@ class ProductTest(unittest.TestCase):
         }
         requests.post(self.url + "/changeMail", data=json.dumps(body), headers=self.headers)
 
-        query = 'SELECT email FROM USERS WHERE user_id = (%s)'
-        with connection.cursor() as cursor:
-            cursor.execute(query,(user_id,))
-            newEmail = cursor.fetchone()[0]
+        with connect(
+            host=os.environ.get("DATABASE_HOST"),
+            user=os.environ.get("DATABASE_USER"),
+            password=os.environ.get("DATABASE_PASSWORD"),
+            database=os.environ.get("DATABASE_DB")
+        ) as connection:
+            query = 'SELECT email FROM USERS WHERE user_id = (%s)'
+            with connection.cursor() as cursor:
+                cursor.execute(query,(user_id,))
+                newEmail = cursor.fetchone()[0]
 
         self.assertEqual("testNewEmail2", newEmail)
 
@@ -1088,7 +1105,7 @@ class ProductTest(unittest.TestCase):
             password=os.environ.get("DATABASE_PASSWORD"),
             database=os.environ.get("DATABASE_DB")
         ) as connection:
-            query = 'INSERT INTO `CUSTOMER`(`phone`, `address`, `email`) VALUES ("05015015151", "testAdress", "testEmail")'
+            query = 'INSERT INTO `CUSTOMER`(`customer_id`, `phone`, `address`, `email`) VALUES ("3", "05015015151", "testAdress", "testEmail")'
             with connection.cursor() as cursor:
                 cursor.execute(query)
                 connection.commit()
@@ -1115,7 +1132,7 @@ class ProductTest(unittest.TestCase):
             password=os.environ.get("DATABASE_PASSWORD"),
             database=os.environ.get("DATABASE_DB")
         ) as connection:
-            query = 'INSERT INTO `CUSTOMER`(`phone`, `address`, `email`) VALUES ("05015015151", "testAdress", "testEmail")'
+            query = 'INSERT INTO `CUSTOMER`(`customer_id`, `phone`, `address`, `email`) VALUES ("4", "05015015151", "testAdress", "testEmail")'
             with connection.cursor() as cursor:
                 cursor.execute(query)
                 connection.commit()
@@ -1148,7 +1165,7 @@ class ProductTest(unittest.TestCase):
             password=os.environ.get("DATABASE_PASSWORD"),
             database=os.environ.get("DATABASE_DB")
         ) as connection:
-            query = 'INSERT INTO `CUSTOMER`(`phone`, `address`, `email`) VALUES ("05015015151", "testAdress", "testEmail")'
+            query = 'INSERT INTO `CUSTOMER`(`customer_id`, `phone`, `address`, `email`) VALUES ("1", "05015015151", "testAdress", "testEmail")'
             with connection.cursor() as cursor:
                 cursor.execute(query)
                 connection.commit()
@@ -1175,7 +1192,7 @@ class ProductTest(unittest.TestCase):
             password=os.environ.get("DATABASE_PASSWORD"),
             database=os.environ.get("DATABASE_DB")
         ) as connection:
-            query = 'INSERT INTO `CUSTOMER`(`phone`, `address`, `email`) VALUES ("05015015151", "testAdress", "testEmail")'
+            query = 'INSERT INTO `CUSTOMER`(`customer_id`, `phone`, `address`, `email`) VALUES ("2", "05015015151", "testAdress", "testEmail")'
             with connection.cursor() as cursor:
                 cursor.execute(query)
                 connection.commit()

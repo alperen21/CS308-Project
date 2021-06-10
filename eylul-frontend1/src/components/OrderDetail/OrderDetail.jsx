@@ -5,14 +5,29 @@ import {useState} from "react";
 import Cookies from 'js-cookie'
 import { Grid, Paper } from '@material-ui/core';
 import { useLocation } from "react-router-dom";
+import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
+import { pdfjs } from 'react-pdf';
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
 export const OrderDetail = ({product}) => {
+ 
+  pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [invoice, setInvoice] = useState(1);
+
+  function onDocumentLoadSuccess({ numPages }) {
+    setNumPages(numPages);
+  }
 
   const location = useLocation();
   const [productlist, setProductList] = useState([]);
 
   useEffect(() => {
     getOrdetDetails();
+    pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+
   }, []);
 
   const getOrdetDetails = async () => {
@@ -45,12 +60,13 @@ export const OrderDetail = ({product}) => {
       })
 
     })
-
-    let json = await response.json();
+     let json = await response.json();
 
     console.log("JSOOOOOONN", json)
-
+    
     setProductList(json);
+    setInvoice(json.invoice)
+    console.log(invoice)
     console.log("listimiz bu",productlist )
   }
 
@@ -63,6 +79,8 @@ export const OrderDetail = ({product}) => {
     height: 35,
     marginBottom: 20,
   };
+  const str = "data:application/pdf;base64" +invoice 
+  console.log("HEY",str)
   //const { cart_id,order_id,itemlist,order_status,order_time,total_amount,total_price } = product.params;
       return (
 	  <div  >
@@ -91,6 +109,17 @@ export const OrderDetail = ({product}) => {
 				borderEndWidth: 1000,
 				}}
 		/>
+      {console.log(invoice)}
+      
+      <Document
+      options = {{cMapUrl: `//cdn.jsdelivr.net/npm/pdfjs-dist@2.8.335/cmaps/`, cMapPacked: true}}
+
+      file={`data:application/pdf;base64,${invoice}`}
+        onLoadSuccess={onDocumentLoadSuccess}
+        >
+          <Page pageNumber={pageNumber} />
+        </Document>
+        <p>Page {pageNumber} of {numPages}</p>
 
          {/* <Button
               title="Show Invoice"

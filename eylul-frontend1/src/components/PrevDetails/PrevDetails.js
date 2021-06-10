@@ -7,6 +7,7 @@ import {useState} from "react";
 import Cookies from 'js-cookie'
 import { Grid, Paper } from '@material-ui/core';
 import Renderr from './render/render';
+import { useHistory } from "react-router-dom"; 
 
 export const PrevDetail = ({product}) => {
   const location = useLocation();
@@ -16,6 +17,18 @@ export const PrevDetail = ({product}) => {
     height: 35,
     marginBottom: 20,
   };
+
+  const history = useHistory();
+  const toRate = async(product1) => {
+    history.push({
+        pathname: "/Rate",
+        state: {product:product1}});
+}
+const toReturn = async(product1) => {
+  history.push({
+      pathname: "/Return",
+      state: {product:product1}});
+}
   // alert(location.state.product.status)
   //const { cart_id,order_id,itemlist,order_status,order_time,total_amount,total_price } = product.params;
       return (
@@ -34,11 +47,11 @@ export const PrevDetail = ({product}) => {
         
         <div style={{flexDirection: 'column'}}>
         {location.state.product.status === 'Delivered' &&
-        <button style={{marginLeft:10,marginTop:10}}  >Give Rating | Comment</button>
+        <button style={{marginLeft:10,marginTop:10}} onClick={() => toRate(product1)} > Rating | Comment</button>
   
         }
         {location.state.product.status === 'Delivered' &&
-        <button style={{marginLeft:10,marginTop:10}}  >Return Request</button>
+        <button style={{marginLeft:10,marginTop:10}} onClick={() => toReturn(product1)}  >Return Request</button>
         }
         </div>
           </Grid>

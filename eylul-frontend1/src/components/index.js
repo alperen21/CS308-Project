@@ -17,3 +17,4 @@ export { default as PrevDetail } from './PrevDetails/PrevDetails';
 export { default as PmPage } from './PmPage/PmPage';
 export { default as OrderDetail } from './OrderDetail/OrderDetail';
 export { default as Rate } from './Rate/Rate';
+export { default as Return } from './Return/Return';

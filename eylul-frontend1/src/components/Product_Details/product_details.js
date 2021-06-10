@@ -8,9 +8,51 @@ import Cookies from 'js-cookie'
 import Comments from './comments/comments';
 import { Grid, Paper } from '@material-ui/core';
 
-export const Product_Detail = (product) => {
+ const Product_Detail = (product) => {
+  let userType =  Cookies.get('userType');
       const location = useLocation();
       const [comments, setComments] = useState([]);
+
+      const [discount, setDiscount] = React.useState(null);
+      const giveDiscount = async () => {
+        
+        let token_id = 0;
+        let username = 0;
+    
+        try {
+          token_id = await Cookies.get('token');
+        } catch(e) {
+          console.log(e);
+        }
+    
+        try {
+          username = await Cookies.get('userName'); 
+        } catch(e) {
+          console.log(e);
+        }
+    
+        const response = await fetch('http://localhost:5000/discount', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            user: username,
+            token: token_id,
+          },
+          body: JSON.stringify({
+            'product_name': location.state.product.name,
+            'discount':discount
+           
+          })
+    
+        })
+        let json = await response.json();
+
+        console.log("JSOOOOOONN", json)
+
+      }
+      const discountPrice = (val) => {
+       setDiscount(val)
+    }
 
       const HandleAddtoCart = async (name) => {
 
@@ -107,7 +149,31 @@ export const Product_Detail = (product) => {
     <p className="p_b">{location.state.product.model}.</p>
     <h4 className="h4_b">Item in Stock: {location.state.product.stock}</h4>
     <button onClick={() => { { product.stock !== 0 ? HandleAddtoCart(location.state.product.name,1): (alert("Item is out of stock!")) }}} className="button_b">Add to Cart</button>
-    <button className="button_b">Wishlist</button>
+    
+    {userType==="sales manager" &&<button className="button_b" > Set Discount </button>}
+    
+    {userType==="sales manager" &&
+    <div >
+            <input 
+                        placeholder="Enter Discounted Price"
+                        placeholderTextColor='#000000bf'
+                            
+                        onChange={(val) =>discountPrice(val.target.value)}          
+            />
+        </div>}
+    {userType==="sales manager" &&
+    <button style={{marginLeft:20}}
+                title="Update inff"
+                onClick={() => {
+                    if (discount !==false ) {
+                        giveDiscount();
+                        alert('Discount is given')
+                      }
+                    else{ }
+                    
+                }
+                }
+                > Set Discount </button>}
   </div>
   <div className="comments">
     <h3 className="h3_b">Comments</h3>

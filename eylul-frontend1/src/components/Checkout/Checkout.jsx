@@ -192,9 +192,9 @@ const cvv_Change = (val) => {
 
     <div style = {{flex:1}}>
 
-    <div style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 100, marginLeft: 20, fontWeight: "500", fontSize: 20, color: 'black' }}>Order details: </div>
+    <div style={{ fontSize: 18, fontWeight: 'bold', marginTop: 50,marginBottom: 100, marginLeft: 20, fontWeight: "500", fontSize: 20, color: 'black' }}>Order details: </div>
 
-      	<div style={{  marginBottom: 60 }}>
+      	<div style={{ marginBottom: 50 }}>
 
         <Grid container spacing = {5}>
             {basketlist.map((item) => (
@@ -209,29 +209,29 @@ const cvv_Change = (val) => {
         </div>
 
 
-        <div><text style={{ marginTop: 40, marginLeft: 10, fontWeight: "500", fontSize: 20, color: 'black' }}><text name="creditcard" size={25} color="black"/>  Credit Card Details:</text></div>
-      <div >
+        <div><text style={{ marginTop: 80, marginLeft: 10, fontWeight: "500", fontSize: 20, color: 'black' }}><text name="creditcard" size={25} color="black"/>  Credit Card Details:</text></div>
+      <div style={{ width: 500}}>
         <input 
                     placeholder="Enter Credit Card Number"
                     //style={styles.textInput}   
                     onChange={(val) => card_no_Change(val.target.value)}         
         />
       </div>
-      <div >
+      <div style={{ width: 500}}>
         <input 
                     placeholder="Enter Name of Credit Card Owner"
                     //style={styles.textInput}   
                     onChange={(val) => name_Change(val.target.value)}          
         />
       </div>
-      <div>
+      <div style={{ width: 500}}>
         <input 
                     placeholder="Enter Credit Card Expiration Date"
                     //style={styles.textInput}   
                     onChange={(val) => exp_Change(val.target.value)}          
         />
       </div>
-      <div >
+      <div style={{ width: 500}} >
         <input 
                     placeholder="Enter CVV"
                     //style={styles.textInput} 

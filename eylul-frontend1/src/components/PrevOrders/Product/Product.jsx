@@ -74,6 +74,48 @@ const Product = ({ item }) => {
         //console.log("code: ", json.status_code)
         //setBasket(json.category_elements);  
       }
+
+
+      const cancelOrders = async (order_idd) => {
+    
+        let token_id = 0;
+        let username = 0;
+    
+        try {
+          token_id = await Cookies.get('token');
+          // setToken(token_id);
+        } catch (e) {
+          console.log(e);
+        }
+    
+        try {
+          // await AsyncStorage.setItem('userToken', userToken);
+          username = await Cookies.get('userName');
+          // setUsername(username);
+        } catch (e) {
+          console.log(e);
+        }
+    
+        const response = await fetch('http://localhost:5000/cancelOrder', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            user: username,
+            token: token_id,
+    
+          },
+          body: JSON.stringify({
+            order_id: order_idd ,
+          })
+    
+        })
+        let json = await response.json();
+      //console.log(" orders::!!!", json.orders);
+        //getOrders();
+      }
+    
+    
     
     return (
       <div  >
@@ -112,9 +154,11 @@ const Product = ({ item }) => {
           <div style={{ fontSize: 17 }}>Order Status :{item.status} </div>
          
           <div>
-          { item.status == 'Delivered'&&
+          <IconButton style={{marginLeft:20,marginTop:10}} onClick={() => toDetails()} >View Order Details</IconButton>
+         {item.status === 'Preparing' && <IconButton style={{marginLeft:20,marginTop:10}} onClick={() => cancelOrders(item.order_id)}>Cancel Order</IconButton>}
+          {/* { item.status == 'Delivered'&&
           <IconButton style={{marginLeft:20,marginTop:10}} onClick={() => toDetails()} >Rate Your Order</IconButton>
-    }
+    } */}
           
           </div>
       <div

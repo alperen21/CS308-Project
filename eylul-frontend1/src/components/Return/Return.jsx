@@ -8,10 +8,11 @@ import { useLocation } from "react-router-dom";
 import TextField from '@material-ui/core/TextField';
 
 import InputLabel from '@material-ui/core/InputLabel';
-export const Return = ({product}) => {
+export const Return = ({product,cart}) => {
 
     const location = useLocation();
     console.log("RATEEEEE  geldi mi", location.state.product)
+    console.log("RATEEEEE  geldi mi", location.state.cart)
         const [data, setData] = React.useState({
             amount: 1,
           });
@@ -69,14 +70,14 @@ export const Return = ({product}) => {
               body: JSON.stringify({
                 amount:amounttt,
                 product_name: location.state.product.name,
-                cart_id:location.state.product.cart_id
+                cart_id:location.state.cart
               })
         
             })
              let json = await response.json();
           //  console.log(" comment json::!!!", json);
         
-        
+          console.log(" STATAUUSUSS HEREEEE json::!!!", json.status_code);
            if (json.message === 'ok') {
             alert("Your refund request is received!")
           } 

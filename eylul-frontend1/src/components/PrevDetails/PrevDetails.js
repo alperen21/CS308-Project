@@ -24,10 +24,10 @@ export const PrevDetail = ({product}) => {
         pathname: "/Rate",
         state: {product:product1}});
 }
-const toReturn = async(product1) => {
+const toReturn = async(product1, cart_id) => {
   history.push({
       pathname: "/Return",
-      state: {product:product1}});
+      state: {product:product1 , cart:cart_id }});
 }
   // alert(location.state.product.status)
   //const { cart_id,order_id,itemlist,order_status,order_time,total_amount,total_price } = product.params;
@@ -51,7 +51,7 @@ const toReturn = async(product1) => {
   
         }
         {location.state.product.status === 'Delivered' &&
-        <button style={{marginLeft:10,marginTop:10}} onClick={() => toReturn(product1)}  >Return Request</button>
+        <button style={{marginLeft:10,marginTop:10}} onClick={() => toReturn(product1,location.state.product.cart_id)}  >Return Request</button>
         }
         </div>
           </Grid>

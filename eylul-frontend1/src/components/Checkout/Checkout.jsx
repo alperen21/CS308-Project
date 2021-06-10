@@ -186,7 +186,7 @@ const cvv_Change = (val) => {
 
     <div style = {{flex:1}}>
 
-    <div><text style={{ marginTop: 20, marginLeft: 20, fontWeight: "500", fontSize: 20, color: 'black' }}>Order details:</text></div>
+    <div style={{ fontSize: 18, fontWeight: 'bold', marginTop: 0, marginLeft: 20, fontWeight: "500", fontSize: 20, color: 'black' }}>Order details: </div>
 
       	<div>
 

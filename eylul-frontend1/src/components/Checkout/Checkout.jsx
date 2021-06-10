@@ -13,9 +13,7 @@ const Checkout = (route) => {
     const history = useHistory();
     const classes=useStyles();
 
-    useEffect(() => {
-		getBasket();
-	}, );
+    
 
   const [basketlist, setBasketList] = useState([]);
 
@@ -101,16 +99,15 @@ const Checkout = (route) => {
         'Content-Type': 'application/json',
         user: username,
         token: token_id,
-      },
-      body: JSON.stringify({
+      }
 
-      })
     })
 
     let json = await response.json();
     console.log("json after checkout?!?!?!!?",json);
     
     if(json.status_code === 200){
+      console.log("bu",json)
       alert("We received your order! Here is your order number 23814281.")
       //navigation.navigate('Invoice')
       toPrevorders();

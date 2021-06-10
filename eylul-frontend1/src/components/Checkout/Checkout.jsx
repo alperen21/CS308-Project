@@ -14,7 +14,14 @@ const Checkout = (route) => {
     const history = useHistory();
     const classes=useStyles();
 
-    
+
+    const toInvoice = async(invoice1) => {
+      history.push({
+        pathname: "/Invoice",
+        state: {invoice:invoice1 }});
+    }
+   
+
 
   const [basketlist, setBasketList] = useState([]);
 
@@ -119,7 +126,9 @@ const Checkout = (route) => {
       console.log("bu",json)
       alert("We received your order! Here is your order number 23814281.")
       //navigation.navigate('Invoice')
-      toPrevorders();
+      //toPrevorders();
+      toInvoice(json.invoice);
+
     }
     else{
       alert("Try again!")

@@ -5,28 +5,30 @@ import {useState} from "react";
 import Cookies from 'js-cookie'
 import { Grid, Paper } from '@material-ui/core';
 import { useLocation } from "react-router-dom";
-import { Document, Page } from 'react-pdf/dist/esm/entry.webpack';
+import { Document, Page } from 'react-pdf';
 import { pdfjs } from 'react-pdf';
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
+
+
 export const OrderDetail = ({product}) => {
  
-  pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+  //pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
 
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
+  // const [numPages, setNumPages] = useState(null);
+  // const [pageNumber, setPageNumber] = useState(1);
   const [invoice, setInvoice] = useState(1);
 
-  function onDocumentLoadSuccess({ numPages }) {
-    setNumPages(numPages);
-  }
+  // function onDocumentLoadSuccess({ numPages }) {
+  //   setNumPages(numPages);
+  // }
 
   const location = useLocation();
-  const [productlist, setProductList] = useState([]);
+   const [productlist, setProductList] = useState([]);
 
   useEffect(() => {
     getOrdetDetails();
-    pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+   // pdfjs.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
 
   }, []);
 
@@ -70,25 +72,23 @@ export const OrderDetail = ({product}) => {
     console.log("listimiz bu",productlist )
   }
 
-  useEffect(() => {
-    console.log(location.state.product); // result: 'some_value'
- }, [location]);
+//   useEffect(() => {
+//     console.log(location.state.product); // result: 'some_value'
+//  }, [location]);
 
   const starStyle = {
     width: 155,
     height: 35,
     marginBottom: 20,
   };
-  const str = "data:application/pdf;base64" +invoice 
-  console.log("HEY",str)
+ 
+  var strr= 'data:application/pdf;base64,'+invoice;
+  var strr2='data:application/pdf;base64,${invoice}'
+  console.log("HEYYYOOOYO",strr)
   //const { cart_id,order_id,itemlist,order_status,order_time,total_amount,total_price } = product.params;
       return (
-	  <div  >
-        {/* <Image style={{marginLeft:20 , width:65, height: 70, marginTop:10,marginBottom: 0 }}
-        source={{
-          uri: 'http://cdn.onlinewebfonts.com/svg/img_330183.png'
-        }}/> */}
-         <text style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30,fontWeight: 'bold', color: '#BFA38F'  }}>   Order Info </text>
+        <div>
+        <text style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30,fontWeight: 'bold', color: '#BFA38F'  }}>   Order Info </text>
          <br></br>
          <text style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30,fontWeight: 'bold' }}>   Date of purchase: </text>
          <text style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30 }}> {productlist.date_of_purchase} </text>
@@ -98,37 +98,9 @@ export const OrderDetail = ({product}) => {
          <br></br>
          <text style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30,fontWeight: 'bold' }}>   Phone: </text>
          <text style={{ marginTop: 25, paddingLeft:10,fontSize: 25, marginRight: 30 }}>  {productlist.phone} </text>
-   
-    
-     
-      	<div
-			style={{
-			//borderBottomColor: '#BFA38F',
-				borderColor: '#000000bf',
-				borderBottomWidth: 5,
-				borderEndWidth: 1000,
-				}}
-		/>
-      {console.log(invoice)}
-      
-      <Document
-      options = {{cMapUrl: `//cdn.jsdelivr.net/npm/pdfjs-dist@2.8.335/cmaps/`, cMapPacked: true}}
-
-      file={`data:application/pdf;base64,${invoice}`}
-        onLoadSuccess={onDocumentLoadSuccess}
-        >
-          <Page pageNumber={pageNumber} />
-        </Document>
-        <p>Page {pageNumber} of {numPages}</p>
-
-         {/* <Button
-              title="Show Invoice"
-              onPress={() => navigation.navigate('Invoice', {
-                cart_id:cart_id,
-              })} //navigate
-            /> */}
-        
-
+	  <div>
+      <embed src={`data:application/pdf;base64,${invoice}`} style={{width:700, height:700}} type="application/pdf" width="100%"></embed>
+    </div>
     </div>
   );
 };

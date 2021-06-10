@@ -10,6 +10,7 @@ import { Grid, Paper } from '@material-ui/core';
 import { useHistory } from "react-router-dom"; 
 import { IconButton} from '@material-ui/core';
 
+
  const Product_Detail = (product) => {
   const history = useHistory();
   let userType =  Cookies.get('userType');
@@ -275,7 +276,7 @@ import { IconButton} from '@material-ui/core';
     {userType==="sales manager" &&
     <div >
             <input 
-                        placeholder="Enter Discounted Price"
+                        placeholder="Enter Discount Percentage"
                         placeholderTextColor='#000000bf'
                             
                         onChange={(val) =>discountPrice(val.target.value)}          
@@ -359,6 +360,9 @@ import { IconButton} from '@material-ui/core';
         </Grid>
         ))}
     </Grid>
+
+    </div>
+    <div classNAme='pdf-container'>
 
     </div>
     <div>

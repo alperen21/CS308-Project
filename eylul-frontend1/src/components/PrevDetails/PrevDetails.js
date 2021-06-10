@@ -9,6 +9,7 @@ import { Grid, Paper } from '@material-ui/core';
 import Renderr from './render/render';
 import { useHistory } from "react-router-dom"; 
 
+
 export const PrevDetail = ({product}) => {
   const location = useLocation();
   console.log("prev detailsa geldi mi", location.state.product)

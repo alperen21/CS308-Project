@@ -10,21 +10,24 @@ const Product = ({ item }) => {
     const classes=useStyles();
     return (
 
-        <div>
-            <div style={{ flexDirection: 'row' }}>
+        <div style={{  marginLeft: 100 }}>
+            <div style={{  marginLeft: 200 }}>
                 <CardMedia style={{width: 100, height: 200}}
                     image={item.image_path} />
                 <div>
+                    <div>
                     <text style={{ width: 300, marginTop: 10, fontSize: 14, fontWeight: 'bold' }}>{item.name} </text>
+                    </div>
+
                     <text style={{ fontSize: 15 }}> Model: {item.model}</text>
-                    {/* <Text style={{fontSize:18}}> Rating: {item.rating }</Text> */}
+                    {/* <text style={{fontSize:18}}> Rating: {item.rating}</text> */}
                     <text > </text>
 
                     <div style={{ flexDirection: 'row' }}>
 
-                        <div style={{}}><text style={{ fontSize: 18, color: '#000000bf' }}> ${item.price} </text></div>
+                       <text style={{ fontSize: 18, color: '#000000bf' }}> ${item.price} </text>
                     
-                        <div style={{ marginLeft: 200 , marginRight:50}}><text style={{ fontSize: 18}}>x{item.quantity}</text></div>
+                       <text style={{ fontSize: 18 , marginLeft: 10}}>x{item.quantity}</text>
 
                     </div>
 

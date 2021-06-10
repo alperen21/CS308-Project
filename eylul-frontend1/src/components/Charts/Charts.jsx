@@ -57,7 +57,7 @@ const Charts = () => {
 
 
   const getRequests = async (e) => {
-    e.preventDefault();
+    
     let token_id = 0;
     let username = 0;
 
@@ -178,7 +178,7 @@ const Charts = () => {
       <Grid container spacing={0}>
         {refunds.map((refund) => (
           <Grid item key={refund.id} xs={12} sm={6} md={10} lg={12} >
-            <Product product={refund} />
+            <Product product={refund} getRequests={getRequests} />
           </Grid>
         ))}
       </Grid>

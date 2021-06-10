@@ -7,7 +7,7 @@ import Cookies from 'js-cookie'
 import styles from './styles';
 
 
-const Product = ({ product }) => {
+const Product = ({ product, getRequests }) => {
     const history = useHistory();
     const classes = useStyles();
 
@@ -45,6 +45,7 @@ const Product = ({ product }) => {
       })
       let json = await response.json();
       console.log(json);
+      getRequests();
       
     }
 
@@ -82,7 +83,7 @@ const Product = ({ product }) => {
       })
       let json = await response.json();
       console.log(json);
-      
+      getRequests();
     }
 
     

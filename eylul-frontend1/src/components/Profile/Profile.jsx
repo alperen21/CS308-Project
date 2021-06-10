@@ -212,6 +212,9 @@ const Profile = () => {
     const toAddProduct = async() => {
         history.push("/add_product");
     }
+    const toChart = async() => {
+        history.push("/chart");
+    }
     
     return (
         <div style={{ paddingHorizontal:5 ,paddingVertical:20 ,marginBottom:15, flex: 1 }}>
@@ -364,6 +367,8 @@ const Profile = () => {
                 {userType==="product manager" && <Button onClick={() => toPm()}> All Orders </Button>}
 
                 {userType==="product manager" && <button onClick={() => toAddProduct()} style={{marginLeft:70}} > Add New Product </button>}
+
+                {userType==="sales manager" && <Button onClick={() => toChart()}> Sales Manager Operations </Button>}
         </div>
     );
 };

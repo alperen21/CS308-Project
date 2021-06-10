@@ -8,6 +8,7 @@ import Cookies from 'js-cookie'
 import Comments from './comments/comments';
 import { Grid, Paper } from '@material-ui/core';
 import { useHistory } from "react-router-dom"; 
+import { IconButton} from '@material-ui/core';
 
  const Product_Detail = (product) => {
   const history = useHistory();

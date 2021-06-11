@@ -1,0 +1,6 @@
+.DS_Store
+__pycache__/app.cpython-37.pyc
+__pycache__/*
+deniz-frontend/*
+client_secret.json
+token_GMAIL_v1.pickle

@@ -7,9 +7,17 @@ import Cookies from 'js-cookie'
 import { Grid, Paper , IconButton, Card} from '@material-ui/core';
 import { BluetoothAudio, ControlCameraOutlined } from '@material-ui/icons';
 import Product from './Product/Product';
+import { useHistory } from "react-router-dom"; 
 
 const Charts = () => {
+  const history = useHistory();
+  const toSmInvoice = async(invoice) => {
+    history.push({
+        pathname: "/sm_invoice",
+        state: {invoice: invoice }});
+}
 
+  const [invoice, setInvoice] = useState([]);
   const [expenses, setExpenses] = useState(0);
   const [revenue, setRevenue] = useState(0);
   const [profit, setProfit] = useState(0);
@@ -53,7 +61,46 @@ const Charts = () => {
     setRevenue(json.profit);
   }
 
-  
+  const getInvoices = async (e) => {
+   
+    let token_id = 0;
+    let username = 0;
+    
+    try {
+      token_id = await Cookies.get('token');
+    } catch(e) {
+      console.log(e);
+    }
+
+    try {
+      username = await Cookies.get('userName'); 
+    } catch(e) {
+      console.log(e);
+    }
+
+  const response = await fetch('http://127.0.0.1:5000/viewinvoices', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        user: username,
+        token: token_id,
+      },
+      body: JSON.stringify({
+        'start_date': startDate,
+        'end_date':endDate
+       
+      })
+
+    })
+    console.log("start date",startDate+" 00:00:00" );
+    console.log("end date",endDate+" 00:00:00" )
+    let json = await response.json();
+    console.log("pdf",json.invoices);
+    
+    setInvoice(json.invoices);
+    console.log("chartstaki invoice", invoice)
+    toSmInvoice(json.invoices);
+  }
 
 
   const getRequests = async (e) => {
@@ -159,12 +206,15 @@ const Charts = () => {
     dateFormat='yyyy-MM-dd'/>
   </div>
   <button type="submit" class="btn btn-primary" onClick={getCharts}>Get Charts</button>
+  <button type="submit" class="btn btn-primary"onClick={(e) => {e.preventDefault(); getInvoices()}}>Get Invoices</button>
 </form>
 
   </div>
 
  
 </div>
+
+
 
 <Card style={{marginTop:1300 }}>
   <h1 style={{align:"style"}}>

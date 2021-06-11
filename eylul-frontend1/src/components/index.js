@@ -20,3 +20,4 @@ export { default as Rate } from './Rate/Rate';
 export { default as Return } from './Return/Return';
 export { default as AddProduct } from './AddProduct/AddProduct';
 export { default as Invoice } from './Invoice/Invoice';
+export { default as SmInvoice } from './SmInvoice/SmInvoice';

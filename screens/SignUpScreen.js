@@ -373,7 +373,7 @@ const SignUpScreen = ({navigation}) => {
 
             <Text style={[styles.text_footer, {marginTop: 20}]}>Password</Text>
             
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
             <View style={styles.action}>
                 <Feather 
                     name="lock"
@@ -439,6 +439,8 @@ const SignUpScreen = ({navigation}) => {
                     }
                 </TouchableOpacity>
             </View>
+
+
             <View style={styles.textPrivate}>
                 <Text style={styles.color_textPrivate}>
                     By signing up you agree to our
